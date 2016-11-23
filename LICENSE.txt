@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) 2014 Bengt Weiße other contributors
+Copyright (c) 2016 Bengt Weiße other contributors
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
