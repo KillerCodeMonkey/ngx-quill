@@ -1,12 +1,24 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, forwardRef, Input, Output, ViewEncapsulation } from '@angular/core';
-import {NG_VALUE_ACCESSOR, ControlValueAccessor} from '@angular/forms';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  forwardRef,
+  Input,
+  Output,
+  ViewEncapsulation
+} from '@angular/core';
+import {
+  NG_VALUE_ACCESSOR,
+  ControlValueAccessor
+} from '@angular/forms';
 
 var Quill = require('quill/dist/quill');
 
 @Component({
   selector: 'quill-editor',
   template: `
-<div class="editor-container"></div>
+<div></div>
 `,
   styleUrls: ['quill-editor.component.css'],
   providers: [{
@@ -19,12 +31,34 @@ var Quill = require('quill/dist/quill');
 export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor {
 
   quillEditor: any;
-  toolbar: true;
   editorElem: HTMLElement;
   content: any;
+  defaultModules = {
+    toolbar: [
+      ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+      ['blockquote', 'code-block'],
 
-  @Input() toolbarConfig: any;
+      [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+      [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+      [{ 'direction': 'rtl' }],                         // text direction
+
+      [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+      [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+      [{ 'font': [] }],
+      [{ 'align': [] }],
+
+      ['clean'],                                         // remove formatting button
+
+      ['link', 'image', 'video']                         // link and image, video
+    ]
+  };
+
   @Input() theme: string;
+  @Input() modules: Object;
   @Input() readOnly: boolean;
   @Input() placeholder: string;
   @Input() formats: string[];
@@ -38,32 +72,10 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   constructor(private elementRef: ElementRef) { }
 
   ngAfterViewInit() {
-    this.editorElem = this.elementRef.nativeElement.getElementsByClassName('editor-container')[0];
+    this.editorElem = this.elementRef.nativeElement.children[0];
 
     this.quillEditor = new Quill(this.editorElem, {
-      modules: {
-        toolbar: this.toolbarConfig || [
-          ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-          ['blockquote', 'code-block'],
-
-          [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-          [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-          [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-          [{ 'direction': 'rtl' }],                         // text direction
-
-          [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-
-          [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-          [{ 'font': [] }],
-          [{ 'align': [] }],
-
-          ['clean'],                                         // remove formatting button
-
-          ['link', 'image']                                  // link and image
-        ]
-      },
+      modules: this.modules || this.defaultModules,
       placeholder: this.placeholder || 'Insert text here ...',
       readOnly: this.readOnly || false,
       theme: this.theme || 'snow',
@@ -101,9 +113,9 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     if (this.quillEditor) {
       if (currentValue) {
         this.quillEditor.pasteHTML(currentValue);
-      } else {
-        this.quillEditor.setText('');
+        return;
       }
+      this.quillEditor.setText('');
     }
   }
 
