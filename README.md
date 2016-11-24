@@ -1,5 +1,7 @@
 # Ng2quill
 
+<img src="https://cloud.githubusercontent.com/assets/2264672/20601381/a51753d4-b258-11e6-92c2-1d79efa5bede.png" width="200px">
+
 Ng2quill is the angular 2 implementation of ngQuill.
 This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.19-3.
 
