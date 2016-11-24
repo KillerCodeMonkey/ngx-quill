@@ -3,9 +3,9 @@
 This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.19-3.
 
 ## Installation
-- install QuillJS 1.1.5
+- install QuillJS 1.1.5 `npm install ng2-quill`
 - include bubble.css, snow.css in your index.html
-- add QuillModule to your own NgModule
+- add `QuillModule` to your own NgModule: `node_modules/ng2-quill/src/quill/quill.module.ts`
 - use `<quill-editor></quill-editor>` in your templates to add a default quill editor
 
 ## Config
