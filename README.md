@@ -1,6 +1,10 @@
 # Ng2quill
 
+Ng2quill is the angular 2 implementation of ngQuill.
 This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.19-3.
+
+## Examples
+[demo-page](https://killercodemonkey.github.io/ng2-quill/dist/)
 
 ## Installation
 - install QuillJS 1.1.5 `npm install ng2-quill`
