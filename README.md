@@ -1,5 +1,5 @@
 # ng2-quill
-Angular2 directive for rich text editor Quill
+Angular2 component for rich text editor Quill
 
 <img src="https://cloud.githubusercontent.com/assets/2264672/20601381/a51753d4-b258-11e6-92c2-1d79efa5bede.png" width="200px">
 
