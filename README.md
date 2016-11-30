@@ -1,11 +1,18 @@
-# Ng2quill
+# ng2-quill
+Angular2 component for rich text editor Quill
 
+<img src="https://cloud.githubusercontent.com/assets/2264672/20601381/a51753d4-b258-11e6-92c2-1d79efa5bede.png" width="200px">
+
+ng2-quill is the angular 2 implementation of ngQuill.
 This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.19-3.
 
+## Examples
+[demo-page](https://killercodemonkey.github.io/ng2-quill)
+
 ## Installation
-- install QuillJS 1.1.5
+- install QuillJS 1.1.5 `npm install ng2-quill`
 - include bubble.css, snow.css in your index.html
-- add QuillModule to your own NgModule
+- add `QuillModule` to your own NgModule: `node_modules/ng2-quill/src/quill/quill.module.ts`
 - use `<quill-editor></quill-editor>` in your templates to add a default quill editor
 
 ## Config
