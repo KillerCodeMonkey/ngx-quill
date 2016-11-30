@@ -5,7 +5,9 @@ import {
   EventEmitter,
   forwardRef,
   Input,
+  OnChanges,
   Output,
+  SimpleChanges,
   ViewEncapsulation
 } from '@angular/core';
 import {
@@ -28,7 +30,7 @@ var Quill = require('quill/dist/quill');
   }],
   encapsulation: ViewEncapsulation.None
 })
-export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor {
+export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor, OnChanges {
 
   quillEditor: any;
   editorElem: HTMLElement;
@@ -105,6 +107,12 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
       this.onModelChange(html);
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['readOnly'] && this.quillEditor) {
+      this.quillEditor.enable(!changes['readOnly'].currentValue);
+    }
   }
 
   writeValue(currentValue: any) {

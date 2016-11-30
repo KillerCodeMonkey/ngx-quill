@@ -7,4 +7,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'Quill works!';
+  isReadOnly = false;
+
+  toggleReadOnly() {
+    this.isReadOnly = !this.isReadOnly;
+  }
 }
