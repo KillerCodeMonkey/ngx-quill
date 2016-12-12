@@ -15,7 +15,7 @@ import {
   ControlValueAccessor
 } from '@angular/forms';
 
-var Quill = require('quill/dist/quill');
+const Quill = require('quill/dist/quill');
 
 @Component({
   selector: 'quill-editor',
@@ -91,7 +91,15 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
     this.onEditorCreated.emit(this.quillEditor);
 
-    this.quillEditor.on('text-change', () => {
+    // mark model as touched if editor lost focus
+    this.quillEditor.on('selection-change', (range) => {
+      if (!range) {
+        this.onModelTouched();
+      }
+    });
+
+    // update model if text changes
+    this.quillEditor.on('text-change', (delta, oldDelta, source) => {
       let html = this.editorElem.children[0].innerHTML;
       const text = this.quillEditor.getText();
 
@@ -99,13 +107,13 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
           html = null;
       }
 
+      this.onModelChange(html);
+
       this.onContentChanged.emit({
         editor: this.quillEditor,
         html: html,
         text: text
       });
-
-      this.onModelChange(html);
     });
   }
 
