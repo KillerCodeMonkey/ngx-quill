@@ -22,7 +22,7 @@ const Quill = require('quill/dist/quill');
   template: `
 <div></div>
 `,
-  styleUrls: ['quill-editor.component.css'],
+  styleUrls: ['./quill-editor.component.css'],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => QuillEditorComponent),
