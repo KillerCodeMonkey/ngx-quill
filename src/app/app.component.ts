@@ -12,4 +12,8 @@ export class AppComponent {
   toggleReadOnly() {
     this.isReadOnly = !this.isReadOnly;
   }
+
+  logChange($event) {
+    console.log($event);
+  }
 }
