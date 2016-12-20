@@ -42,5 +42,17 @@
     "tslint": "4.0.2",
     "typescript": "~2.0.10",
     "webdriver-manager": "10.2.10"
-  }
+  },
+  "keywords": [
+    "editor",
+    "rich text",
+    "wysiwyg",
+    "angular",
+    "directive",
+    "component",
+    "quill",
+    "quilljs",
+    "angular2",
+    "text editor"
+  ]
 }
