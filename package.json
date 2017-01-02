@@ -1,7 +1,11 @@
 {
-  "name": "ng2-quill",
+  "name": "ngx-quill",
   "version": "0.0.6",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KillerCodeMonkey/ngx-quill"
+  },
   "angular-cli": {},
   "scripts": {
     "start": "ng serve",
@@ -11,37 +15,37 @@
     "e2e": "protractor"
   },
   "dependencies": {
-    "@angular/common": "~2.2.3",
-    "@angular/compiler": "~2.2.3",
-    "@angular/core": "~2.2.3",
-    "@angular/forms": "~2.2.3",
-    "@angular/http": "~2.2.3",
-    "@angular/platform-browser": "~2.2.3",
-    "@angular/platform-browser-dynamic": "~2.2.3",
-    "@angular/router": "~3.1.0",
+    "@angular/common": "^2.3.1",
+    "@angular/compiler": "^2.3.1",
+    "@angular/core": "^2.3.1",
+    "@angular/forms": "^2.3.1",
+    "@angular/http": "^2.3.1",
+    "@angular/platform-browser": "^2.3.1",
+    "@angular/platform-browser-dynamic": "^2.3.1",
+    "@angular/router": "^3.3.1",
     "core-js": "^2.4.1",
-    "rxjs": "5.0.0-rc.4",
+    "rxjs": "5.0.1",
     "ts-helpers": "^1.1.2",
     "zone.js": "^0.7.2",
-    "quill": "^1.1.6"
+    "quill": "^1.1.9"
   },
   "devDependencies": {
-    "@types/jasmine": "^2.5.38",
-    "@types/node": "^6.0.42",
-    "angular-cli": "1.0.0-beta.22-1",
-    "codelyzer": "2.0.0-beta.3",
+    "@types/jasmine": "^2.5.40",
+    "@types/node": "^6.0.55",
+    "angular-cli": "1.0.0-beta.24",
+    "codelyzer": "2.0.0-beta.4",
     "jasmine-core": "2.5.2",
     "jasmine-spec-reporter": "2.7.0",
     "karma": "1.3.0",
     "karma-chrome-launcher": "^2.0.0",
     "karma-cli": "^1.0.1",
     "karma-jasmine": "^1.1.0",
-    "karma-remap-istanbul": "^0.2.1",
-    "protractor": "4.0.13",
-    "ts-node": "1.7.2",
-    "tslint": "4.0.2",
+    "karma-remap-istanbul": "^0.4.0",
+    "protractor": "4.0.14",
+    "ts-node": "2.0.0",
+    "tslint": "4.2.0",
     "typescript": "~2.0.10",
-    "webdriver-manager": "10.2.10"
+    "webdriver-manager": "11.1.0"
   },
   "keywords": [
     "editor",
@@ -52,7 +56,8 @@
     "component",
     "quill",
     "quilljs",
-    "angular2",
+    "angular 2",
+    "angular",
     "text editor"
   ]
 }
