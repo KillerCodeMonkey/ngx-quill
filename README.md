@@ -7,7 +7,7 @@ ngx-quill is the new angular (>=2) implementation of ngQuill.
 This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.24.
 
 ## Examples
-[demo-page](https://killercodemonkey.github.io/ng2-quill)
+[demo-page](https://killercodemonkey.github.io/ngx-quill)
 
 ## Installation
 - install QuillJS 1.1.9 `npm install ngx-quill`
