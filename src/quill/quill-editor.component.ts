@@ -39,6 +39,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
   quillEditor: any;
   editorElem: HTMLElement;
+  emptyArray: any[] = [];
   content: any;
   defaultModules = {
     toolbar: [
@@ -54,9 +55,9 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
       [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
 
-      [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-      [{ 'font': [] }],
-      [{ 'align': [] }],
+      [{ 'color': this.emptyArray.slice() }, { 'background': this.emptyArray.slice() }],          // dropdown with defaults from theme
+      [{ 'font': this.emptyArray.slice() }],
+      [{ 'align': this.emptyArray.slice() }],
 
       ['clean'],                                         // remove formatting button
 
@@ -97,14 +98,14 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     this.onEditorCreated.emit(this.quillEditor);
 
     // mark model as touched if editor lost focus
-    this.quillEditor.on('selection-change', (range) => {
+    this.quillEditor.on('selection-change', (range: any) => {
       if (!range) {
         this.onModelTouched();
       }
     });
 
     // update model if text changes
-    this.quillEditor.on('text-change', (delta, oldDelta, source) => {
+    this.quillEditor.on('text-change', (delta: any, oldDelta: any) => {
       let html = this.editorElem.children[0].innerHTML;
       const text = this.quillEditor.getText();
 

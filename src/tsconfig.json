@@ -1,6 +1,13 @@
 {
   "compilerOptions": {
     "declaration": false,
+    "noImplicitAny": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "noImplicitReturns": true,
+    "skipLibCheck": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": ["es6", "dom"],

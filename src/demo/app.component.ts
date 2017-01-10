@@ -13,7 +13,7 @@ export class AppComponent {
     this.isReadOnly = !this.isReadOnly;
   }
 
-  logChange($event) {
+  logChange($event: any) {
     console.log($event);
   }
 }
