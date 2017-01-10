@@ -22,12 +22,17 @@ const Quill = require('quill/dist/quill');
   template: `
 <div></div>
 `,
-  styleUrls: ['./quill-editor.component.css'],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => QuillEditorComponent),
     multi: true
   }],
+  styles: [`
+    .ql-container .ql-editor {
+      min-height: 200px;
+      padding-bottom: 50px;
+    }
+  `],
   encapsulation: ViewEncapsulation.None
 })
 export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor, OnChanges {
@@ -77,7 +82,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     this.editorElem = this.elementRef.nativeElement.children[0];
 
     this.quillEditor = new Quill(this.editorElem, {
-      modules: this.modules || this.defaultModules,
+      modules: this.modules || this.defaultModules,
       placeholder: this.placeholder || 'Insert text here ...',
       readOnly: this.readOnly || false,
       theme: this.theme || 'snow',
