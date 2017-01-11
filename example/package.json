@@ -5,7 +5,7 @@
   "scripts": {
     "watch": "webpack --watch --progress --profile",
     "start": "webpack-dev-server --progress --port 3000",
-    "build": "webpack"
+    "build": "rimraf ./dist && webpack"
   },
   "dependencies": {
     "@angular/common": "^2.3.1",
@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@types/core-js": "0.9.35",
+    "rimraf": "2.5.4",
     "@types/node": "^7.0.0",
     "angular2-template-loader": "0.6.0",
     "awesome-typescript-loader": "2.2.4",

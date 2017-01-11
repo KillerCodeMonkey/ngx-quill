@@ -37,6 +37,10 @@ module.exports = {
             test: /\.ts$/,
             loader: 'tslint-loader',
             exclude: ['node_modules']
+        }, {
+            test: /\.ts$/,
+            loader: 'awesome-typescript-loader?declaration=false',
+            exclude: [/\.e2e\.ts$/]
         }]
     },
 
