@@ -15,7 +15,7 @@
     "@angular/platform-browser-dynamic": "^2.3.1",
     "@angular/forms": "^2.3.1",
     "core-js": "2.4.1",
-    "ngx-quill": "^0.2.0",
+    "ngx-quill": "^0.2.1",
     "rxjs": "5.0.0-rc.4",
     "zone.js": "0.7.4"
   },

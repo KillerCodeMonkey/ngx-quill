@@ -73688,8 +73688,7 @@ var QuillEditorComponent = (function () {
             placeholder: this.placeholder || 'Insert text here ...',
             readOnly: this.readOnly || false,
             theme: this.theme || 'snow',
-            formats: this.formats,
-            boundary: document.body
+            formats: this.formats
         });
         if (this.content) {
             this.quillEditor.pasteHTML(this.content);
