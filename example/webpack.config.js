@@ -20,18 +20,18 @@ module.exports = {
             test: /\.js$/,
             enforce: 'pre'
         }, {
+            test: /index.html$/,
+            loader: 'string-replace-loader',
+            query: {
+                search: 'BASE_URL',
+                replace: process.env.NODE_ENV == 'deploy' ? '/ngx-quill/' : '/'
+            }
+        }, {
             test: /\.ts$/,
             loader: 'awesome-typescript-loader',
         }, {
             test: /\.html$/,
             loader: 'html-loader'
-        }, {
-            test: /index.html$/,
-            loader: 'string-replace-loader',
-            query: {
-                search: 'BASE_URL',
-                replace: process.env.NODE_ENV == 'deploy' ? '/ngx-quill' : '/'
-            }
         }]
     },
 

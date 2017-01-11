@@ -55488,7 +55488,7 @@ var AppComponent = (function () {
     AppComponent = __decorate([
         core_1.Component({
             selector: 'app-root',
-            templateUrl: 'src/app.component.html',
+            template: "\n<h3>Default editor</h3>\n<quill-editor></quill-editor>\n\n<h3>Bubble editor</h3>\n<quill-editor theme=\"bubble\"></quill-editor>\n\n<h3>Editor without toolbar + required and ngModule</h3>\n<button (click)=\"toggleReadOnly()\">Toggle ReadOnly</button>\n{{isReadOnly}}\n{{title}}\n<quill-editor [(ngModel)]=\"title\" required=\"true\" [readOnly]=\"isReadOnly\" [modules]=\"{toolbar: false}\" (onContentChanged)=\"logChange($event);\"></quill-editor>\n"
         }), 
         __metadata('design:paramtypes', [])
     ], AppComponent);

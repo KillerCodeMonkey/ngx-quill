@@ -2,7 +2,19 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  templateUrl: 'src/app.component.html',
+  template: `
+<h3>Default editor</h3>
+<quill-editor></quill-editor>
+
+<h3>Bubble editor</h3>
+<quill-editor theme="bubble"></quill-editor>
+
+<h3>Editor without toolbar + required and ngModule</h3>
+<button (click)="toggleReadOnly()">Toggle ReadOnly</button>
+{{isReadOnly}}
+{{title}}
+<quill-editor [(ngModel)]="title" required="true" [readOnly]="isReadOnly" [modules]="{toolbar: false}" (onContentChanged)="logChange($event);"></quill-editor>
+`
 })
 export class AppComponent {
   title = 'Quill works!';
