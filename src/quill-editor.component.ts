@@ -10,12 +10,13 @@ import {
   SimpleChanges,
   ViewEncapsulation
 } from '@angular/core';
+
 import {
   NG_VALUE_ACCESSOR,
   ControlValueAccessor
 } from '@angular/forms';
 
-const Quill = require('quill');
+import * as Quill from 'quill';
 
 @Component({
   selector: 'quill-editor',
@@ -87,8 +88,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
       placeholder: this.placeholder || 'Insert text here ...',
       readOnly: this.readOnly || false,
       theme: this.theme || 'snow',
-      formats: this.formats,
-      boundary: document.body
+      formats: this.formats
     });
 
     if (this.content) {
