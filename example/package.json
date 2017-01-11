@@ -1,0 +1,37 @@
+{
+  "name": "exmplate-ngx-quill",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "watch": "webpack --watch --progress --profile",
+    "start": "webpack-dev-server --progress --port 3000",
+    "build": "webpack"
+  },
+  "dependencies": {
+    "@angular/common": "^2.3.1",
+    "@angular/compiler": "^2.3.1",
+    "@angular/core": "^2.3.1",
+    "@angular/platform-browser": "^2.3.1",
+    "@angular/platform-browser-dynamic": "^2.3.1",
+    "@angular/forms": "^2.3.1",
+    "core-js": "2.4.1",
+    "ngx-quill": "^0.1.3",
+    "rxjs": "5.0.0-rc.4",
+    "zone.js": "0.7.4"
+  },
+  "devDependencies": {
+    "@types/core-js": "0.9.35",
+    "@types/node": "^7.0.0",
+    "angular2-template-loader": "0.6.0",
+    "awesome-typescript-loader": "2.2.4",
+    "copy-webpack-plugin": "^4.0.1",
+    "html-loader": "0.4.4",
+    "html-webpack-plugin": "2.26.0",
+    "raw-loader": "0.5.1",
+    "source-map-loader": "0.1.6",
+    "ts-helpers": "1.1.2",
+    "typescript": "2.0.10",
+    "webpack": "2.1.0-beta.27",
+    "webpack-dev-server": "2.1.0-beta.5"
+  }
+}
