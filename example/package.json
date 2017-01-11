@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "watch": "webpack --watch --progress --profile",
     "start": "webpack-dev-server --progress --port 3000",
-    "build": "rimraf ./dist && webpack"
+    "build": "rimraf ./dist && webpack",
+    "build:deploy": "rimraf ./dist && NODE_ENV=deploy webpack"
   },
   "dependencies": {
     "@angular/common": "^2.3.1",
@@ -21,7 +21,6 @@
   },
   "devDependencies": {
     "@types/core-js": "0.9.35",
-    "rimraf": "2.5.4",
     "@types/node": "^7.0.0",
     "angular2-template-loader": "0.6.0",
     "awesome-typescript-loader": "2.2.4",
@@ -29,7 +28,9 @@
     "html-loader": "0.4.4",
     "html-webpack-plugin": "2.26.0",
     "raw-loader": "0.5.1",
+    "rimraf": "2.5.4",
     "source-map-loader": "0.1.6",
+    "string-replace-loader": "^1.0.5",
     "ts-helpers": "1.1.2",
     "typescript": "2.0.10",
     "webpack": "2.1.0-beta.27",

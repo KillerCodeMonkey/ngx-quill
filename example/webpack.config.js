@@ -2,7 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 function root(args) {
     args = Array.prototype.slice.call(arguments, 0);
@@ -25,6 +25,13 @@ module.exports = {
         }, {
             test: /\.html$/,
             loader: 'html-loader'
+        }, {
+            test: /index.html$/,
+            loader: 'string-replace-loader',
+            query: {
+                search: 'BASE_URL',
+                replace: process.env.NODE_ENV == 'deploy' ? '/ngx-quill' : '/'
+            }
         }]
     },
 
