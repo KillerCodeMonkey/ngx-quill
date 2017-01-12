@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "inlineSourceMap": true,
+    "noImplicitAny": true,
+    "emitDecoratorMetadata": true,
+    "noUnusedLocals": true,
+    "declaration": true,
+    "experimentalDecorators": true,
+    "lib": ["es2015", "dom"],
+    "suppressImplicitAnyIndexErrors": true
+  },
+  "files": [
+    "index.ts",
+    "./src/quill-editor.component.ts",
+    "./src/quill.module.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "bundles"
+  ],
+  "angularCompilerOptions": {
+    "strictMetadataEmit": true,
+    "skipTemplateCodegen": true
+  }
+}

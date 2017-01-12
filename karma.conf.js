@@ -1,5 +1,8 @@
 var webpackConfig = require('./webpack.config.test');
 
+var ENV = process.env.npm_lifecycle_event;
+var isTestWatch = ENV === 'test-watch';
+
 module.exports = function (config) {
   var _config = {
     basePath: '',
@@ -11,7 +14,7 @@ module.exports = function (config) {
     ],
 
     preprocessors: {
-      './karma-shim.js': ['webpack']
+      './karma-shim.js': ['webpack', 'sourcemap']
     },
 
     webpack: webpackConfig,
@@ -32,6 +35,23 @@ module.exports = function (config) {
     browsers: ['PhantomJS'],
     singleRun: true
   };
+
+if (!isTestWatch) {
+  _config.reporters.push('coverage');
+
+  _config.coverageReporter = {
+    dir: 'coverage/',
+    reporters: [{
+      type: 'json',
+      dir: 'coverage',
+      subdir: 'json',
+      file: 'coverage-final.json'
+    }, 
+    {
+        type: 'text-summary'
+    }]
+  };
+}
 
   config.set(_config);
 };
