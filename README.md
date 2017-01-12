@@ -11,8 +11,51 @@ ngx-quill is the new angular (>=2) implementation of ngQuill.
 ## Installation
 - install QuillJS 1.1.9 `npm install ngx-quill`
 - include bubble.css, snow.css in your index.html
-- add `QuillModule` to your own NgModule: `ngx-quill`
+
+### For standard webpack and tsc builds
+- import `QuillModule` from `ngx-quill`:
+```
+import { QuillModule } from 'ngx-quill'
+```
+- add `QuillModule` to the imports of your NgModule:
+```
+@NgModule({
+  imports: [
+    ...,
+
+    QuillModule
+  ],
+  ...
+})
+class YourModule { ... }
+```
 - use `<quill-editor></quill-editor>` in your templates to add a default quill editor
+- do not forget to include quill + theme css in your buildproess, module or index.html!
+
+### For SystemJS builds (Config)
+- add quill and ngx-quill to your `paths`:
+```
+paths: {
+  ...
+  'ngx-quill': 'node_modules/ngx-quill/bundles/ngx-quill.umd.js',
+  'quill': 'node_modules/quill/dist/quill.js'
+}
+```
+- set format and dependencies in `packages`:
+```
+packages: {
+  'ngx-quill': {
+    format: 'cjs',
+    meta: {
+      deps: ['quill']
+    }
+  },
+  'quill': {
+    format: 'cjs'
+  }
+}
+```
+- follow the steps of **For standard webpack and tsc builds**
 
 ## Config
 - ngModel - set initial value or allow two-way databinding
