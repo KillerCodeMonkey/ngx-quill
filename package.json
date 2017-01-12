@@ -13,10 +13,13 @@
     "url": "https://github.com/KillerCodeMonkey/ngx-quill"
   },
   "scripts": {
-    "commit": "npm run prepublish && git-cz",
+    "lint": "tslint --force \"src/**/*.ts\"",
     "prepublish": "ngc && npm run build",
-    "build": "webpack && cp bundles/ngx-quill.umd.js bundles/index.js",
-    "deploy": "gh-pages -d example/dist"
+    "build": "webpack --display-error-details && cp bundles/ngx-quill.umd.js bundles/index.js",
+    "deploy": "gh-pages -d example/dist",
+    "pretest": "npm run lint",
+    "test": "karma start",
+    "test-watch": "karma start --no-single-run --auto-watch"
   },
   "keywords": [
     "editor",
@@ -51,8 +54,6 @@
     "@angular/platform-browser": "^2.3.1",
     "@angular/platform-browser-dynamic": "^2.3.1",
     "@angular/platform-server": "^2.3.1",
-    "@types/node": "^7.0.0",
-    "awesome-typescript-loader": "^3.0.0-beta.18",
     "codelyzer": "^2.0.0-beta.4",
     "commitizen": "^2.9.5",
     "core-js": "^2.4.1",
@@ -64,14 +65,20 @@
     "ts-helpers": "^1.1.2",
     "tslint": "^4.3.1",
     "tslint-loader": "^3.3.0",
-    "typescript": "^2.0.10",
-    "webpack": "^2.1.0-beta.27",
+    "typescript": "~2.0.10",
+    "webpack": "^1.13.0",
+    "webpack-dev-server": "^1.14.1",
+    "@types/node": "^6.0.45",
+    "@types/jasmine": "^2.5.35",
+    "awesome-typescript-loader": "^2.2.4",
+    "jasmine-core": "^2.4.1",
+    "karma": "^1.2.0",
+    "karma-jasmine": "^1.0.2",
+    "karma-phantomjs-launcher": "^1.0.2",
+    "karma-mocha-reporter": "^2.2.1",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^1.8.0",
     "webpack-node-externals": "^1.5.4"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
   },
   "contributors": [
     {

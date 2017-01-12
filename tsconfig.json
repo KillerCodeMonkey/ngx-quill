@@ -1,17 +1,16 @@
 {
   "compilerOptions": {
-    "noImplicitAny": true,
-    "module": "es2015",
     "target": "es5",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "declaration": true,
+    "module": "commonjs",
     "moduleResolution": "node",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "emitDecoratorMetadata": true,
     "noUnusedLocals": true,
-    "types": [
-      "node"
-    ],
-    "lib": ["es2015", "dom"]
+    "declaration": true,
+    "experimentalDecorators": true,
+    "lib": ["es2015", "dom"],
+    "suppressImplicitAnyIndexErrors": true
   },
   "files": [
     "index.ts",
