@@ -76897,11 +76897,12 @@ module.exports = Array.isArray || function (arr) {
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_quill_module__ = __webpack_require__(432);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_quill_module___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__src_quill_module__);
-/* harmony namespace reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in __WEBPACK_IMPORTED_MODULE_0__src_quill_module__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(exports, key, function() { return __WEBPACK_IMPORTED_MODULE_0__src_quill_module__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-
-
+"use strict";
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+__export(__webpack_require__(432));
+//# sourceMappingURL=index.js.map
 
 /***/ },
 /* 588 */
