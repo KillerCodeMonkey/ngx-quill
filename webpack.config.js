@@ -6,6 +6,8 @@ module.exports = {
 
   output: {
     path: './bundles',
+    libraryTarget: 'umd',
+    library: 'ngx-quill',
     filename: 'ngx-quill.umd.js'
   },
 

@@ -1,4 +1,14 @@
-/******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory(require("@angular/core"), require("@angular/forms"), require("quill"));
+	else if(typeof define === 'function' && define.amd)
+		define(["@angular/core", "@angular/forms", "quill"], factory);
+	else if(typeof exports === 'object')
+		exports["ngx-quill"] = factory(require("@angular/core"), require("@angular/forms"), require("quill"));
+	else
+		root["ngx-quill"] = factory(root["@angular/core"], root["@angular/forms"], root["quill"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_5__) {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 
@@ -253,4 +263,6 @@
 	module.exports = require("quill");
 
 /***/ }
-/******/ ]);
+/******/ ])
+});
+;
