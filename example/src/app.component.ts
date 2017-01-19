@@ -13,7 +13,7 @@ import { Component } from '@angular/core';
 <button (click)="toggleReadOnly()">Toggle ReadOnly</button>
 {{isReadOnly}}
 {{title}}
-<quill-editor [(ngModel)]="title" required="true" [readOnly]="isReadOnly" [modules]="{toolbar: false}" (onContentChanged)="logChange($event);"></quill-editor>
+<quill-editor [(ngModel)]="title" [maxLength]="5" [minLength]="3" required="true" [readOnly]="isReadOnly" [modules]="{toolbar: false}" (onContentChanged)="logChange($event);"></quill-editor>
 `
 })
 export class AppComponent {

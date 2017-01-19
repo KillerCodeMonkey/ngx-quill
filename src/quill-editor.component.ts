@@ -21,38 +21,6 @@ import {
 
 import * as Quill from 'quill';
 
-// function createMinMaxValidator(minLength: number, maxLength: number, quillEditor: any) {
-//   return function validateMinMax(c: FormControl) {
-//     let err: {
-//           minLengthError?: {given: number, minLength: number};
-//           maxLengthError?: {given: number, maxLength: number};
-//         } = {},
-//         valid = true;
-
-//     const textLength = quillEditor.getText().trim().length;
-
-//     if (minLength) {
-//       err.minLengthError = {
-//         given: textLength,
-//         minLength: minLength
-//       };
-
-//       valid = textLength >= minLength;
-//     }
-
-//     if (maxLength) {
-//       err.maxLengthError = {
-//         given: textLength,
-//         maxLength: maxLength
-//       };
-
-//       valid = textLength < maxLength;
-//     }
-
-//     return valid ? null : err;
-//   };
-// }
-
 @Component({
   selector: 'quill-editor',
   template: `
@@ -80,7 +48,6 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   quillEditor: any;
   editorElem: HTMLElement;
   emptyArray: any[] = [];
-  // validateFn: Function = ():any => null;
   content: any;
   defaultModules = {
     toolbar: [
@@ -183,8 +150,6 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
       if (changes['maxLength']) {
         max = changes['maxLength'].currentValue;
       }
-
-      //this.validateFn = createMinMaxValidator(min, max, this.quillEditor);
     }
   }
 
@@ -236,7 +201,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
         maxLength: this.maxLength
       };
 
-      valid = textLength < this.maxLength;
+      valid = textLength <= this.maxLength;
     }
 
     return valid ? null : err;
