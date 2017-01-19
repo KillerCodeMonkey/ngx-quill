@@ -161,4 +161,23 @@ describe('Advanced QuillEditorComponent', () => {
             expect(this.fixture.debugElement.children[0].nativeElement.className).toMatch('ng-invalid');
         });
     }));
+
+    it('should validate maxlength and minlength', async(() => {
+        const editorComponent = this.fixture.debugElement.children[0].componentInstance;
+
+        this.fixture.detectChanges();
+
+        editorComponent.quillEditor.setText('Blume');
+        this.fixture.detectChanges();
+
+        expect(this.fixture.debugElement.children[0].nativeElement.className).toMatch('ng-valid');
+
+        this.fixture.componentInstance.minLength = 3;
+        this.fixture.componentInstance.maxLength = 5;
+        this.fixture.detectChanges();
+
+        this.fixture.whenStable(() => {
+            expect(this.fixture.debugElement.children[0].nativeElement.className).toMatch('ng-invalid');
+        });
+    }));
 });

@@ -100,8 +100,6 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
       formats: this.formats
     });
 
-    //this.validateFn = createMinMaxValidator(this.minLength, this.maxLength, this.quillEditor);
-
     if (this.content) {
       this.quillEditor.pasteHTML(this.content);
     }
@@ -201,7 +199,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
         maxLength: this.maxLength
       };
 
-      valid = textLength <= this.maxLength;
+      valid = textLength <= this.maxLength && valid;
     }
 
     return valid ? null : err;
