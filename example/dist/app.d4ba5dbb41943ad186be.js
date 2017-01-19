@@ -55488,7 +55488,7 @@ var AppComponent = (function () {
     AppComponent = __decorate([
         core_1.Component({
             selector: 'app-root',
-            template: "\n<h3>Default editor</h3>\n<quill-editor></quill-editor>\n\n<h3>Bubble editor</h3>\n<quill-editor theme=\"bubble\"></quill-editor>\n\n<h3>Editor without toolbar + required and ngModule</h3>\n<button (click)=\"toggleReadOnly()\">Toggle ReadOnly</button>\n{{isReadOnly}}\n{{title}}\n<quill-editor [(ngModel)]=\"title\" required=\"true\" [readOnly]=\"isReadOnly\" [modules]=\"{toolbar: false}\" (onContentChanged)=\"logChange($event);\"></quill-editor>\n"
+            template: "\n<h3>Default editor</h3>\n<quill-editor></quill-editor>\n\n<h3>Bubble editor</h3>\n<quill-editor theme=\"bubble\"></quill-editor>\n\n<h3>Editor without toolbar + required and ngModule</h3>\n<button (click)=\"toggleReadOnly()\">Toggle ReadOnly</button>\n{{isReadOnly}}\n{{title}}\n<quill-editor [(ngModel)]=\"title\" [maxLength]=\"5\" [minLength]=\"3\" required=\"true\" [readOnly]=\"isReadOnly\" [modules]=\"{toolbar: false}\" (onContentChanged)=\"logChange($event);\"></quill-editor>\n"
         }), 
         __metadata('design:paramtypes', [])
     ], AppComponent);
@@ -73714,8 +73714,18 @@ var QuillEditorComponent = (function () {
         });
     };
     QuillEditorComponent.prototype.ngOnChanges = function (changes) {
+        var min;
+        var max;
         if (changes['readOnly'] && this.quillEditor) {
             this.quillEditor.enable(!changes['readOnly'].currentValue);
+        }
+        if (this.quillEditor) {
+            if (changes['minLength']) {
+                min = changes['minLength'].currentValue;
+            }
+            if (changes['maxLength']) {
+                max = changes['maxLength'].currentValue;
+            }
         }
     };
     QuillEditorComponent.prototype.writeValue = function (currentValue) {
@@ -73733,6 +73743,28 @@ var QuillEditorComponent = (function () {
     };
     QuillEditorComponent.prototype.registerOnTouched = function (fn) {
         this.onModelTouched = fn;
+    };
+    QuillEditorComponent.prototype.validate = function (c) {
+        if (!this.quillEditor) {
+            return null;
+        }
+        var err = {}, valid = true;
+        var textLength = this.quillEditor.getText().trim().length;
+        if (this.minLength) {
+            err.minLengthError = {
+                given: textLength,
+                minLength: this.minLength
+            };
+            valid = textLength >= this.minLength;
+        }
+        if (this.maxLength) {
+            err.maxLengthError = {
+                given: textLength,
+                maxLength: this.maxLength
+            };
+            valid = textLength < this.maxLength && valid;
+        }
+        return valid ? null : err;
     };
     __decorate([
         core_1.Input(), 
@@ -73752,6 +73784,14 @@ var QuillEditorComponent = (function () {
     ], QuillEditorComponent.prototype, "placeholder", void 0);
     __decorate([
         core_1.Input(), 
+        __metadata('design:type', Number)
+    ], QuillEditorComponent.prototype, "maxLength", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Number)
+    ], QuillEditorComponent.prototype, "minLength", void 0);
+    __decorate([
+        core_1.Input(), 
         __metadata('design:type', Array)
     ], QuillEditorComponent.prototype, "formats", void 0);
     __decorate([
@@ -73768,6 +73808,10 @@ var QuillEditorComponent = (function () {
             template: "\n<div></div>\n",
             providers: [{
                     provide: forms_1.NG_VALUE_ACCESSOR,
+                    useExisting: core_1.forwardRef(function () { return QuillEditorComponent; }),
+                    multi: true
+                }, {
+                    provide: forms_1.NG_VALIDATORS,
                     useExisting: core_1.forwardRef(function () { return QuillEditorComponent; }),
                     multi: true
                 }],
@@ -77095,7 +77139,7 @@ process.umask = function() { return 0; };
 /***/ function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/*!
- * Quill Editor v1.1.9
+ * Quill Editor v1.1.10
  * https://quilljs.com/
  * Copyright (c) 2014, Jason Chen
  * Copyright (c) 2013, salesforce.com
@@ -79219,7 +79263,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        this.selection.setRange(new _selection.Range(index, length), source);
 	      }
-	      this.selection.scrollIntoView();
+	      if (source !== _emitter4.default.sources.SILENT) {
+	        this.selection.scrollIntoView();
+	      }
 	    }
 	  }, {
 	    key: 'setText',
@@ -79268,7 +79314,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Quill.events = _emitter4.default.events;
 	Quill.sources = _emitter4.default.sources;
 	// eslint-disable-next-line no-undef
-	Quill.version =  false ? 'dev' : ("1.1.9");
+	Quill.version =  false ? 'dev' : ("1.1.10");
 
 	Quill.imports = {
 	  'delta': _quillDelta2.default,
@@ -79343,7 +79389,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var range = index == null ? null : this.getSelection();
 	  var oldDelta = this.editor.delta;
 	  var change = modifier();
-	  if (range != null && source === _emitter4.default.sources.USER) {
+	  if (range != null) {
 	    if (index === true) index = range.index;
 	    if (shift == null) {
 	      range = shiftRange(range, change, source);
@@ -81040,6 +81086,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.scroll.update();
 	      Object.keys(formats).forEach(function (format) {
+	        if (_this2.scroll.whitelist != null && !_this2.scroll.whitelist[format]) return;
 	        var lines = _this2.scroll.lines(index, Math.max(length, 1));
 	        var lengthRemaining = length;
 	        lines.forEach(function (line) {
@@ -83169,9 +83216,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (selection == null) return;
 	      if (startNode != null) {
 	        if (!this.hasFocus()) this.root.focus();
-	        var native = (this.getNativeRange() || {}).native;
-	        if (native == null || force || startNode !== native.startContainer || startOffset !== native.startOffset || endNode !== native.endContainer || endOffset !== native.endOffset) {
-	          var range = document.createRange();
+
+	        var range = this.getNativeRange();
+	        var native = (range || {}).native;
+	        if (range == null || force || startNode !== native.startContainer || startOffset !== native.startOffset || endNode !== native.endContainer || endOffset !== native.endOffset || range.start.node.tagName === 'BR' && startNode !== range.start.node || range.end.node.tagName === 'BR' && endNode !== range.end.node) {
+
+	          range = document.createRange();
 	          range.setStart(startNode, startOffset);
 	          range.setEnd(endNode, endOffset);
 	          selection.removeAllRanges();
@@ -83232,16 +83282,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function update() {
 	      var source = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _emitter4.default.sources.USER;
 
-	      var nativeRange = void 0,
-	          oldRange = this.lastRange;
+	      var oldRange = this.lastRange;
 
-	      var _getRange = this.getRange();
+	      var _getRange = this.getRange(),
+	          _getRange2 = _slicedToArray(_getRange, 2),
+	          lastRange = _getRange2[0],
+	          nativeRange = _getRange2[1];
 
-	      var _getRange2 = _slicedToArray(_getRange, 2);
-
-	      this.lastRange = _getRange2[0];
-	      nativeRange = _getRange2[1];
-
+	      this.lastRange = lastRange;
 	      if (this.lastRange != null) {
 	        this.savedRange = this.lastRange;
 	      }
@@ -84455,7 +84503,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	    _this.addBinding({ key: Keyboard.keys.ENTER, shiftKey: null }, handleEnter);
 	    _this.addBinding({ key: Keyboard.keys.ENTER, metaKey: null, ctrlKey: null, altKey: null }, function () {});
-	    if (/Gecko/i.test(navigator.userAgent)) {
+	    if (/Firefox/i.test(navigator.userAgent)) {
 	      // Need to handle delete and backspace for Firefox in the general case #1171
 	      _this.addBinding({ key: Keyboard.keys.BACKSPACE }, { collapsed: true }, handleBackspace);
 	      _this.addBinding({ key: Keyboard.keys.DELETE }, { collapsed: true }, handleDelete);
@@ -84705,16 +84753,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var prevFormats = this.quill.getFormat(range.index - 1, 1);
 	    formats = _op2.default.attributes.diff(curFormats, prevFormats) || {};
 	  }
-	  this.quill.deleteText(range.index - 1, 1, _quill2.default.sources.USER);
+	  // Check for astral symbols
+	  var length = /[\uD800-\uDBFF][\uDC00-\uDFFF]$/.test(context.prefix) ? 2 : 1;
+	  this.quill.deleteText(range.index - length, length, _quill2.default.sources.USER);
 	  if (Object.keys(formats).length > 0) {
-	    this.quill.formatLine(range.index - 1, 1, formats, _quill2.default.sources.USER);
+	    this.quill.formatLine(range.index - length, length, formats, _quill2.default.sources.USER);
 	  }
 	  this.quill.selection.scrollIntoView();
 	}
 
-	function handleDelete(range) {
-	  if (range.index >= this.quill.getLength() - 1) return;
-	  this.quill.deleteText(range.index, 1, _quill2.default.sources.USER);
+	function handleDelete(range, context) {
+	  // Check for astral symbols
+	  var length = /^[\uD800-\uDBFF][\uDC00-\uDFFF]/.test(context.suffix) ? 2 : 1;
+	  if (range.index >= this.quill.getLength() - length) return;
+	  this.quill.deleteText(range.index, length, _quill2.default.sources.USER);
 	}
 
 	function handleDeleteRange(range) {
@@ -85250,10 +85302,46 @@ return /******/ (function(modules) { // webpackBootstrap
 	var List = function (_Container) {
 	  _inherits(List, _Container);
 
-	  function List() {
+	  _createClass(List, null, [{
+	    key: 'create',
+	    value: function create(value) {
+	      var tagName = value === 'ordered' ? 'OL' : 'UL';
+	      var node = _get(List.__proto__ || Object.getPrototypeOf(List), 'create', this).call(this, tagName);
+	      if (value === 'checked' || value === 'unchecked') {
+	        node.setAttribute('data-checked', value === 'checked');
+	      }
+	      return node;
+	    }
+	  }, {
+	    key: 'formats',
+	    value: function formats(domNode) {
+	      if (domNode.tagName === 'OL') return 'ordered';
+	      if (domNode.tagName === 'UL') {
+	        if (domNode.hasAttribute('data-checked')) {
+	          return domNode.getAttribute('data-checked') === 'true' ? 'checked' : 'unchecked';
+	        } else {
+	          return 'bullet';
+	        }
+	      }
+	      return undefined;
+	    }
+	  }]);
+
+	  function List(domNode) {
 	    _classCallCheck(this, List);
 
-	    return _possibleConstructorReturn(this, (List.__proto__ || Object.getPrototypeOf(List)).apply(this, arguments));
+	    var _this2 = _possibleConstructorReturn(this, (List.__proto__ || Object.getPrototypeOf(List)).call(this, domNode));
+
+	    domNode.addEventListener('click', function (e) {
+	      var format = _this2.statics.formats(domNode);
+	      if (e.target.parentNode !== domNode) return;
+	      if (format === 'checked') {
+	        _this2.format('list', 'unchecked');
+	      } else if (format === 'unchecked') {
+	        _this2.format('list', 'checked');
+	      }
+	    });
+	    return _this2;
 	  }
 
 	  _createClass(List, [{
@@ -85299,29 +85387,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.appendChild(item);
 	      }
 	      _get(List.prototype.__proto__ || Object.getPrototypeOf(List.prototype), 'replace', this).call(this, target);
-	    }
-	  }], [{
-	    key: 'create',
-	    value: function create(value) {
-	      var tagName = value === 'ordered' ? 'OL' : 'UL';
-	      var node = _get(List.__proto__ || Object.getPrototypeOf(List), 'create', this).call(this, tagName);
-	      if (value === 'checked' || value === 'unchecked') {
-	        node.setAttribute('data-checked', value === 'checked');
-	      }
-	      return node;
-	    }
-	  }, {
-	    key: 'formats',
-	    value: function formats(domNode) {
-	      if (domNode.tagName === 'OL') return 'ordered';
-	      if (domNode.tagName === 'UL') {
-	        if (domNode.hasAttribute('data-checked')) {
-	          return domNode.getAttribute('data-checked') === 'true' ? 'checked' : 'unchecked';
-	        } else {
-	          return 'bullet';
-	        }
-	      }
-	      return undefined;
 	    }
 	  }]);
 
@@ -86356,12 +86421,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	      this.quill.format('direction', value, _quill2.default.sources.USER);
 	    },
-	    link: function link(value) {
-	      if (value === true) {
-	        value = prompt('Enter link URL:');
-	      }
-	      this.quill.format('link', value, _quill2.default.sources.USER);
-	    },
 	    indent: function indent(value) {
 	      var range = this.quill.getSelection();
 	      var formats = this.quill.getFormat(range);
@@ -86370,6 +86429,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var modifier = value === '+1' ? 1 : -1;
 	        if (formats.direction === 'rtl') modifier *= -1;
 	        this.quill.format('indent', indent + modifier, _quill2.default.sources.USER);
+	      }
+	    },
+	    link: function link(value) {
+	      if (value === true) {
+	        value = prompt('Enter link URL:');
+	      }
+	      this.quill.format('link', value, _quill2.default.sources.USER);
+	    },
+	    list: function list(value) {
+	      var range = this.quill.getSelection();
+	      var formats = this.quill.getFormat(range);
+	      if (value === 'check') {
+	        if (formats['list'] === 'checked' || formats['list'] === 'unchecked') {
+	          this.quill.format('list', false, _quill2.default.sources.USER);
+	        } else {
+	          this.quill.format('list', 'unchecked', _quill2.default.sources.USER);
+	        }
+	      } else {
+	        this.quill.format('list', value, _quill2.default.sources.USER);
 	      }
 	    }
 	  }
@@ -86423,7 +86501,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  'list': {
 	    'ordered': __webpack_require__(94),
 	    'bullet': __webpack_require__(95),
-	    'unchecked': __webpack_require__(96)
+	    'check': __webpack_require__(96)
 	  },
 	  'script': {
 	    'sub': __webpack_require__(97),
