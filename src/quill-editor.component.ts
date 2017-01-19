@@ -210,7 +210,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
   validate(c: FormControl) {
     if (!this.quillEditor) {
-      return;
+      return null;
     }
 
     let err: {

@@ -119,6 +119,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	var core_1 = __webpack_require__(2);
 	var forms_1 = __webpack_require__(4);
 	var Quill = __webpack_require__(5);
+	// function createMinMaxValidator(minLength: number, maxLength: number, quillEditor: any) {
+	//   return function validateMinMax(c: FormControl) {
+	//     let err: {
+	//           minLengthError?: {given: number, minLength: number};
+	//           maxLengthError?: {given: number, maxLength: number};
+	//         } = {},
+	//         valid = true;
+	//     const textLength = quillEditor.getText().trim().length;
+	//     if (minLength) {
+	//       err.minLengthError = {
+	//         given: textLength,
+	//         minLength: minLength
+	//       };
+	//       valid = textLength >= minLength;
+	//     }
+	//     if (maxLength) {
+	//       err.maxLengthError = {
+	//         given: textLength,
+	//         maxLength: maxLength
+	//       };
+	//       valid = textLength < maxLength;
+	//     }
+	//     return valid ? null : err;
+	//   };
+	// }
 	var QuillEditorComponent = (function () {
 	    function QuillEditorComponent(elementRef) {
 	        this.elementRef = elementRef;
@@ -156,6 +181,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            theme: this.theme || 'snow',
 	            formats: this.formats
 	        });
+	        //this.validateFn = createMinMaxValidator(this.minLength, this.maxLength, this.quillEditor);
 	        if (this.content) {
 	            this.quillEditor.pasteHTML(this.content);
 	        }
@@ -182,8 +208,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	    };
 	    QuillEditorComponent.prototype.ngOnChanges = function (changes) {
+	        var min;
+	        var max;
 	        if (changes['readOnly'] && this.quillEditor) {
 	            this.quillEditor.enable(!changes['readOnly'].currentValue);
+	        }
+	        if (this.quillEditor) {
+	            if (changes['minLength']) {
+	                min = changes['minLength'].currentValue;
+	            }
+	            if (changes['maxLength']) {
+	                max = changes['maxLength'].currentValue;
+	            }
 	        }
 	    };
 	    QuillEditorComponent.prototype.writeValue = function (currentValue) {
@@ -201,6 +237,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    QuillEditorComponent.prototype.registerOnTouched = function (fn) {
 	        this.onModelTouched = fn;
+	    };
+	    QuillEditorComponent.prototype.validate = function (c) {
+	        if (!this.quillEditor) {
+	            return;
+	        }
+	        var err = {}, valid = true;
+	        var textLength = this.quillEditor.getText().trim().length;
+	        if (this.minLength) {
+	            err.minLengthError = {
+	                given: textLength,
+	                minLength: this.minLength
+	            };
+	            valid = textLength >= this.minLength;
+	        }
+	        if (this.maxLength) {
+	            err.maxLengthError = {
+	                given: textLength,
+	                maxLength: this.maxLength
+	            };
+	            valid = textLength < this.maxLength;
+	        }
+	        return valid ? null : err;
 	    };
 	    __decorate([
 	        core_1.Input(), 
@@ -220,6 +278,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    ], QuillEditorComponent.prototype, "placeholder", void 0);
 	    __decorate([
 	        core_1.Input(), 
+	        __metadata('design:type', Number)
+	    ], QuillEditorComponent.prototype, "maxLength", void 0);
+	    __decorate([
+	        core_1.Input(), 
+	        __metadata('design:type', Number)
+	    ], QuillEditorComponent.prototype, "minLength", void 0);
+	    __decorate([
+	        core_1.Input(), 
 	        __metadata('design:type', Array)
 	    ], QuillEditorComponent.prototype, "formats", void 0);
 	    __decorate([
@@ -236,6 +302,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            template: "\n<div></div>\n",
 	            providers: [{
 	                    provide: forms_1.NG_VALUE_ACCESSOR,
+	                    useExisting: core_1.forwardRef(function () { return QuillEditorComponent; }),
+	                    multi: true
+	                }, {
+	                    provide: forms_1.NG_VALIDATORS,
 	                    useExisting: core_1.forwardRef(function () { return QuillEditorComponent; }),
 	                    multi: true
 	                }],

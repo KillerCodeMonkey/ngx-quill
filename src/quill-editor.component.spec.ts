@@ -139,13 +139,16 @@ describe('Advanced QuillEditorComponent', () => {
         this.fixture.detectChanges();
         
         // should be invalid
-        expect(this.fixture.debugElement.children[0].nativeElement.className).toMatch('ng-invalid');
+        this.fixture.whenStable(() => {
+            expect(this.fixture.debugElement.children[0].nativeElement.className).toMatch('ng-invalid');
+        });
     }));
 
     it('should validate maxlength', async(() => {
         const editorComponent = this.fixture.debugElement.children[0].componentInstance;
 
         this.fixture.detectChanges();
+
         editorComponent.quillEditor.setText('Blume');
         this.fixture.detectChanges();
 
@@ -153,7 +156,9 @@ describe('Advanced QuillEditorComponent', () => {
 
         this.fixture.componentInstance.maxLength = 3;
         this.fixture.detectChanges();
-        
-        expect(this.fixture.debugElement.children[0].nativeElement.className).toMatch('ng-invalid');
+
+        this.fixture.whenStable(() => {
+            expect(this.fixture.debugElement.children[0].nativeElement.className).toMatch('ng-invalid');
+        });
     }));
 });
