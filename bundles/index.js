@@ -240,7 +240,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    QuillEditorComponent.prototype.validate = function (c) {
 	        if (!this.quillEditor) {
-	            return;
+	            return null;
 	        }
 	        var err = {}, valid = true;
 	        var textLength = this.quillEditor.getText().trim().length;
