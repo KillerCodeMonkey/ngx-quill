@@ -119,31 +119,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var core_1 = __webpack_require__(2);
 	var forms_1 = __webpack_require__(4);
 	var Quill = __webpack_require__(5);
-	// function createMinMaxValidator(minLength: number, maxLength: number, quillEditor: any) {
-	//   return function validateMinMax(c: FormControl) {
-	//     let err: {
-	//           minLengthError?: {given: number, minLength: number};
-	//           maxLengthError?: {given: number, maxLength: number};
-	//         } = {},
-	//         valid = true;
-	//     const textLength = quillEditor.getText().trim().length;
-	//     if (minLength) {
-	//       err.minLengthError = {
-	//         given: textLength,
-	//         minLength: minLength
-	//       };
-	//       valid = textLength >= minLength;
-	//     }
-	//     if (maxLength) {
-	//       err.maxLengthError = {
-	//         given: textLength,
-	//         maxLength: maxLength
-	//       };
-	//       valid = textLength < maxLength;
-	//     }
-	//     return valid ? null : err;
-	//   };
-	// }
 	var QuillEditorComponent = (function () {
 	    function QuillEditorComponent(elementRef) {
 	        this.elementRef = elementRef;
@@ -181,7 +156,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            theme: this.theme || 'snow',
 	            formats: this.formats
 	        });
-	        //this.validateFn = createMinMaxValidator(this.minLength, this.maxLength, this.quillEditor);
 	        if (this.content) {
 	            this.quillEditor.pasteHTML(this.content);
 	        }
@@ -256,7 +230,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                given: textLength,
 	                maxLength: this.maxLength
 	            };
-	            valid = textLength < this.maxLength;
+	            valid = textLength <= this.maxLength && valid;
 	        }
 	        return valid ? null : err;
 	    };
