@@ -13,10 +13,45 @@ import {
 
 import {
   NG_VALUE_ACCESSOR,
-  ControlValueAccessor
+  NG_VALIDATORS,
+  ControlValueAccessor,
+  FormControl,
+  Validator
 } from '@angular/forms';
 
 import * as Quill from 'quill';
+
+// function createMinMaxValidator(minLength: number, maxLength: number, quillEditor: any) {
+//   return function validateMinMax(c: FormControl) {
+//     let err: {
+//           minLengthError?: {given: number, minLength: number};
+//           maxLengthError?: {given: number, maxLength: number};
+//         } = {},
+//         valid = true;
+
+//     const textLength = quillEditor.getText().trim().length;
+
+//     if (minLength) {
+//       err.minLengthError = {
+//         given: textLength,
+//         minLength: minLength
+//       };
+
+//       valid = textLength >= minLength;
+//     }
+
+//     if (maxLength) {
+//       err.maxLengthError = {
+//         given: textLength,
+//         maxLength: maxLength
+//       };
+
+//       valid = textLength < maxLength;
+//     }
+
+//     return valid ? null : err;
+//   };
+// }
 
 @Component({
   selector: 'quill-editor',
@@ -25,6 +60,10 @@ import * as Quill from 'quill';
 `,
   providers: [{
     provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => QuillEditorComponent),
+    multi: true
+  }, { 
+    provide: NG_VALIDATORS,
     useExisting: forwardRef(() => QuillEditorComponent),
     multi: true
   }],
@@ -36,11 +75,12 @@ import * as Quill from 'quill';
   `],
   encapsulation: ViewEncapsulation.None
 })
-export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor, OnChanges {
+export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor, OnChanges, Validator {
 
   quillEditor: any;
   editorElem: HTMLElement;
   emptyArray: any[] = [];
+  // validateFn: Function = ():any => null;
   content: any;
   defaultModules = {
     toolbar: [
@@ -70,6 +110,8 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   @Input() modules: Object;
   @Input() readOnly: boolean;
   @Input() placeholder: string;
+  @Input() maxLength: number;
+  @Input() minLength: number;
   @Input() formats: string[];
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter();
@@ -90,6 +132,8 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
       theme: this.theme || 'snow',
       formats: this.formats
     });
+
+    //this.validateFn = createMinMaxValidator(this.minLength, this.maxLength, this.quillEditor);
 
     if (this.content) {
       this.quillEditor.pasteHTML(this.content);
@@ -124,8 +168,23 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    let min: number;
+    let max: number;
+
     if (changes['readOnly'] && this.quillEditor) {
       this.quillEditor.enable(!changes['readOnly'].currentValue);
+    }
+
+    if (this.quillEditor) {
+      if (changes['minLength']) {
+        min = changes['minLength'].currentValue;
+      }
+
+      if (changes['maxLength']) {
+        max = changes['maxLength'].currentValue;
+      }
+
+      //this.validateFn = createMinMaxValidator(min, max, this.quillEditor);
     }
   }
 
@@ -147,5 +206,39 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
   registerOnTouched(fn: Function): void {
     this.onModelTouched = fn;
+  }
+
+  validate(c: FormControl) {
+    if (!this.quillEditor) {
+      return;
+    }
+
+    let err: {
+      minLengthError?: {given: number, minLength: number};
+      maxLengthError?: {given: number, maxLength: number};
+    } = {},
+    valid = true;
+
+    const textLength = this.quillEditor.getText().trim().length;
+
+    if (this.minLength) {
+      err.minLengthError = {
+        given: textLength,
+        minLength: this.minLength
+      };
+
+      valid = textLength >= this.minLength;
+    }
+
+    if (this.maxLength) {
+      err.maxLengthError = {
+        given: textLength,
+        maxLength: this.maxLength
+      };
+
+      valid = textLength < this.maxLength;
+    }
+
+    return valid ? null : err;
   }
 }

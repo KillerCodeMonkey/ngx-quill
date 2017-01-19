@@ -42,6 +42,10 @@ if (!isTestWatch) {
   _config.coverageReporter = {
     dir: 'coverage/',
     reporters: [{
+      type: 'html',
+      dir: 'coverage',
+      subdir: 'html',
+    }, {
       type: 'json',
       dir: 'coverage',
       subdir: 'json',

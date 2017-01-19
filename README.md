@@ -90,6 +90,8 @@ packages: {
 ```
 - theme - bubble/snow, default is `snow`
 - placeholder - placeholder text, default is `Insert text here ...`
+- maxLength - add valdiation for maxlength - set model state to `invalid` and add `ng-invalid-maxlength`
+- minLength - add valdiation for minlength - set model state to `invalid` and add `ng-invalid-minlength`
 
 ## Outputs
 - onEditorCreated - editor instance

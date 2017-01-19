@@ -6,12 +6,14 @@ import { QuillEditorComponent } from '../src/quill-editor.component';
 
 @Component({
     template: `
-<quill-editor [(ngModel)]="title" required="true" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event);"></quill-editor>
+<quill-editor [(ngModel)]="title" required="true" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event);"></quill-editor>
 `
 })
 class TestComponent {
     title = 'Hallo';
     isReadOnly = false;
+    minLength = 0;
+    maxLength = 0;
 
     handleEditorCreated(event: any) {}  
 
@@ -117,5 +119,41 @@ describe('Advanced QuillEditorComponent', () => {
             text: `1234
 `
         });
+    }));
+
+    it('should validate minlength', async(() => {
+        // get editor component
+        const editorComponent = this.fixture.debugElement.children[0].componentInstance;
+
+        this.fixture.detectChanges();
+
+        // change text
+        editorComponent.quillEditor.setText('Blume');
+        this.fixture.detectChanges();
+
+        // should be valid
+        expect(this.fixture.debugElement.children[0].nativeElement.className).toMatch('ng-valid');
+
+        // set minlength
+        this.fixture.componentInstance.minLength = 6;
+        this.fixture.detectChanges();
+        
+        // should be invalid
+        expect(this.fixture.debugElement.children[0].nativeElement.className).toMatch('ng-invalid');
+    }));
+
+    it('should validate maxlength', async(() => {
+        const editorComponent = this.fixture.debugElement.children[0].componentInstance;
+
+        this.fixture.detectChanges();
+        editorComponent.quillEditor.setText('Blume');
+        this.fixture.detectChanges();
+
+        expect(this.fixture.debugElement.children[0].nativeElement.className).toMatch('ng-valid');
+
+        this.fixture.componentInstance.maxLength = 3;
+        this.fixture.detectChanges();
+        
+        expect(this.fixture.debugElement.children[0].nativeElement.className).toMatch('ng-invalid');
     }));
 });
