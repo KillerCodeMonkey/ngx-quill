@@ -7,7 +7,7 @@ Angular (>=2) component for rich text editor Quill
 ngx-quill is the new angular (>=2) implementation of ngQuill.
 
 ## Examples
-[demo-page](https://killercodemonkey.github.io/ngx-quill)
+[demo-page](https://killercodemonkey.github.io/ngx-quill-example)
 
 ## Installation
 - install QuillJS 1.1.9 `npm install ngx-quill`
@@ -90,8 +90,8 @@ packages: {
 ```
 - theme - bubble/snow, default is `snow`
 - placeholder - placeholder text, default is `Insert text here ...`
-- maxLength - add valdiation for maxlength - set model state to `invalid` and add `ng-invalid-maxlength`
-- minLength - add valdiation for minlength - set model state to `invalid` and add `ng-invalid-minlength`
+- maxLength - add valdiation for maxlength - set model state to `invalid` and add `ng-invalid` class
+- minLength - add valdiation for minlength - set model state to `invalid` and add `ng-invalid` class
 
 ## Outputs
 - onEditorCreated - editor instance
