@@ -38,7 +38,7 @@
   "module": "index.js",
   "typings": "index.d.ts",
   "dependencies": {
-    "quill": "^1.1.9",
+    "quill": "^1.2.0",
     "@types/quill": "^0.0.29",
     "@angular/core": "^2.4.1",
     "@angular/forms": "^2.4.1",
