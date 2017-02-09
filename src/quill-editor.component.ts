@@ -30,7 +30,7 @@ import * as Quill from 'quill';
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => QuillEditorComponent),
     multi: true
-  }, { 
+  }, {
     provide: NG_VALIDATORS,
     useExisting: forwardRef(() => QuillEditorComponent),
     multi: true
@@ -100,10 +100,6 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
       formats: this.formats
     });
 
-    if (this.content) {
-      this.quillEditor.pasteHTML(this.content);
-    }
-
     this.onEditorCreated.emit(this.quillEditor);
 
     // mark model as touched if editor lost focus
@@ -133,21 +129,8 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    let min: number;
-    let max: number;
-
     if (changes['readOnly'] && this.quillEditor) {
       this.quillEditor.enable(!changes['readOnly'].currentValue);
-    }
-
-    if (this.quillEditor) {
-      if (changes['minLength']) {
-        min = changes['minLength'].currentValue;
-      }
-
-      if (changes['maxLength']) {
-        max = changes['maxLength'].currentValue;
-      }
     }
   }
 
@@ -190,7 +173,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
         minLength: this.minLength
       };
 
-      valid = textLength >= this.minLength;
+      valid = textLength >= this.minLength || !textLength;
     }
 
     if (this.maxLength) {
