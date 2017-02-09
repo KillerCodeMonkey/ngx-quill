@@ -6,16 +6,17 @@ import { QuillEditorComponent } from '../src/quill-editor.component';
 
 @Component({
     template: `
-<quill-editor [(ngModel)]="title" required="true" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event);"></quill-editor>
+<quill-editor [(ngModel)]="title" ng-required="required" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event);"></quill-editor>
 `
 })
 class TestComponent {
     title = 'Hallo';
     isReadOnly = false;
+    required = true;
     minLength = 0;
     maxLength = 0;
 
-    handleEditorCreated(event: any) {}  
+    handleEditorCreated(event: any) {}
 
     handleChange(event: any) {}
 }
@@ -80,18 +81,19 @@ describe('Advanced QuillEditorComponent', () => {
         editorFixture.componentInstance.quillEditor.focus();
         editorFixture.componentInstance.quillEditor.blur();
         this.fixture.detectChanges();
-    
+
         expect(editorFixture.nativeElement.className).toMatch('ng-touched');
     }));
 
     it('should set required state correctly', fakeAsync(() => {
-        this.fixture.componentInstance.title = '';
+        // get editor component
+        const editorElement = this.fixture.debugElement.children[0].nativeElement;
 
+        this.fixture.componentInstance.title = '';
         this.fixture.detectChanges();
         tick();
 
-        const editorFixture = this.fixture.debugElement.children[0];
-        expect(editorFixture.nativeElement.className).toMatch('ng-invalid');
+        expect(editorElement.className).toMatch('ng-valid');
     }));
 
     it('should emit onEditorCreated with editor instance', async(() => {
@@ -104,6 +106,7 @@ describe('Advanced QuillEditorComponent', () => {
     it('should emit onContentChanged when content of editor changed', fakeAsync(() => {
         spyOn(this.fixture.componentInstance, 'handleChange');
         this.fixture.detectChanges();
+        tick();
 
         this.fixture.componentInstance.title = '1234';
 
@@ -121,63 +124,99 @@ describe('Advanced QuillEditorComponent', () => {
         });
     }));
 
-    it('should validate minlength', async(() => {
+    it('should validate minlength', fakeAsync(() => {
         // get editor component
         const editorComponent = this.fixture.debugElement.children[0].componentInstance;
+        const editorElement = this.fixture.debugElement.children[0].nativeElement;
 
         this.fixture.detectChanges();
-
-        // change text
-        editorComponent.quillEditor.setText('Blume');
-        this.fixture.detectChanges();
-
-        // should be valid
-        expect(this.fixture.debugElement.children[0].nativeElement.className).toMatch('ng-valid');
+        tick();
+        expect(editorElement.className).toMatch('ng-valid');
 
         // set minlength
-        this.fixture.componentInstance.minLength = 6;
+        this.fixture.componentInstance.minLength = 8;
+        this.fixture.componentInstance.title = 'Hallo12';
+
         this.fixture.detectChanges();
-        
-        // should be invalid
-        this.fixture.whenStable(() => {
-            expect(this.fixture.debugElement.children[0].nativeElement.className).toMatch('ng-invalid');
-        });
+        tick();
+        this.fixture.detectChanges();
+        tick();
+
+        expect(editorComponent.minLength).toBe(8);
+        expect(editorElement.className).toMatch('ng-invalid');
     }));
 
-    it('should validate maxlength', async(() => {
+    it('should set valid minlength if model is empty', fakeAsync(() => {
+        // get editor component
         const editorComponent = this.fixture.debugElement.children[0].componentInstance;
+        const editorElement = this.fixture.debugElement.children[0].nativeElement;
 
         this.fixture.detectChanges();
+        tick();
 
-        editorComponent.quillEditor.setText('Blume');
+        // set min length
+        editorComponent.minLength = 2;
+        // change text
+        editorComponent.quillEditor.setText('');
+
         this.fixture.detectChanges();
+        tick();
+        this.fixture.detectChanges();
+        tick();
+
+        expect(editorElement.className).toMatch('ng-valid');
+    }));
+
+    it('should validate maxlength', fakeAsync(() => {
+        // get editor component
+        const editorComponent = this.fixture.debugElement.children[0].componentInstance;
+        const editorElement = this.fixture.debugElement.children[0].nativeElement;
+
+        this.fixture.detectChanges();
+        tick();
 
         expect(this.fixture.debugElement.children[0].nativeElement.className).toMatch('ng-valid');
 
         this.fixture.componentInstance.maxLength = 3;
+        this.fixture.componentInstance.title = '1234';
         this.fixture.detectChanges();
+        tick();
+        this.fixture.detectChanges();
+        tick();
 
-        this.fixture.whenStable(() => {
-            expect(this.fixture.debugElement.children[0].nativeElement.className).toMatch('ng-invalid');
-        });
+        expect(editorComponent.maxLength).toBe(3);
+        expect(editorElement.className).toMatch('ng-invalid');
     }));
 
-    it('should validate maxlength and minlength', async(() => {
-        const editorComponent = this.fixture.debugElement.children[0].componentInstance;
+    it('should validate maxlength and minlength', fakeAsync(() => {
+        // get editor component
+        const editorElement = this.fixture.debugElement.children[0].nativeElement;
 
         this.fixture.detectChanges();
-
-        editorComponent.quillEditor.setText('Blume');
-        this.fixture.detectChanges();
+        tick();
 
         expect(this.fixture.debugElement.children[0].nativeElement.className).toMatch('ng-valid');
 
         this.fixture.componentInstance.minLength = 3;
         this.fixture.componentInstance.maxLength = 5;
-        this.fixture.detectChanges();
+        this.fixture.componentInstance.title = '123456';
 
-        this.fixture.whenStable(() => {
-            expect(this.fixture.debugElement.children[0].nativeElement.className).toMatch('ng-invalid');
-        });
+        this.fixture.detectChanges();
+        tick();
+        this.fixture.detectChanges();
+        tick();
+
+        expect(editorElement.className).toMatch('ng-invalid');
+
+        this.fixture.componentInstance.minLength = 3;
+        this.fixture.componentInstance.maxLength = 5;
+        this.fixture.componentInstance.title = '1234';
+
+        this.fixture.detectChanges();
+        tick();
+        this.fixture.detectChanges();
+        tick();
+
+        expect(editorElement.className).toMatch('ng-valid');
     }));
 });

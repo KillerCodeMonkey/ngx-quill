@@ -156,9 +156,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            theme: this.theme || 'snow',
 	            formats: this.formats
 	        });
-	        if (this.content) {
-	            this.quillEditor.pasteHTML(this.content);
-	        }
 	        this.onEditorCreated.emit(this.quillEditor);
 	        // mark model as touched if editor lost focus
 	        this.quillEditor.on('selection-change', function (range) {
@@ -182,18 +179,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	    };
 	    QuillEditorComponent.prototype.ngOnChanges = function (changes) {
-	        var min;
-	        var max;
 	        if (changes['readOnly'] && this.quillEditor) {
 	            this.quillEditor.enable(!changes['readOnly'].currentValue);
-	        }
-	        if (this.quillEditor) {
-	            if (changes['minLength']) {
-	                min = changes['minLength'].currentValue;
-	            }
-	            if (changes['maxLength']) {
-	                max = changes['maxLength'].currentValue;
-	            }
 	        }
 	    };
 	    QuillEditorComponent.prototype.writeValue = function (currentValue) {
@@ -223,7 +210,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                given: textLength,
 	                minLength: this.minLength
 	            };
-	            valid = textLength >= this.minLength;
+	            valid = textLength >= this.minLength || !textLength;
 	        }
 	        if (this.maxLength) {
 	            err.maxLengthError = {
