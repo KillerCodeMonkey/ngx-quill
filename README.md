@@ -91,7 +91,7 @@ packages: {
 - theme - bubble/snow, default is `snow`
 - placeholder - placeholder text, default is `Insert text here ...`
 - maxLength - add valdiation for maxlength - set model state to `invalid` and add `ng-invalid` class
-- minLength - add valdiation for minlength - set model state to `invalid` and add `ng-invalid` class
+- minLength - add valdiation for minlength - set model state to `invalid` and add `ng-invalid` class, only set invalid if editor text not empty --> if you want to check if text is required --> use the required attribute
 
 ## Outputs
 - onEditorCreated - editor instance
