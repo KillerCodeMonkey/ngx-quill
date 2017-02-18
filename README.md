@@ -92,6 +92,30 @@ packages: {
 - placeholder - placeholder text, default is `Insert text here ...`
 - maxLength - add valdiation for maxlength - set model state to `invalid` and add `ng-invalid` class
 - minLength - add valdiation for minlength - set model state to `invalid` and add `ng-invalid` class, only set invalid if editor text not empty --> if you want to check if text is required --> use the required attribute
+- possbility to create a custom toolbar via projection slot `[quill-editor-toolbar]`:
+```
+<quill-editor>
+  <div quill-editor-toolbar>
+    <span class="ql-formats">
+      <button class="ql-bold" [title]="'Bold'"></button>
+    </span>
+    <span class="ql-formats">
+      <select class="ql-align" [title]="'Aligment'">
+        <option selected></option>
+        <option value="center"></option>
+        <option value="right"></option>
+        <option value="justify"></option>
+      </select>
+      <select class="ql-align" [title]="'Aligment2'">
+        <option selected></option>
+        <option value="center"></option>
+        <option value="right"></option>
+        <option value="justify"></option>
+      </select>
+    </span>
+  </div>
+</quill-editor>
+```
 
 ## Outputs
 - onEditorCreated - editor instance

@@ -24,7 +24,7 @@ import * as Quill from 'quill';
 @Component({
   selector: 'quill-editor',
   template: `
-<div></div>
+  <ng-content select="[quill-editor-toolbar]"></ng-content>
 `,
   providers: [{
     provide: NG_VALUE_ACCESSOR,
@@ -90,10 +90,17 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   constructor(private elementRef: ElementRef) { }
 
   ngAfterViewInit() {
-    this.editorElem = this.elementRef.nativeElement.children[0];
+    const toolbarElem = this.elementRef.nativeElement.querySelector('[quill-editor-toolbar]');
+    let modules = this.modules || this.defaultModules;
+
+    if (toolbarElem) {
+      modules['toolbar'] = toolbarElem;
+    }
+    this.elementRef.nativeElement.insertAdjacentHTML('beforeend', '<div quill-editor-element></div>');
+    this.editorElem = this.elementRef.nativeElement.querySelector('[quill-editor-element]');
 
     this.quillEditor = new Quill(this.editorElem, {
-      modules: this.modules || this.defaultModules,
+      modules: modules,
       placeholder: this.placeholder || 'Insert text here ...',
       readOnly: this.readOnly || false,
       theme: this.theme || 'snow',

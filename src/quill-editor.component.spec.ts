@@ -21,6 +21,43 @@ class TestComponent {
     handleChange(event: any) {}
 }
 
+@Component({
+    template: `
+<quill-editor [(ngModel)]="title" ng-required="required" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event);">
+    <div quill-editor-toolbar="true">
+        <span class="ql-formats">
+            <button class="ql-bold" [title]="'Bold'"></button>
+        </span>
+        <span class="ql-formats">
+            <select class="ql-align" [title]="'Aligment'">
+                <option selected></option>
+                <option value="center"></option>
+                <option value="right"></option>
+                <option value="justify"></option>
+            </select>
+            <select class="ql-align">
+                <option selected></option>
+                <option value="center"></option>
+                <option value="right"></option>
+                <option value="justify"></option>
+            </select>
+        </span>
+    </div>
+</quill-editor>
+`
+})
+class TestToolbarComponent {
+    title = 'Hallo';
+    isReadOnly = false;
+    required = true;
+    minLength = 0;
+    maxLength = 0;
+
+    handleEditorCreated(event: any) {}
+
+    handleChange(event: any) {}
+}
+
 
 describe('Basic QuillEditorComponent', () => {
 
@@ -51,11 +88,11 @@ describe('Advanced QuillEditorComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [QuillEditorComponent, TestComponent],
+            declarations: [QuillEditorComponent, TestComponent, TestToolbarComponent],
             imports: [FormsModule]
         }).compileComponents();
 
-        this.fixture = TestBed.createComponent(TestComponent)  as ComponentFixture<TestComponent>;
+        this.fixture = TestBed.createComponent(TestComponent) as ComponentFixture<TestComponent>;
     });
 
     it('should set editor settings', fakeAsync(() => {
@@ -218,5 +255,13 @@ describe('Advanced QuillEditorComponent', () => {
         tick();
 
         expect(editorElement.className).toMatch('ng-valid');
+    }));
+
+    it('should add custom toolbar', async(() => {
+        // get editor component
+        this.fixture = TestBed.createComponent(TestToolbarComponent) as ComponentFixture<TestToolbarComponent>;
+
+        this.fixture.detectChanges();
+        expect(this.fixture.nativeElement.querySelector('[quill-editor-toolbar]').querySelector('span[title=Alignment]')).toBeDefined();
     }));
 });
