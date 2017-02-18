@@ -24,9 +24,7 @@ import * as Quill from 'quill';
 @Component({
   selector: 'quill-editor',
   template: `
-<div>
   <ng-content select="[quill-editor-toolbar]"></ng-content>
-</div>
 `,
   providers: [{
     provide: NG_VALUE_ACCESSOR,
@@ -86,8 +84,8 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter();
   @Output() onContentChanged: EventEmitter<any> = new EventEmitter();
 
-  onModelChange: Function;
-  onModelTouched: Function;
+  onModelChange: Function = () => {};
+  onModelTouched: Function = () => {};
 
   constructor(private elementRef: ElementRef) { }
 
