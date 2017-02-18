@@ -148,9 +148,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    QuillEditorComponent.prototype.ngAfterViewInit = function () {
 	        var _this = this;
-	        this.editorElem = this.elementRef.nativeElement.children[0];
+	        var toolbarElem = this.elementRef.nativeElement.querySelector('[quill-editor-toolbar]');
+	        var modules = this.modules || this.defaultModules;
+	        if (toolbarElem) {
+	            modules['toolbar'] = toolbarElem;
+	        }
+	        this.elementRef.nativeElement.insertAdjacentHTML('beforeend', '<div quill-editor-element></div>');
+	        this.editorElem = this.elementRef.nativeElement.querySelector('[quill-editor-element]');
 	        this.quillEditor = new Quill(this.editorElem, {
-	            modules: this.modules || this.defaultModules,
+	            modules: modules,
 	            placeholder: this.placeholder || 'Insert text here ...',
 	            readOnly: this.readOnly || false,
 	            theme: this.theme || 'snow',
@@ -260,7 +266,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    QuillEditorComponent = __decorate([
 	        core_1.Component({
 	            selector: 'quill-editor',
-	            template: "\n<div></div>\n",
+	            template: "\n  <ng-content select=\"[quill-editor-toolbar]\"></ng-content>\n",
 	            providers: [{
 	                    provide: forms_1.NG_VALUE_ACCESSOR,
 	                    useExisting: core_1.forwardRef(function () { return QuillEditorComponent; }),
