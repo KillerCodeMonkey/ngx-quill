@@ -143,6 +143,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        };
 	        this.onEditorCreated = new core_1.EventEmitter();
 	        this.onContentChanged = new core_1.EventEmitter();
+	        this.onSelectionChanged = new core_1.EventEmitter();
 	        this.onModelChange = function () { };
 	        this.onModelTouched = function () { };
 	    }
@@ -164,13 +165,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	        this.onEditorCreated.emit(this.quillEditor);
 	        // mark model as touched if editor lost focus
-	        this.quillEditor.on('selection-change', function (range) {
+	        this.quillEditor.on('selection-change', function (range, oldRange, source) {
+	            _this.onSelectionChanged.emit({
+	                editor: _this.quillEditor,
+	                range: range,
+	                oldRange: oldRange,
+	                source: source
+	            });
 	            if (!range) {
 	                _this.onModelTouched();
 	            }
 	        });
 	        // update model if text changes
-	        this.quillEditor.on('text-change', function (delta, oldDelta) {
+	        this.quillEditor.on('text-change', function (delta, oldDelta, source) {
 	            var html = _this.editorElem.children[0].innerHTML;
 	            var text = _this.quillEditor.getText();
 	            if (html === '<p><br></p>') {
@@ -180,7 +187,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            _this.onContentChanged.emit({
 	                editor: _this.quillEditor,
 	                html: html,
-	                text: text
+	                text: text,
+	                delta: delta,
+	                oldDelta: oldDelta,
+	                source: source
 	            });
 	        });
 	    };
@@ -263,6 +273,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        core_1.Output(), 
 	        __metadata('design:type', (typeof (_b = typeof core_1.EventEmitter !== 'undefined' && core_1.EventEmitter) === 'function' && _b) || Object)
 	    ], QuillEditorComponent.prototype, "onContentChanged", void 0);
+	    __decorate([
+	        core_1.Output(), 
+	        __metadata('design:type', (typeof (_c = typeof core_1.EventEmitter !== 'undefined' && core_1.EventEmitter) === 'function' && _c) || Object)
+	    ], QuillEditorComponent.prototype, "onSelectionChanged", void 0);
 	    QuillEditorComponent = __decorate([
 	        core_1.Component({
 	            selector: 'quill-editor',
@@ -279,10 +293,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            styles: ["\n    .ql-container .ql-editor {\n      min-height: 200px;\n      padding-bottom: 50px;\n    }\n  "],
 	            encapsulation: core_1.ViewEncapsulation.None
 	        }), 
-	        __metadata('design:paramtypes', [(typeof (_c = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _c) || Object])
+	        __metadata('design:paramtypes', [(typeof (_d = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _d) || Object])
 	    ], QuillEditorComponent);
 	    return QuillEditorComponent;
-	    var _a, _b, _c;
+	    var _a, _b, _c, _d;
 	}());
 	exports.QuillEditorComponent = QuillEditorComponent;
 

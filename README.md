@@ -119,12 +119,26 @@ packages: {
 
 ## Outputs
 - onEditorCreated - editor instance
+```
+editor
+```
 - onContentChanged - text is updated
 ```
 {
-  editor: this.quillEditor,
+  editor: editorInstance,
   html: html,
-  text: text
+  text: text,
+  delta: delta,
+  oldDelta: oldDelta,
+  source: source
 }
 ```
-
+- onSelectionChanged - selection is updated
+```
+{
+  editor: editorInstance,
+  range: range,
+  oldRange: oldRange,
+  source: source
+}
+```

@@ -6,7 +6,7 @@ import { QuillEditorComponent } from '../src/quill-editor.component';
 
 @Component({
     template: `
-<quill-editor [(ngModel)]="title" ng-required="required" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event);"></quill-editor>
+<quill-editor [(ngModel)]="title" ng-required="required" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event);" (onSelectionChanged)="handleSelection($event);"></quill-editor>
 `
 })
 class TestComponent {
@@ -16,9 +16,18 @@ class TestComponent {
     minLength = 0;
     maxLength = 0;
 
+    changed: any;
+    selected: any;
+
     handleEditorCreated(event: any) {}
 
-    handleChange(event: any) {}
+    handleChange(event: any) {
+        this.changed = event;
+    }
+
+    handleSelection(event: any) {
+        this.selected = event;
+    }
 }
 
 @Component({
@@ -141,7 +150,7 @@ describe('Advanced QuillEditorComponent', () => {
     }));
 
     it('should emit onContentChanged when content of editor changed', fakeAsync(() => {
-        spyOn(this.fixture.componentInstance, 'handleChange');
+        spyOn(this.fixture.componentInstance, 'handleChange').and.callThrough();
         this.fixture.detectChanges();
         tick();
 
@@ -150,15 +159,20 @@ describe('Advanced QuillEditorComponent', () => {
         this.fixture.detectChanges();
         tick();
 
-        const editorFixture = this.fixture.debugElement.children[0];
-        const editorComponent = this.fixture.debugElement.children[0].componentInstance;
+        expect(this.fixture.componentInstance.handleChange).toHaveBeenCalledWith(this.fixture.componentInstance.changed);
+    }));
 
-        expect(this.fixture.componentInstance.handleChange).toHaveBeenCalledWith({
-            editor: editorComponent.quillEditor,
-            html: editorFixture.nativeElement.querySelector('div.ql-editor').innerHTML,
-            text: `1234
-`
-        });
+    it('should emit onSelectionChanged when selection changed', async(() => {
+        spyOn(this.fixture.componentInstance, 'handleSelection').and.callThrough();
+        this.fixture.detectChanges();
+
+        const editorFixture = this.fixture.debugElement.children[0];
+
+        editorFixture.componentInstance.quillEditor.focus();
+        editorFixture.componentInstance.quillEditor.blur();
+        this.fixture.detectChanges();
+
+        expect(this.fixture.componentInstance.handleSelection).toHaveBeenCalledWith(this.fixture.componentInstance.selected);
     }));
 
     it('should validate minlength', fakeAsync(() => {
