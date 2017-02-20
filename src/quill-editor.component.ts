@@ -83,6 +83,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter();
   @Output() onContentChanged: EventEmitter<any> = new EventEmitter();
+  @Output() onSelectionChanged: EventEmitter<any> = new EventEmitter();
 
   onModelChange: Function = () => {};
   onModelTouched: Function = () => {};
@@ -110,14 +111,21 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     this.onEditorCreated.emit(this.quillEditor);
 
     // mark model as touched if editor lost focus
-    this.quillEditor.on('selection-change', (range: any) => {
+    this.quillEditor.on('selection-change', (range: any, oldRange: any, source: string) => {
+      this.onSelectionChanged.emit({
+        editor: this.quillEditor,
+        range: range,
+        oldRange: oldRange,
+        source: source
+      });
+
       if (!range) {
         this.onModelTouched();
       }
     });
 
     // update model if text changes
-    this.quillEditor.on('text-change', (delta: any, oldDelta: any) => {
+    this.quillEditor.on('text-change', (delta: any, oldDelta: any, source: string) => {
       let html = this.editorElem.children[0].innerHTML;
       const text = this.quillEditor.getText();
 
@@ -130,7 +138,10 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
       this.onContentChanged.emit({
         editor: this.quillEditor,
         html: html,
-        text: text
+        text: text,
+        delta: delta,
+        oldDelta: oldDelta,
+        source: source
       });
     });
   }
