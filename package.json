@@ -40,9 +40,11 @@
   "dependencies": {
     "quill": "^1.2.0",
     "@types/quill": "^0.0.29",
+    "rxjs": "^5.0.1"
+  },
+  "peerDependencies": {
     "@angular/core": "^2.4.1",
     "@angular/forms": "^2.4.1",
-    "rxjs": "^5.0.1"
   },
   "devDependencies": {
     "@angular/common": "^2.4.1",
