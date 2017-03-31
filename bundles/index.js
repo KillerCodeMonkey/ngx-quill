@@ -58,6 +58,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
+	Object.defineProperty(exports, "__esModule", { value: true });
 	__export(__webpack_require__(1));
 
 
@@ -72,27 +73,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
 	    return c > 3 && r && Object.defineProperty(target, key, r), r;
 	};
-	var __metadata = (this && this.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var core_1 = __webpack_require__(2);
 	var quill_editor_component_1 = __webpack_require__(3);
 	var QuillModule = (function () {
 	    function QuillModule() {
 	    }
-	    QuillModule = __decorate([
-	        core_1.NgModule({
-	            declarations: [
-	                quill_editor_component_1.QuillEditorComponent
-	            ],
-	            imports: [],
-	            exports: [quill_editor_component_1.QuillEditorComponent],
-	            providers: []
-	        }), 
-	        __metadata('design:paramtypes', [])
-	    ], QuillModule);
 	    return QuillModule;
 	}());
+	QuillModule = __decorate([
+	    core_1.NgModule({
+	        declarations: [
+	            quill_editor_component_1.QuillEditorComponent
+	        ],
+	        imports: [],
+	        exports: [quill_editor_component_1.QuillEditorComponent],
+	        providers: []
+	    })
+	], QuillModule);
 	exports.QuillModule = QuillModule;
 
 
@@ -116,10 +114,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var __metadata = (this && this.__metadata) || function (k, v) {
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var core_1 = __webpack_require__(2);
 	var forms_1 = __webpack_require__(4);
 	var Quill = __webpack_require__(5);
-	var QuillEditorComponent = (function () {
+	var QuillEditorComponent = QuillEditorComponent_1 = (function () {
 	    function QuillEditorComponent(elementRef) {
 	        this.elementRef = elementRef;
 	        this.emptyArray = [];
@@ -237,68 +236,68 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        return valid ? null : err;
 	    };
-	    __decorate([
-	        core_1.Input(), 
-	        __metadata('design:type', String)
-	    ], QuillEditorComponent.prototype, "theme", void 0);
-	    __decorate([
-	        core_1.Input(), 
-	        __metadata('design:type', Object)
-	    ], QuillEditorComponent.prototype, "modules", void 0);
-	    __decorate([
-	        core_1.Input(), 
-	        __metadata('design:type', Boolean)
-	    ], QuillEditorComponent.prototype, "readOnly", void 0);
-	    __decorate([
-	        core_1.Input(), 
-	        __metadata('design:type', String)
-	    ], QuillEditorComponent.prototype, "placeholder", void 0);
-	    __decorate([
-	        core_1.Input(), 
-	        __metadata('design:type', Number)
-	    ], QuillEditorComponent.prototype, "maxLength", void 0);
-	    __decorate([
-	        core_1.Input(), 
-	        __metadata('design:type', Number)
-	    ], QuillEditorComponent.prototype, "minLength", void 0);
-	    __decorate([
-	        core_1.Input(), 
-	        __metadata('design:type', Array)
-	    ], QuillEditorComponent.prototype, "formats", void 0);
-	    __decorate([
-	        core_1.Output(), 
-	        __metadata('design:type', (typeof (_a = typeof core_1.EventEmitter !== 'undefined' && core_1.EventEmitter) === 'function' && _a) || Object)
-	    ], QuillEditorComponent.prototype, "onEditorCreated", void 0);
-	    __decorate([
-	        core_1.Output(), 
-	        __metadata('design:type', (typeof (_b = typeof core_1.EventEmitter !== 'undefined' && core_1.EventEmitter) === 'function' && _b) || Object)
-	    ], QuillEditorComponent.prototype, "onContentChanged", void 0);
-	    __decorate([
-	        core_1.Output(), 
-	        __metadata('design:type', (typeof (_c = typeof core_1.EventEmitter !== 'undefined' && core_1.EventEmitter) === 'function' && _c) || Object)
-	    ], QuillEditorComponent.prototype, "onSelectionChanged", void 0);
-	    QuillEditorComponent = __decorate([
-	        core_1.Component({
-	            selector: 'quill-editor',
-	            template: "\n  <ng-content select=\"[quill-editor-toolbar]\"></ng-content>\n",
-	            providers: [{
-	                    provide: forms_1.NG_VALUE_ACCESSOR,
-	                    useExisting: core_1.forwardRef(function () { return QuillEditorComponent; }),
-	                    multi: true
-	                }, {
-	                    provide: forms_1.NG_VALIDATORS,
-	                    useExisting: core_1.forwardRef(function () { return QuillEditorComponent; }),
-	                    multi: true
-	                }],
-	            styles: ["\n    .ql-container .ql-editor {\n      min-height: 200px;\n      padding-bottom: 50px;\n    }\n  "],
-	            encapsulation: core_1.ViewEncapsulation.None
-	        }), 
-	        __metadata('design:paramtypes', [(typeof (_d = typeof core_1.ElementRef !== 'undefined' && core_1.ElementRef) === 'function' && _d) || Object])
-	    ], QuillEditorComponent);
 	    return QuillEditorComponent;
-	    var _a, _b, _c, _d;
 	}());
+	__decorate([
+	    core_1.Input(),
+	    __metadata("design:type", String)
+	], QuillEditorComponent.prototype, "theme", void 0);
+	__decorate([
+	    core_1.Input(),
+	    __metadata("design:type", Object)
+	], QuillEditorComponent.prototype, "modules", void 0);
+	__decorate([
+	    core_1.Input(),
+	    __metadata("design:type", Boolean)
+	], QuillEditorComponent.prototype, "readOnly", void 0);
+	__decorate([
+	    core_1.Input(),
+	    __metadata("design:type", String)
+	], QuillEditorComponent.prototype, "placeholder", void 0);
+	__decorate([
+	    core_1.Input(),
+	    __metadata("design:type", Number)
+	], QuillEditorComponent.prototype, "maxLength", void 0);
+	__decorate([
+	    core_1.Input(),
+	    __metadata("design:type", Number)
+	], QuillEditorComponent.prototype, "minLength", void 0);
+	__decorate([
+	    core_1.Input(),
+	    __metadata("design:type", Array)
+	], QuillEditorComponent.prototype, "formats", void 0);
+	__decorate([
+	    core_1.Output(),
+	    __metadata("design:type", core_1.EventEmitter)
+	], QuillEditorComponent.prototype, "onEditorCreated", void 0);
+	__decorate([
+	    core_1.Output(),
+	    __metadata("design:type", core_1.EventEmitter)
+	], QuillEditorComponent.prototype, "onContentChanged", void 0);
+	__decorate([
+	    core_1.Output(),
+	    __metadata("design:type", core_1.EventEmitter)
+	], QuillEditorComponent.prototype, "onSelectionChanged", void 0);
+	QuillEditorComponent = QuillEditorComponent_1 = __decorate([
+	    core_1.Component({
+	        selector: 'quill-editor',
+	        template: "\n  <ng-content select=\"[quill-editor-toolbar]\"></ng-content>\n",
+	        providers: [{
+	                provide: forms_1.NG_VALUE_ACCESSOR,
+	                useExisting: core_1.forwardRef(function () { return QuillEditorComponent_1; }),
+	                multi: true
+	            }, {
+	                provide: forms_1.NG_VALIDATORS,
+	                useExisting: core_1.forwardRef(function () { return QuillEditorComponent_1; }),
+	                multi: true
+	            }],
+	        styles: ["\n    .ql-container .ql-editor {\n      min-height: 200px;\n      padding-bottom: 50px;\n    }\n  "],
+	        encapsulation: core_1.ViewEncapsulation.None
+	    }),
+	    __metadata("design:paramtypes", [core_1.ElementRef])
+	], QuillEditorComponent);
 	exports.QuillEditorComponent = QuillEditorComponent;
+	var QuillEditorComponent_1;
 
 
 /***/ },
