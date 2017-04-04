@@ -291,7 +291,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                useExisting: core_1.forwardRef(function () { return QuillEditorComponent_1; }),
 	                multi: true
 	            }],
-	        styles: ["\n    .ql-container .ql-editor {\n      min-height: 200px;\n      padding-bottom: 50px;\n    }\n  "],
 	        encapsulation: core_1.ViewEncapsulation.None
 	    }),
 	    __metadata("design:paramtypes", [core_1.ElementRef])
