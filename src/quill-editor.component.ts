@@ -35,12 +35,6 @@ import * as Quill from 'quill';
     useExisting: forwardRef(() => QuillEditorComponent),
     multi: true
   }],
-  styles: [`
-    .ql-container .ql-editor {
-      min-height: 200px;
-      padding-bottom: 50px;
-    }
-  `],
   encapsulation: ViewEncapsulation.None
 })
 export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor, OnChanges, Validator {
