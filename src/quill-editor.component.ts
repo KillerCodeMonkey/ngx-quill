@@ -73,7 +73,9 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   @Input() placeholder: string;
   @Input() maxLength: number;
   @Input() minLength: number;
+  @Input() required: boolean;
   @Input() formats: string[];
+  @Input() bounds: HTMLElement | string;
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter();
   @Output() onContentChanged: EventEmitter<any> = new EventEmitter();
@@ -102,6 +104,10 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
       formats: this.formats
     });
 
+    if (this.content) {
+      this.quillEditor.pasteHTML(this.content)
+    }
+
     this.onEditorCreated.emit(this.quillEditor);
 
     // mark model as touched if editor lost focus
@@ -110,7 +116,8 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
         editor: this.quillEditor,
         range: range,
         oldRange: oldRange,
-        source: source
+        source: source,
+        bounds: this.bounds || document.body
       });
 
       if (!range) {
@@ -174,27 +181,36 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     let err: {
       minLengthError?: {given: number, minLength: number};
       maxLengthError?: {given: number, maxLength: number};
+      requiredError?: {empty: boolean}
     } = {},
     valid = true;
 
     const textLength = this.quillEditor.getText().trim().length;
 
-    if (this.minLength) {
+    if (this.minLength && textLength && textLength < this.minLength) {
       err.minLengthError = {
         given: textLength,
         minLength: this.minLength
       };
 
-      valid = textLength >= this.minLength || !textLength;
+      valid = false;
     }
 
-    if (this.maxLength) {
+    if (this.maxLength && textLength > this.maxLength) {
       err.maxLengthError = {
         given: textLength,
         maxLength: this.maxLength
       };
 
-      valid = textLength <= this.maxLength && valid;
+      valid = false;
+    }
+
+    if (this.required && !textLength) {
+      err.requiredError = {
+        empty: true
+      }
+
+      valid = false;
     }
 
     return valid ? null : err;

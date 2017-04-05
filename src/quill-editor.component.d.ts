@@ -37,7 +37,9 @@ export declare class QuillEditorComponent implements AfterViewInit, ControlValue
     placeholder: string;
     maxLength: number;
     minLength: number;
+    required: boolean;
     formats: string[];
+    bounds: HTMLElement | string;
     onEditorCreated: EventEmitter<any>;
     onContentChanged: EventEmitter<any>;
     onSelectionChanged: EventEmitter<any>;
@@ -57,6 +59,9 @@ export declare class QuillEditorComponent implements AfterViewInit, ControlValue
         maxLengthError?: {
             given: number;
             maxLength: number;
+        };
+        requiredError?: {
+            empty: boolean;
         };
     };
 }
