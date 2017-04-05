@@ -102,6 +102,10 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
       formats: this.formats
     });
 
+    if (this.content) {
+      this.quillEditor.pasteHTML(this.content)
+    }
+
     this.onEditorCreated.emit(this.quillEditor);
 
     // mark model as touched if editor lost focus
