@@ -74,6 +74,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   @Input() maxLength: number;
   @Input() minLength: number;
   @Input() formats: string[];
+  @Input() bounds: HTMLElement | string;
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter();
   @Output() onContentChanged: EventEmitter<any> = new EventEmitter();
@@ -114,7 +115,8 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
         editor: this.quillEditor,
         range: range,
         oldRange: oldRange,
-        source: source
+        source: source,
+        bounds: this.bounds || document.body
       });
 
       if (!range) {

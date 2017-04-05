@@ -38,6 +38,7 @@ export declare class QuillEditorComponent implements AfterViewInit, ControlValue
     maxLength: number;
     minLength: number;
     formats: string[];
+    bounds: HTMLElement | string;
     onEditorCreated: EventEmitter<any>;
     onContentChanged: EventEmitter<any>;
     onSelectionChanged: EventEmitter<any>;
