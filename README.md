@@ -7,7 +7,9 @@ Angular (>=2) component for rich text editor Quill
 ngx-quill is the new angular (>=2) implementation of ngQuill.
 
 ## Examples
-[demo-page](https://killercodemonkey.github.io/ngx-quill-example)
+- [demo-page](https://killercodemonkey.github.io/ngx-quill-example)
+- [example-repo](https://github.com/killerCodeMonkey/ngx-quill-example)
+
 
 ## Installation
 - install QuillJS 1.1.9 `npm install ngx-quill`
