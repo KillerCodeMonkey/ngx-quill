@@ -15,7 +15,6 @@ import {
   NG_VALUE_ACCESSOR,
   NG_VALIDATORS,
   ControlValueAccessor,
-  FormControl,
   Validator
 } from '@angular/forms';
 
@@ -173,7 +172,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     this.onModelTouched = fn;
   }
 
-  validate(c: FormControl) {
+  validate() {
     if (!this.quillEditor) {
       return null;
     }
