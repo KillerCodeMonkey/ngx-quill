@@ -20,7 +20,7 @@ import {
 
 import * as Quill from 'quill';
 
-type Html = String | null;
+type Html = string | null;
 @Component({
   selector: 'quill-editor',
   template: `
