@@ -20,6 +20,7 @@ import {
 
 import * as Quill from 'quill';
 
+type Html = String | null;
 @Component({
   selector: 'quill-editor',
   template: `
@@ -48,9 +49,9 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
       ['blockquote', 'code-block'],
 
       [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-      [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
+      [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
       [{ 'direction': 'rtl' }],                         // text direction
 
       [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
@@ -74,14 +75,14 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   @Input() minLength: number;
   @Input() required: boolean;
   @Input() formats: string[];
-  @Input() bounds: HTMLElement | string;
+  @Input() bounds: HTMLElement |  string;
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter();
   @Output() onContentChanged: EventEmitter<any> = new EventEmitter();
   @Output() onSelectionChanged: EventEmitter<any> = new EventEmitter();
 
-  onModelChange: Function = () => {};
-  onModelTouched: Function = () => {};
+  onModelChange: Function = () => { };
+  onModelTouched: Function = () => { };
 
   constructor(private elementRef: ElementRef) { }
 
@@ -116,7 +117,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
         range: range,
         oldRange: oldRange,
         source: source,
-        bounds: this.bounds || document.body
+        bounds: this.bounds ||  document.body
       });
 
       if (!range) {
@@ -126,11 +127,11 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
     // update model if text changes
     this.quillEditor.on('text-change', (delta: any, oldDelta: any, source: string) => {
-      let html = this.editorElem.children[0].innerHTML;
+      let html: Html = this.editorElem.children[0].innerHTML;
       const text = this.quillEditor.getText();
 
       if (html === '<p><br></p>') {
-          html = null;
+        html = null;
       }
 
       this.onModelChange(html);
@@ -178,11 +179,11 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     }
 
     let err: {
-      minLengthError?: {given: number, minLength: number};
-      maxLengthError?: {given: number, maxLength: number};
-      requiredError?: {empty: boolean}
+      minLengthError?: { given: number, minLength: number };
+      maxLengthError?: { given: number, maxLength: number };
+      requiredError?: { empty: boolean }
     } = {},
-    valid = true;
+      valid = true;
 
     const textLength = this.quillEditor.getText().trim().length;
 
