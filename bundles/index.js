@@ -162,6 +162,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            theme: this.theme || 'snow',
 	            formats: this.formats
 	        });
+	        if (this.content) {
+	            this.quillEditor.pasteHTML(this.content);
+	        }
 	        this.onEditorCreated.emit(this.quillEditor);
 	        // mark model as touched if editor lost focus
 	        this.quillEditor.on('selection-change', function (range, oldRange, source) {
@@ -169,7 +172,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                editor: _this.quillEditor,
 	                range: range,
 	                oldRange: oldRange,
-	                source: source
+	                source: source,
+	                bounds: _this.bounds || document.body
 	            });
 	            if (!range) {
 	                _this.onModelTouched();
@@ -214,25 +218,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	    QuillEditorComponent.prototype.registerOnTouched = function (fn) {
 	        this.onModelTouched = fn;
 	    };
-	    QuillEditorComponent.prototype.validate = function (c) {
+	    QuillEditorComponent.prototype.validate = function () {
 	        if (!this.quillEditor) {
 	            return null;
 	        }
 	        var err = {}, valid = true;
 	        var textLength = this.quillEditor.getText().trim().length;
-	        if (this.minLength) {
+	        if (this.minLength && textLength && textLength < this.minLength) {
 	            err.minLengthError = {
 	                given: textLength,
 	                minLength: this.minLength
 	            };
-	            valid = textLength >= this.minLength || !textLength;
+	            valid = false;
 	        }
-	        if (this.maxLength) {
+	        if (this.maxLength && textLength > this.maxLength) {
 	            err.maxLengthError = {
 	                given: textLength,
 	                maxLength: this.maxLength
 	            };
-	            valid = textLength <= this.maxLength && valid;
+	            valid = false;
+	        }
+	        if (this.required && !textLength) {
+	            err.requiredError = {
+	                empty: true
+	            };
+	            valid = false;
 	        }
 	        return valid ? null : err;
 	    };
@@ -264,8 +274,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	], QuillEditorComponent.prototype, "minLength", void 0);
 	__decorate([
 	    core_1.Input(),
+	    __metadata("design:type", Boolean)
+	], QuillEditorComponent.prototype, "required", void 0);
+	__decorate([
+	    core_1.Input(),
 	    __metadata("design:type", Array)
 	], QuillEditorComponent.prototype, "formats", void 0);
+	__decorate([
+	    core_1.Input(),
+	    __metadata("design:type", Object)
+	], QuillEditorComponent.prototype, "bounds", void 0);
 	__decorate([
 	    core_1.Output(),
 	    __metadata("design:type", core_1.EventEmitter)
