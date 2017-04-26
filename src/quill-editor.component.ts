@@ -15,7 +15,6 @@ import {
   NG_VALUE_ACCESSOR,
   NG_VALIDATORS,
   ControlValueAccessor,
-  FormControl,
   Validator
 } from '@angular/forms';
 
@@ -127,7 +126,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
     // update model if text changes
     this.quillEditor.on('text-change', (delta: any, oldDelta: any, source: string) => {
-      let html = this.editorElem.children[0].innerHTML;
+      let html: (string | null) = this.editorElem.children[0].innerHTML;
       const text = this.quillEditor.getText();
 
       if (html === '<p><br></p>') {
@@ -173,7 +172,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     this.onModelTouched = fn;
   }
 
-  validate(c: FormControl) {
+  validate() {
     if (!this.quillEditor) {
       return null;
     }

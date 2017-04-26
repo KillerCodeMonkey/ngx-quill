@@ -1,7 +1,7 @@
 {
   "name": "ngx-quill",
   "license": "MIT",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": {
     "name": "Bengt Weiße"
   },
@@ -49,16 +49,17 @@
   "devDependencies": {
     "@angular/common": "^2.4.1 || ^4.0.0",
     "@angular/compiler": "^2.4.1 || ^4.0.0",
-    "@angular/platform-browser": "^2.4.1 || ^4.0.0",
-    "@angular/platform-browser-dynamic": "^2.4.1 || ^4.0.0",
     "@angular/core": "^2.4.1 || ^4.0.0",
     "@angular/forms": "^2.4.1 || ^4.0.0",
+    "@angular/platform-browser": "^2.4.1 || ^4.0.0",
+    "@angular/platform-browser-dynamic": "^2.4.1 || ^4.0.0",
     "@types/jasmine": "^2.5.35",
     "@types/node": "^6.0.45",
     "awesome-typescript-loader": "^2.2.4 || ^3.1.2",
     "codelyzer": "^3.0.0-beta.4",
     "commitizen": "^2.9.5",
     "core-js": "^2.4.1",
+    "cz-conventional-changelog": "^2.0.0",
     "istanbul-instrumenter-loader": "^0.2.0",
     "jasmine-core": "^2.4.1",
     "karma": "^1.2.0",
@@ -88,5 +89,10 @@
     {
       "name": "Bengt Weiße"
     }
-  ]
+  ],
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
 }
