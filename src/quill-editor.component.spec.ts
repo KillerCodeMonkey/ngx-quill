@@ -305,6 +305,6 @@ describe('Advanced QuillEditorComponent', () => {
         expect(this.fixture.nativeElement.querySelector('[quill-editor-toolbar]').querySelector('span[title=Alignment]')).toBeDefined();
 
         const editorComponent = this.fixture.debugElement.children[0].componentInstance;
-        expect(editorComponent.required).toBe(true)
+        expect(editorComponent.required).toBe(true);
     }));
 });

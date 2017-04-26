@@ -1,5 +1,5 @@
 import { AfterViewInit, ElementRef, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { ControlValueAccessor, FormControl, Validator } from '@angular/forms';
+import { ControlValueAccessor, Validator } from '@angular/forms';
 export declare class QuillEditorComponent implements AfterViewInit, ControlValueAccessor, OnChanges, Validator {
     private elementRef;
     quillEditor: any;
@@ -51,7 +51,7 @@ export declare class QuillEditorComponent implements AfterViewInit, ControlValue
     writeValue(currentValue: any): void;
     registerOnChange(fn: Function): void;
     registerOnTouched(fn: Function): void;
-    validate(c: FormControl): {
+    validate(): {
         minLengthError?: {
             given: number;
             minLength: number;
