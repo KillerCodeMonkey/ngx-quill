@@ -3,7 +3,6 @@
 # compiled output
 /demo
 /tmp
-/bundles
 
 # dependencies
 /node_modules
