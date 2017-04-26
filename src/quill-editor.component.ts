@@ -104,7 +104,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     });
 
     if (this.content) {
-      this.quillEditor.pasteHTML(this.content)
+      this.quillEditor.pasteHTML(this.content);
     }
 
     this.onEditorCreated.emit(this.quillEditor);
@@ -207,7 +207,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     if (this.required && !textLength) {
       err.requiredError = {
         empty: true
-      }
+      };
 
       valid = false;
     }

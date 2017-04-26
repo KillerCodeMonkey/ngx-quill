@@ -14,7 +14,8 @@
   },
   "scripts": {
     "lint": "tslint --force \"src/**/*.ts\"",
-    "prepublish": "npm run build",
+    "prepublish": "npm run test && npm run build",
+    "postinstall": "npm run build",
     "build": "webpack --display-error-details && cp bundles/ngx-quill.umd.js bundles/index.js",
     "pretest": "npm run lint",
     "test": "karma start",
@@ -35,7 +36,7 @@
     "text editor"
   ],
   "main": "bundles/ngx-quill.umd.js",
-  "module": "index.js",
+  "module": "bundles/index.js",
   "typings": "index.d.ts",
   "dependencies": {
     "quill": "^1.2.0",
