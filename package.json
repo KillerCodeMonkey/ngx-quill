@@ -14,7 +14,7 @@
   },
   "scripts": {
     "lint": "tslint --force \"src/**/*.ts\"",
-    "prepublish": "npm run test && npm run build && npm run build:aot",
+    "prepare": "npm run test && npm run build && npm run build:aot",
     "build": "webpack --display-error-details && cp bundles/ngx-quill.umd.js bundles/index.js",
     "build:aot": "rm -rf aot && node_modules/.bin/ngc -p tsconfig-aot.json",
     "pretest": "npm run lint",
