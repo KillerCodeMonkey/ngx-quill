@@ -39,3 +39,4 @@ index.js.map
 src/*.js
 src/*.js.map
 aot
+bundles
