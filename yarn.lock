@@ -6,7 +6,7 @@
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@angular/common/-/common-4.0.1.tgz#df488eada842b2d841ded750712292b18387b5b0"
 
-"@angular/compiler-cli@^4.0.0-rc.5":
+"@angular/compiler-cli@^2.4.1 || ^4.0.0", "@angular/compiler-cli@^4.0.0-rc.5":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@angular/compiler-cli/-/compiler-cli-4.0.1.tgz#90c60d491c12e1da901a0aeb3990470aa96e9bfa"
   dependencies:
@@ -2412,6 +2412,10 @@ nan@^2.3.0:
 negotiator@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
+
+ng2-password-strength-bar@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/ng2-password-strength-bar/-/ng2-password-strength-bar-1.1.2.tgz#487421e9f38f8da100a020d391edd73189feb462"
 
 ngast@^0.0.15:
   version "0.0.15"
