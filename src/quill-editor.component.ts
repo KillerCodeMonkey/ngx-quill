@@ -67,7 +67,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   };
 
   @Input() theme: string;
-  @Input() modules: Object;
+  @Input() modules: { [index: string]: Object };
   @Input() readOnly: boolean;
   @Input() placeholder: string;
   @Input() maxLength: number;
@@ -87,7 +87,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
   ngAfterViewInit() {
     const toolbarElem = this.elementRef.nativeElement.querySelector('[quill-editor-toolbar]');
-    let modules = this.modules || this.defaultModules;
+    let modules: any = this.modules || this.defaultModules;
 
     if (toolbarElem) {
       modules['toolbar'] = toolbarElem;
