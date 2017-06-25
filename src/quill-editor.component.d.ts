@@ -32,7 +32,9 @@ export declare class QuillEditorComponent implements AfterViewInit, ControlValue
         }[])[];
     };
     theme: string;
-    modules: Object;
+    modules: {
+        [index: string]: Object;
+    };
     readOnly: boolean;
     placeholder: string;
     maxLength: number;
