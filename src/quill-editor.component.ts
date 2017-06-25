@@ -88,6 +88,11 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   ngAfterViewInit() {
     const toolbarElem = this.elementRef.nativeElement.querySelector('[quill-editor-toolbar]');
     let modules: any = this.modules || this.defaultModules;
+    let placeholder = 'Insert text here ...';
+
+    if (this.placeholder !== null && this.placeholder !== undefined) {
+      placeholder = this.placeholder.trim();
+    }
 
     if (toolbarElem) {
       modules['toolbar'] = toolbarElem;
@@ -97,7 +102,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
     this.quillEditor = new Quill(this.editorElem, {
       modules: modules,
-      placeholder: this.placeholder || 'Insert text here ...',
+      placeholder: placeholder,
       readOnly: this.readOnly || false,
       theme: this.theme || 'snow',
       formats: this.formats
