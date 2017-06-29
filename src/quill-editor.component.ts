@@ -123,8 +123,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
         editor: this.quillEditor,
         range: range,
         oldRange: oldRange,
-        source: source,
-        bounds: this.bounds || document.body
+        source: source
       });
 
       if (!range) {
