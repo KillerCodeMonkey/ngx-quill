@@ -48,9 +48,9 @@
   version "6.0.68"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.68.tgz#0c43b6b8b9445feb86a0fbd3457e3f4bc591e66d"
 
-"@types/quill@^0.0.29":
-  version "0.0.29"
-  resolved "https://registry.yarnpkg.com/@types/quill/-/quill-0.0.29.tgz#92d552354639bfa1a8188acf1cf23d69096b7a1a"
+"@types/quill@^0.0.31":
+  version "0.0.31"
+  resolved "https://registry.yarnpkg.com/@types/quill/-/quill-0.0.31.tgz#2f8bb609c3b5d0a7fa0ecb9c579967f3eec81e3e"
 
 abbrev@1, abbrev@1.0.x:
   version "1.0.9"
@@ -2412,10 +2412,6 @@ nan@^2.3.0:
 negotiator@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
-
-ng2-password-strength-bar@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/ng2-password-strength-bar/-/ng2-password-strength-bar-1.1.2.tgz#487421e9f38f8da100a020d391edd73189feb462"
 
 ngast@^0.0.15:
   version "0.0.15"

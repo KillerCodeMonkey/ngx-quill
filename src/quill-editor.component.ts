@@ -105,7 +105,8 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
       placeholder: placeholder,
       readOnly: this.readOnly || false,
       theme: this.theme || 'snow',
-      formats: this.formats
+      formats: this.formats,
+      bounds: this.bounds || document.body
     });
 
     if (this.content) {
@@ -122,8 +123,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
         editor: this.quillEditor,
         range: range,
         oldRange: oldRange,
-        source: source,
-        bounds: this.bounds || document.body
+        source: source
       });
 
       if (!range) {
