@@ -48,9 +48,9 @@
   version "6.0.68"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.68.tgz#0c43b6b8b9445feb86a0fbd3457e3f4bc591e66d"
 
-"@types/quill@^0.0.30":
-  version "0.0.30"
-  resolved "https://registry.yarnpkg.com/@types/quill/-/quill-0.0.30.tgz#2e6265c1faf71831eebfc8533d646dd27cbcf6d4"
+"@types/quill@^0.0.31":
+  version "0.0.31"
+  resolved "https://registry.yarnpkg.com/@types/quill/-/quill-0.0.31.tgz#2f8bb609c3b5d0a7fa0ecb9c579967f3eec81e3e"
 
 abbrev@1, abbrev@1.0.x:
   version "1.0.9"
