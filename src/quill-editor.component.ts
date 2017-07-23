@@ -164,7 +164,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
     if (this.quillEditor) {
       if (currentValue) {
-        this.quillEditor.pasteHTML(currentValue);
+        this.quillEditor.setContents(this.quillEditor.clipboard.convert(this.content));
         return;
       }
       this.quillEditor.setText('');
