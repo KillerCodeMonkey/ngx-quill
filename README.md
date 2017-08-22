@@ -91,6 +91,7 @@ packages: {
 };
 ```
 - theme - bubble/snow, default is `snow`
+- style - set a style object, e.g. `[style]="{height: '250px'}"
 - placeholder - placeholder text, default is `Insert text here ...`
 - bounds - boundary of the editor, default `document.body`
 - maxLength - add valdiation for maxlength - set model state to `invalid` and add `ng-invalid` class
