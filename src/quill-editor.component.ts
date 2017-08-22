@@ -17,6 +17,8 @@ import {
   ControlValueAccessor,
   Validator
 } from '@angular/forms';
+import { Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/platform-browser';
 
 import * as Quill from 'quill';
 
@@ -83,7 +85,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   onModelChange: Function = () => {};
   onModelTouched: Function = () => {};
 
-  constructor(private elementRef: ElementRef) { }
+  constructor(private elementRef: ElementRef, @Inject(DOCUMENT) private doc: any) { }
 
   ngAfterViewInit() {
     const toolbarElem = this.elementRef.nativeElement.querySelector('[quill-editor-toolbar]');
@@ -106,7 +108,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
       readOnly: this.readOnly || false,
       theme: this.theme || 'snow',
       formats: this.formats,
-      bounds: this.bounds || document.body
+      bounds: this.bounds || this.doc.body
     });
 
     if (this.content) {
