@@ -7,6 +7,7 @@ import {
   Input,
   OnChanges,
   Output,
+  Renderer2,
   SimpleChanges,
   ViewEncapsulation
 } from '@angular/core';
@@ -76,6 +77,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   @Input() minLength: number;
   @Input() required: boolean;
   @Input() formats: string[];
+  @Input() style: any = {};
   @Input() bounds: HTMLElement | string;
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter();
@@ -85,7 +87,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   onModelChange: Function = () => {};
   onModelTouched: Function = () => {};
 
-  constructor(private elementRef: ElementRef, @Inject(DOCUMENT) private doc: any) { }
+  constructor(private elementRef: ElementRef, @Inject(DOCUMENT) private doc: any, private renderer: Renderer2) { }
 
   ngAfterViewInit() {
     const toolbarElem = this.elementRef.nativeElement.querySelector('[quill-editor-toolbar]');
@@ -101,6 +103,12 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     }
     this.elementRef.nativeElement.insertAdjacentHTML('beforeend', '<div quill-editor-element></div>');
     this.editorElem = this.elementRef.nativeElement.querySelector('[quill-editor-element]');
+
+    if (this.style) {
+      Object.keys(this.style).forEach((key: string) => {
+        this.renderer.setStyle(this.editorElem, key, this.style[key]);
+      });
+    }
 
     this.quillEditor = new Quill(this.editorElem, {
       modules: modules,

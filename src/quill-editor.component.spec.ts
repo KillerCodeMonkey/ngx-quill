@@ -6,7 +6,7 @@ import { QuillEditorComponent } from '../src/quill-editor.component';
 
 @Component({
     template: `
-<quill-editor [(ngModel)]="title" [required]="required" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event);" (onSelectionChanged)="handleSelection($event);"></quill-editor>
+<quill-editor [(ngModel)]="title" [style]="{height: '30px'}" [required]="required" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event);" (onSelectionChanged)="handleSelection($event);"></quill-editor>
 `
 })
 class TestComponent {
@@ -116,6 +116,7 @@ describe('Advanced QuillEditorComponent', () => {
         this.fixture.whenStable().then(() => {
             expect(editorCmp.readOnly).toBe(true);
             expect(editorElem.nativeElement.querySelectorAll('div.ql-container.ql-disabled').length).toBe(1);
+            expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.height).toBe('30px');
         });
     }));
 

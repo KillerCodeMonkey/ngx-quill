@@ -1,8 +1,9 @@
-import { AfterViewInit, ElementRef, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { AfterViewInit, ElementRef, EventEmitter, OnChanges, Renderer2, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor, Validator } from '@angular/forms';
 export declare class QuillEditorComponent implements AfterViewInit, ControlValueAccessor, OnChanges, Validator {
     private elementRef;
     private doc;
+    private renderer;
     quillEditor: any;
     editorElem: HTMLElement;
     emptyArray: any[];
@@ -42,13 +43,14 @@ export declare class QuillEditorComponent implements AfterViewInit, ControlValue
     minLength: number;
     required: boolean;
     formats: string[];
+    style: any;
     bounds: HTMLElement | string;
     onEditorCreated: EventEmitter<any>;
     onContentChanged: EventEmitter<any>;
     onSelectionChanged: EventEmitter<any>;
     onModelChange: Function;
     onModelTouched: Function;
-    constructor(elementRef: ElementRef, doc: any);
+    constructor(elementRef: ElementRef, doc: any, renderer: Renderer2);
     ngAfterViewInit(): void;
     ngOnChanges(changes: SimpleChanges): void;
     writeValue(currentValue: any): void;
