@@ -78,6 +78,8 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   @Input() required: boolean;
   @Input() formats: string[];
   @Input() style: any = {};
+  @Input() strict: boolean = true;
+  @Input() scrollingContainer: HTMLElement | string;
   @Input() bounds: HTMLElement | string;
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter();
@@ -116,7 +118,9 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
       readOnly: this.readOnly || false,
       theme: this.theme || 'snow',
       formats: this.formats,
-      bounds: this.bounds || this.doc.body
+      bounds: this.bounds || this.doc.body,
+      strict: this.strict,
+      scrollingContainer: this.scrollingContainer
     });
 
     if (this.content) {

@@ -38,6 +38,7 @@ export declare class QuillEditorComponent implements AfterViewInit, ControlValue
         [index: string]: Object;
     };
     readOnly: boolean;
+    scrollingContainer: string;
     placeholder: string;
     maxLength: number;
     minLength: number;

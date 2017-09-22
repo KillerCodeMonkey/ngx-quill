@@ -97,6 +97,8 @@ packages: {
 - maxLength - add valdiation for maxlength - set model state to `invalid` and add `ng-invalid` class
 - minLength - add valdiation for minlength - set model state to `invalid` and add `ng-invalid` class, only set invalid if editor text not empty --> if you want to check if text is required --> use the required attribute
 - required - add validation as a required field - `[required]="true"` - default: false, boolean expected (no strings!)
+- strict - default: true, sets editor in strict mode
+- scrollingContainer - default '.ql-editor', allows to set scrolling container
 - possbility to create a custom toolbar via projection slot `[quill-editor-toolbar]`:
 ```
 <quill-editor>
