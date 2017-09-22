@@ -12,8 +12,8 @@ ngx-quill is the new angular (>=2) implementation of ngQuill.
 
 
 ## Installation
-- install QuillJS 1.1.9 `npm install ngx-quill`
-- include bubble.css, snow.css in your index.html
+- `npm install ngx-quill`
+- include theme stylings: bubble.css, snow.css of quilljs in your index.html
 
 ### For standard webpack and tsc builds
 - import `QuillModule` from `ngx-quill`:
