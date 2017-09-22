@@ -48,9 +48,9 @@
   version "6.0.68"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.68.tgz#0c43b6b8b9445feb86a0fbd3457e3f4bc591e66d"
 
-"@types/quill@^0.0.31":
-  version "0.0.31"
-  resolved "https://registry.yarnpkg.com/@types/quill/-/quill-0.0.31.tgz#2f8bb609c3b5d0a7fa0ecb9c579967f3eec81e3e"
+"@types/quill@^1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@types/quill/-/quill-1.3.2.tgz#70452a25d31f5940e7de7431d632f1424b93dfb1"
 
 abbrev@1, abbrev@1.0.x:
   version "1.0.9"
@@ -1035,9 +1035,9 @@ eventemitter3@1.x.x:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-1.2.0.tgz#1c86991d816ad1e504750e73874224ecf3bec508"
 
-eventemitter3@~2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-2.0.2.tgz#20ce4891909ce9f35b088c94fab40e2c96f473ac"
+eventemitter3@~2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-2.0.3.tgz#b5e1079b59fb5e1ba2771c0a993be060a58c99ba"
 
 events@^1.0.0:
   version "1.1.1"
@@ -1133,6 +1133,10 @@ express@^4.13.3:
 extend@^3.0.0, extend@~3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.0.tgz#5a474353b9f3353ddd8176dfd37b91c83a46f1d4"
+
+extend@^3.0.1, extend@~3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.1.tgz#a755ea7bc1adfcc5a31ce7e762dbaadc5e636444"
 
 external-editor@^1.1.0:
   version "1.1.1"
@@ -2639,9 +2643,9 @@ pako@~0.2.0:
   version "0.2.9"
   resolved "https://registry.yarnpkg.com/pako/-/pako-0.2.9.tgz#f3f7522f4ef782348da8161bad9ecfd51bf83a75"
 
-parchment@1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/parchment/-/parchment-1.0.8.tgz#13ec6becce6c167481f1772bd51a5906de75a038"
+parchment@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/parchment/-/parchment-1.1.0.tgz#c79387a80fc4af4ba8947b94fc55a835f62850a5"
 
 parse-glob@^3.0.4:
   version "3.0.4"
@@ -2829,24 +2833,24 @@ querystringify@0.0.x:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/querystringify/-/querystringify-0.0.4.tgz#0cf7f84f9463ff0ae51c4c4b142d95be37724d9c"
 
-quill-delta@3.5.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/quill-delta/-/quill-delta-3.5.0.tgz#5b67e685da60c34eabed4449c416c74aab89157b"
+quill-delta@3.6.1:
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/quill-delta/-/quill-delta-3.6.1.tgz#8f8f89ac1fb7b0b52ed3a31cf6554b1c4291b64d"
   dependencies:
     deep-equal "^1.0.1"
-    extend "^3.0.0"
+    extend "^3.0.1"
     fast-diff "1.1.1"
 
-quill@^1.2.0:
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/quill/-/quill-1.2.3.tgz#8fc62ed66d8173edf9bc1d9fb777dd74eb0632ee"
+quill@^1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/quill/-/quill-1.3.2.tgz#fe396b4fa1d1439d76956ff92218a0cb90c09f3f"
   dependencies:
     clone "~2.1.1"
     deep-equal "~1.0.1"
-    eventemitter3 "~2.0.2"
-    extend "~3.0.0"
-    parchment "1.0.8"
-    quill-delta "3.5.0"
+    eventemitter3 "~2.0.3"
+    extend "~3.0.1"
+    parchment "1.1.0"
+    quill-delta "3.6.1"
 
 randomatic@^1.1.3:
   version "1.1.6"
