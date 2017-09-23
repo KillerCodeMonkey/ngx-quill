@@ -44,8 +44,7 @@ if (isTest && !isTestWatch) {
       loader: 'istanbul-instrumenter-loader',
       options: {
         embedSource: true,
-        noAutoWrap: true,
-        esModules: true
+        noAutoWrap: true
       }
     }],
     exclude: [
