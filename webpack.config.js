@@ -1,11 +1,13 @@
-const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals')
+const path = require('path')
 
 module.exports = {
-  entry: './index',
+  entry: {
+    'ngx-quill': path.resolve(__dirname, 'index.ts')
+  },
 
   output: {
-    path: './bundles',
+    path: path.resolve(__dirname, 'bundles'),
     libraryTarget: 'umd',
     library: 'ngx-quill',
     filename: 'ngx-quill.umd.js'
@@ -18,16 +20,19 @@ module.exports = {
   },
 
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.ts$/,
-        loaders: ['awesome-typescript-loader?declaration=false']
+        use: [{
+          loader: 'awesome-typescript-loader',
+          options: {
+            declaration: false
+          }
+        }]
       }
     ]
   },
 
   plugins: [
-      new webpack.NoErrorsPlugin(),
-      new webpack.optimize.DedupePlugin()
   ]
-};
+}
