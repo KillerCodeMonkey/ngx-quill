@@ -1,11 +1,12 @@
-var webpackConfig = require('./webpack.config.test')
-var karmaWebpack = require('karma-webpack')
+const webpackConfig = require('./webpack.config.test')
+const karmaWebpack = require('karma-webpack')
+const path = require('path')
 
-var ENV = process.env.npm_lifecycle_event
-var isTestWatch = ENV === 'test-watch'
+const ENV = process.env.npm_lifecycle_event
+const isTestWatch = ENV === 'test-watch'
 
 module.exports = function (config) {
-  var _config = {
+  const _config = {
     basePath: '',
 
     plugins: ['karma-coverage-istanbul-reporter', 'karma-phantomjs-launcher', 'karma-mocha-reporter', karmaWebpack, 'karma-sourcemap-loader', 'karma-jasmine'],
@@ -43,20 +44,8 @@ module.exports = function (config) {
     _config.reporters.push('coverage-istanbul')
 
     _config.coverageIstanbulReporter = {
-      dir: 'coverage/',
-      reporters: [{
-        type: 'html',
-        dir: 'coverage',
-        subdir: 'html'
-      }, {
-        type: 'json',
-        dir: 'coverage',
-        subdir: 'json',
-        file: 'coverage-final.json'
-      },
-      {
-        type: 'text-summary'
-      }]
+      fixWebpackSourcePaths: true,
+      reports: ['text-summary']
     }
   }
 
