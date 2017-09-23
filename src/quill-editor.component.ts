@@ -21,7 +21,8 @@ import {
 import { Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/platform-browser';
 
-import * as Quill from 'quill';
+import * as QuillNamespace from "quill";
+let Quill: any = QuillNamespace;
 
 @Component({
   selector: 'quill-editor',
