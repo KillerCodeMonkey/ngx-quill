@@ -21,7 +21,7 @@ import {
 import { Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/platform-browser';
 
-const Quill = require('quill');
+import * as Quill from 'quill';
 
 @Component({
   selector: 'quill-editor',
