@@ -99,6 +99,7 @@ packages: {
 - required - add validation as a required field - `[required]="true"` - default: false, boolean expected (no strings!)
 - strict - default: true, sets editor in strict mode
 - scrollingContainer - default '.ql-editor', allows to set scrolling container
+- use custom-options for adding for example custom font sizes (see example in demo.html) --> this overwrites this options **globally** !!!
 - possbility to create a custom toolbar via projection slot `[quill-editor-toolbar]`:
 ```
 <quill-editor>

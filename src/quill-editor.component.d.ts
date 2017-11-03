@@ -1,5 +1,9 @@
 import { AfterViewInit, ElementRef, EventEmitter, OnChanges, Renderer2, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor, Validator } from '@angular/forms';
+export interface CustomOption {
+    import: string;
+    whitelist: Array<any>;
+}
 export declare class QuillEditorComponent implements AfterViewInit, ControlValueAccessor, OnChanges, Validator {
     private elementRef;
     private doc;
@@ -47,6 +51,7 @@ export declare class QuillEditorComponent implements AfterViewInit, ControlValue
     strict: boolean;
     scrollingContainer: HTMLElement | string;
     bounds: HTMLElement | string;
+    customOptions: CustomOption[];
     onEditorCreated: EventEmitter<any>;
     onContentChanged: EventEmitter<any>;
     onSelectionChanged: EventEmitter<any>;
