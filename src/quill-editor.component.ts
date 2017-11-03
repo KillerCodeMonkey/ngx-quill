@@ -24,6 +24,11 @@ import { DOCUMENT } from '@angular/platform-browser';
 import * as QuillNamespace from 'quill';
 let Quill: any = QuillNamespace;
 
+export interface CustomOption {
+  import: string;
+  whitelist: Array<any>;
+}
+
 @Component({
   selector: 'quill-editor',
   template: `
@@ -82,6 +87,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   @Input() strict: boolean = true;
   @Input() scrollingContainer: HTMLElement | string;
   @Input() bounds: HTMLElement | string;
+  @Input() customOptions: CustomOption[] = [];
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter();
   @Output() onContentChanged: EventEmitter<any> = new EventEmitter();
@@ -112,6 +118,12 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
         this.renderer.setStyle(this.editorElem, key, this.style[key]);
       });
     }
+
+    this.customOptions.forEach(customOption => {
+      const newCustomOption = Quill.import(customOption.import);
+      newCustomOption.whitelist = customOption.whitelist;
+      Quill.register(newCustomOption, true);
+    });
 
     this.quillEditor = new Quill(this.editorElem, {
       modules: modules,
