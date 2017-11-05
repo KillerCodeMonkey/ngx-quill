@@ -41,4 +41,3 @@ src/*.js.map
 aot
 bundles
 dist
-.ng_pkg_build

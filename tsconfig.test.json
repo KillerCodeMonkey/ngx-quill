@@ -6,18 +6,12 @@
     "sourceMap": false,
     "inlineSourceMap": true,
     "noImplicitAny": true,
-    "emitDecoratorMetadata": true,
     "noUnusedLocals": true,
-    "outDir": "./dist",
     "declaration": true,
     "experimentalDecorators": true,
-    "lib": ["es2016", "dom"],
+    "lib": ["es2015", "dom"],
     "suppressImplicitAnyIndexErrors": true
   },
-  "type": [
-    "node",
-    "core-js"
-  ],
   "files": [
     "index.ts",
     "./src/quill-editor.component.ts",
@@ -25,9 +19,7 @@
   ],
   "exclude": [
     "node_modules",
-    "bundles",
-    "aot",
-    "dist"
+    "bundles"
   ],
   "angularCompilerOptions": {
     "strictMetadataEmit": true,
