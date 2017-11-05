@@ -16,7 +16,7 @@ ngx-quill is the new angular (>=2) implementation of ngQuill.
 - include theme stylings: bubble.css, snow.css of quilljs in your index.html
 
 ### For standard webpack and tsc builds
-**With Angular CLI v1.5.0, you must serve your project with the AOT option.**
+**With Angular CLI v1.5.0 or higher, you must serve your project with the AOT option.**
 ```
 ng serve --aot
 ```
