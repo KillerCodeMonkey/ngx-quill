@@ -14,9 +14,8 @@
   },
   "scripts": {
     "lint": "tslint --force \"src/**/*.ts\"",
-    "prepare": "npm run test && npm run build && npm run build:aot",
-    "build": "webpack --display-error-details && cp bundles/ngx-quill.umd.js bundles/index.js",
-    "build:aot": "rm -rf aot && node_modules/.bin/ngc -p tsconfig-aot.json",
+    "prepare": "npm run test && npm run build",
+    "build": "node_modules/.bin/ng-packagr -p ng-package.json && node_modules/.bin/ngc -p tsconfig-aot.json",
     "pretest": "npm run lint",
     "test": "./node_modules/.bin/karma start",
     "test-watch": "./node_modules/.bin/karma start --no-single-run --auto-watch"
@@ -69,6 +68,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.5",
     "loader-utils": "^1.1.0",
+    "ng-packagr": "^1.5.0",
     "reflect-metadata": "^0.1.10",
     "rxjs": "^5.0.1 || ^5.2.0 || ^5.5.2",
     "source-map-loader": "^0.2.3",

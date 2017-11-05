@@ -40,3 +40,4 @@ src/*.js
 src/*.js.map
 aot
 bundles
+dist
