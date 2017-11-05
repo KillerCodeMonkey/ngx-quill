@@ -11,7 +11,12 @@
     "suppressImplicitAnyIndexErrors": true,
     "outDir": "./dist/aot"
   },
-
+  "type": [
+    "quill",
+    "jasmine",
+    "node",
+    "core-js"
+  ],
   "files": [
     "./src/quill-editor.component.ts",
     "./src/quill.module.ts",

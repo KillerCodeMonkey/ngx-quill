@@ -70,7 +70,6 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.5",
     "loader-utils": "^1.1.0",
-    "ng-packagr": "^1.5.0",
     "reflect-metadata": "^0.1.10",
     "rxjs": "^5.0.1 || ^5.2.0 || ^5.5.2",
     "source-map-loader": "^0.2.3",
