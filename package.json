@@ -13,7 +13,7 @@
     "url": "https://github.com/KillerCodeMonkey/ngx-quill"
   },
   "scripts": {
-    "lint": "tslint --force \"src/**/*.ts\"",
+    "lint": "node_modules/.bin/tslint --force src/**/*.ts",
     "prepare": "npm run test && npm run build",
     "build": "node_modules/.bin/ng-packagr -p ng-package.json && node_modules/.bin/ngc -p tsconfig-aot.json",
     "pretest": "npm run lint",

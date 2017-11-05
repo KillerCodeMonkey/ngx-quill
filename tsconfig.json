@@ -8,11 +8,14 @@
     "noImplicitAny": true,
     "emitDecoratorMetadata": true,
     "noUnusedLocals": true,
-    "declaration": true,
     "experimentalDecorators": true,
-    "lib": ["es2015", "dom"],
+    "lib": ["es2016", "dom"],
     "suppressImplicitAnyIndexErrors": true
   },
+  "type": [
+    "node",
+    "core-js"
+  ],
   "files": [
     "index.ts",
     "./src/quill-editor.component.ts",
