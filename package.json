@@ -1,7 +1,7 @@
 {
   "name": "ngx-quill",
   "license": "MIT",
-  "version": "2.0.1-11",
+  "version": "2.0.1-13",
   "author": {
     "name": "Bengt Weiße"
   },
@@ -17,7 +17,7 @@
     "bundle": "webpack --display-error-details && cp dist/bundles/ngx-quill.umd.js dist/bundles/index.js",
     "copyStaticToDist": "cp ./package.json ./dist && cp ./README.md ./dist && cp ./LICENSE.txt ./dist",
     "build": "rm -rf ./dist && tsc && npm run bundle && npm run build:aot && npm run copyStaticToDist",
-    "build:aot": "rm -rf aot && node_modules/.bin/ngc -p tsconfig-aot.json",
+    "build:aot": "rm -rf aot && node_modules/.bin/ngc -p tsconfig-aot.json && rm -rf ./dist/aot/node_modules",
     "pretest": "npm run lint",
     "test": "./node_modules/.bin/karma start",
     "test-watch": "./node_modules/.bin/karma start --no-single-run --auto-watch"

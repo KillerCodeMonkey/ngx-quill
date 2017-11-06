@@ -11,20 +11,17 @@
     "suppressImplicitAnyIndexErrors": true,
     "outDir": "./dist/aot"
   },
-  "type": [
-    "quill",
-    "jasmine",
-    "node",
-    "core-js"
-  ],
   "files": [
     "./src/quill-editor.component.ts",
     "./src/quill.module.ts",
     "./index.ts"
   ],
-
+  "exclude": [
+    "node_modules"
+  ],
   "angularCompilerOptions": {
-   "skipMetadataEmit" : true,
-   "preserveWhitespaces": false
+    "strictMetadataEmit" : true,
+    "skipMetadataEmit" : true,
+    "preserveWhitespaces": false
  }
 }
