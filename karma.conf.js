@@ -1,6 +1,5 @@
 const webpackConfig = require('./webpack.config.test')
 const karmaWebpack = require('karma-webpack')
-const path = require('path')
 
 const ENV = process.env.npm_lifecycle_event
 const isTestWatch = ENV === 'test-watch'

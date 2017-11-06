@@ -16,13 +16,11 @@ if (isTest) {
   _config.devtool = 'inline-source-map'
 }
 
-let atlOptions = ''
+let atlOptions = {}
 if (isTest && !isTestWatch) {
   // awesome-typescript-loader needs to output inlineSourceMap for code coverage to work with source maps.
-  atlOptions = {
-    inlineSourceMap: true,
-    sourceMap: false
-  }
+  atlOptions.inlineSourceMap = true
+  atlOptions.sourceMap = false
 }
 _config.module = {
   rules: []

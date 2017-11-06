@@ -32,3 +32,5 @@ tslint.json
 #System Files
 .DS_Store
 Thumbs.db
+*.ts
+**.*.ts

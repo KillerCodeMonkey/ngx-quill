@@ -7,7 +7,7 @@ module.exports = {
   },
 
   output: {
-    path: path.resolve(__dirname, 'bundles'),
+    path: path.resolve(__dirname, 'dist', 'bundles'),
     libraryTarget: 'umd',
     library: 'ngx-quill',
     filename: 'ngx-quill.umd.js'
