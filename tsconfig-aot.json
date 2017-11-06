@@ -9,7 +9,7 @@
     "lib": ["es2015", "dom"],
     "noImplicitAny": true,
     "suppressImplicitAnyIndexErrors": true,
-    "outDir": "./dist/aot"
+    "outDir": "./dist"
   },
   "files": [
     "./src/quill-editor.component.ts",
@@ -21,7 +21,7 @@
   ],
   "angularCompilerOptions": {
     "strictMetadataEmit" : true,
-    "skipMetadataEmit" : true,
+    "skipMetadataEmit" : false,
     "preserveWhitespaces": false
  }
 }
