@@ -183,6 +183,8 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   ngOnChanges(changes: SimpleChanges) {
     if (changes['readOnly'] && this.quillEditor) {
       this.quillEditor.enable(!changes['readOnly'].currentValue);
+    } else if (changes['placeholder'] && this.quillEditor) {
+      this.quillEditor.root.dataset.placeholder = changes['placeholder'].currentValue;
     }
   }
 
