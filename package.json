@@ -1,7 +1,7 @@
 {
   "name": "ngx-quill",
   "license": "MIT",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "author": {
     "name": "Bengt Weiße"
   },
@@ -39,7 +39,7 @@
   "typings": "index.d.ts",
   "dependencies": {
     "@types/quill": "1.3.3",
-    "quill": "1.3.4"
+    "quill": "^1.3.5"
   },
   "peerDependencies": {
     "@angular/core": "^5.0.0",
