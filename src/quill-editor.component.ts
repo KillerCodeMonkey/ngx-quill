@@ -180,9 +180,15 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['readOnly'] && this.quillEditor) {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!this.quillEditor) {
+      return null;
+    }
+    if (changes['readOnly']) {
       this.quillEditor.enable(!changes['readOnly'].currentValue);
+    }
+    if (changes['placeholder']) {
+      this.quillEditor.root.dataset.placeholder = changes['placeholder'].currentValue;
     }
   }
 
