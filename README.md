@@ -34,7 +34,7 @@ import { QuillModule } from 'ngx-quill'
 class YourModule { ... }
 ```
 - use `<quill-editor></quill-editor>` in your templates to add a default quill editor
-- do not forget to include quill + theme css in your buildproess, module or index.html!
+- do not forget to include quill + theme css in your buildprocess, module or index.html!
 
 ### For SystemJS builds (Config)
 - add quill and ngx-quill to your `paths`:
