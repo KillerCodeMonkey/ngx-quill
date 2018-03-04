@@ -5,6 +5,7 @@ import {
   EventEmitter,
   forwardRef,
   Input,
+  NgZone,
   OnChanges,
   Output,
   Renderer2,
@@ -96,7 +97,12 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   onModelChange: Function = () => {};
   onModelTouched: Function = () => {};
 
-  constructor(private elementRef: ElementRef, @Inject(DOCUMENT) private doc: any, private renderer: Renderer2) {}
+  constructor(
+    private elementRef: ElementRef,
+    @Inject(DOCUMENT) private doc: any,
+    private renderer: Renderer2,
+    private zone: NgZone
+  ) {}
 
   ngAfterViewInit() {
     const toolbarElem = this.elementRef.nativeElement.querySelector('[quill-editor-toolbar]');
@@ -146,16 +152,18 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
     // mark model as touched if editor lost focus
     this.quillEditor.on('selection-change', (range: any, oldRange: any, source: string) => {
-      this.onSelectionChanged.emit({
-        editor: this.quillEditor,
-        range: range,
-        oldRange: oldRange,
-        source: source
-      });
+      this.zone.run(() => {
+        this.onSelectionChanged.emit({
+          editor: this.quillEditor,
+          range: range,
+          oldRange: oldRange,
+          source: source
+        });
 
-      if (!range) {
-        this.onModelTouched();
-      }
+        if (!range) {
+          this.onModelTouched();
+        }
+      });
     });
 
     // update model if text changes
@@ -167,15 +175,17 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
           html = null;
       }
 
-      this.onModelChange(html);
+      this.zone.run(() => {
+        this.onModelChange(html);
 
-      this.onContentChanged.emit({
-        editor: this.quillEditor,
-        html: html,
-        text: text,
-        delta: delta,
-        oldDelta: oldDelta,
-        source: source
+        this.onContentChanged.emit({
+          editor: this.quillEditor,
+          html: html,
+          text: text,
+          delta: delta,
+          oldDelta: oldDelta,
+          source: source
+        });
       });
     });
   }
