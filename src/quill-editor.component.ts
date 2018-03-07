@@ -35,44 +35,50 @@ export interface CustomOption {
   template: `
   <ng-content select="[quill-editor-toolbar]"></ng-content>
 `,
-  providers: [{
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => QuillEditorComponent),
-    multi: true
-  }, {
-    provide: NG_VALIDATORS,
-    useExisting: forwardRef(() => QuillEditorComponent),
-    multi: true
-  }],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => QuillEditorComponent),
+      multi: true
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => QuillEditorComponent),
+      multi: true
+    }
+  ],
   encapsulation: ViewEncapsulation.None
 })
-export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor, OnChanges, Validator {
-
+export class QuillEditorComponent
+  implements AfterViewInit, ControlValueAccessor, OnChanges, Validator {
   quillEditor: any;
   editorElem: HTMLElement;
   emptyArray: any[] = [];
   content: any;
   defaultModules = {
     toolbar: [
-      ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+      ['bold', 'italic', 'underline', 'strike'], // toggled buttons
       ['blockquote', 'code-block'],
 
-      [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-      [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-      [{ 'direction': 'rtl' }],                         // text direction
+      [{ header: 1 }, { header: 2 }], // custom button values
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+      [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+      [{ direction: 'rtl' }], // text direction
 
-      [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
 
-      [{ 'color': this.emptyArray.slice() }, { 'background': this.emptyArray.slice() }],          // dropdown with defaults from theme
-      [{ 'font': this.emptyArray.slice() }],
-      [{ 'align': this.emptyArray.slice() }],
+      [
+        { color: this.emptyArray.slice() },
+        { background: this.emptyArray.slice() }
+      ], // dropdown with defaults from theme
+      [{ font: this.emptyArray.slice() }],
+      [{ align: this.emptyArray.slice() }],
 
-      ['clean'],                                         // remove formatting button
+      ['clean'], // remove formatting button
 
-      ['link', 'image', 'video']                         // link and image, video
+      ['link', 'image', 'video'] // link and image, video
     ]
   };
 
@@ -86,8 +92,8 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   @Input() formats: string[];
   @Input() style: any = {};
   @Input() strict: boolean = true;
-  @Input() scrollingContainer: HTMLElement | string;
-  @Input() bounds: HTMLElement | string;
+  @Input() scrollingContainer: HTMLElement | string;
+  @Input() bounds: HTMLElement | string;
   @Input() customOptions: CustomOption[] = [];
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter();
@@ -97,6 +103,19 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   onModelChange: Function = () => {};
   onModelTouched: Function = () => {};
 
+  @Input()
+  valueGetter: Function = (quillEditor: any, editorElement: HTMLElement) => {
+    let html: string | null = editorElement.children[0].innerHTML;
+    if (html === '<p><br></p>' || html === '<div><br><div>') {
+      html = null;
+    }
+    return html;
+  };
+  @Input()
+  valueSetter: Function = (quillEditor: any, value: any) => {
+    return quillEditor.clipboard.convert(value);
+  };
+
   constructor(
     private elementRef: ElementRef,
     @Inject(DOCUMENT) private doc: any,
@@ -105,7 +124,9 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   ) {}
 
   ngAfterViewInit() {
-    const toolbarElem = this.elementRef.nativeElement.querySelector('[quill-editor-toolbar]');
+    const toolbarElem = this.elementRef.nativeElement.querySelector(
+      '[quill-editor-toolbar]'
+    );
     let modules: any = this.modules || this.defaultModules;
     let placeholder = 'Insert text here ...';
 
@@ -116,8 +137,13 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     if (toolbarElem) {
       modules['toolbar'] = toolbarElem;
     }
-    this.elementRef.nativeElement.insertAdjacentHTML('beforeend', '<div quill-editor-element></div>');
-    this.editorElem = this.elementRef.nativeElement.querySelector('[quill-editor-element]');
+    this.elementRef.nativeElement.insertAdjacentHTML(
+      'beforeend',
+      '<div quill-editor-element></div>'
+    );
+    this.editorElem = this.elementRef.nativeElement.querySelector(
+      '[quill-editor-element]'
+    );
 
     if (this.style) {
       Object.keys(this.style).forEach((key: string) => {
@@ -151,43 +177,51 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     this.onEditorCreated.emit(this.quillEditor);
 
     // mark model as touched if editor lost focus
-    this.quillEditor.on('selection-change', (range: any, oldRange: any, source: string) => {
-      this.zone.run(() => {
-        this.onSelectionChanged.emit({
-          editor: this.quillEditor,
-          range: range,
-          oldRange: oldRange,
-          source: source
-        });
+    this.quillEditor.on(
+      'selection-change',
+      (range: any, oldRange: any, source: string) => {
+        this.zone.run(() => {
+          this.onSelectionChanged.emit({
+            editor: this.quillEditor,
+            range: range,
+            oldRange: oldRange,
+            source: source
+          });
 
-        if (!range) {
-          this.onModelTouched();
-        }
-      });
-    });
+          if (!range) {
+            this.onModelTouched();
+          }
+        });
+      }
+    );
 
     // update model if text changes
-    this.quillEditor.on('text-change', (delta: any, oldDelta: any, source: string) => {
-      let html: (string | null) = this.editorElem.children[0].innerHTML;
-      const text = this.quillEditor.getText();
+    this.quillEditor.on(
+      'text-change',
+      (delta: any, oldDelta: any, source: string) => {
+        const text = this.quillEditor.getText();
 
-      if (html === '<p><br></p>') {
+        let html: string | null = this.editorElem.children[0].innerHTML;
+        if (html === '<p><br></p>' || html === '<div><br><div>') {
           html = null;
-      }
+        }
 
-      this.zone.run(() => {
-        this.onModelChange(html);
+        this.zone.run(() => {
+          this.onModelChange(
+            this.valueGetter(this.quillEditor, this.editorElem)
+          );
 
-        this.onContentChanged.emit({
-          editor: this.quillEditor,
-          html: html,
-          text: text,
-          delta: delta,
-          oldDelta: oldDelta,
-          source: source
+          this.onContentChanged.emit({
+            editor: this.quillEditor,
+            html: html,
+            text: text,
+            delta: delta,
+            oldDelta: oldDelta,
+            source: source
+          });
         });
-      });
-    });
+      }
+    );
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -198,7 +232,8 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
       this.quillEditor.enable(!changes['readOnly'].currentValue);
     }
     if (changes['placeholder']) {
-      this.quillEditor.root.dataset.placeholder = changes['placeholder'].currentValue;
+      this.quillEditor.root.dataset.placeholder =
+        changes['placeholder'].currentValue;
     }
   }
 
@@ -207,7 +242,9 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
     if (this.quillEditor) {
       if (currentValue) {
-        this.quillEditor.setContents(this.quillEditor.clipboard.convert(this.content));
+        this.quillEditor.setContents(
+          this.valueSetter(this.quillEditor, this.content)
+        );
         return;
       }
       this.quillEditor.setText('');
@@ -228,11 +265,11 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     }
 
     let err: {
-      minLengthError?: {given: number, minLength: number};
-      maxLengthError?: {given: number, maxLength: number};
-      requiredError?: {empty: boolean}
-    } = {},
-    valid = true;
+        minLengthError?: { given: number; minLength: number };
+        maxLengthError?: { given: number; maxLength: number };
+        requiredError?: { empty: boolean };
+      } = {},
+      valid = true;
 
     const textLength = this.quillEditor.getText().trim().length;
 
