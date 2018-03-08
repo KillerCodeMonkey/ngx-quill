@@ -99,12 +99,8 @@ export class QuillEditorComponent
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter();
   @Output() onContentChanged: EventEmitter<any> = new EventEmitter();
   @Output() onSelectionChanged: EventEmitter<any> = new EventEmitter();
-
-  onModelChange: Function = () => {};
-  onModelTouched: Function = () => {};
-
   @Input()
-  valueGetter: Function = (quillEditor: any, editorElement: HTMLElement) => {
+  valueGetter = (quillEditor: any, editorElement: HTMLElement): any => {
     let html: string | null = editorElement.children[0].innerHTML;
     if (html === '<p><br></p>' || html === '<div><br><div>') {
       html = null;
@@ -112,9 +108,12 @@ export class QuillEditorComponent
     return html;
   };
   @Input()
-  valueSetter: Function = (quillEditor: any, value: any) => {
+  valueSetter = (quillEditor: any, value: any): any => {
     return quillEditor.clipboard.convert(value);
   };
+
+  onModelChange: Function = () => {};
+  onModelTouched: Function = () => {};
 
   constructor(
     private elementRef: ElementRef,
@@ -199,6 +198,7 @@ export class QuillEditorComponent
     this.quillEditor.on(
       'text-change',
       (delta: any, oldDelta: any, source: string) => {
+
         const text = this.quillEditor.getText();
 
         let html: string | null = this.editorElem.children[0].innerHTML;
