@@ -137,7 +137,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
       readOnly: this.readOnly || false,
       theme: this.theme || 'snow',
       formats: this.formats,
-      bounds: this.bounds || this.doc.body,
+      bounds: this.bounds ? (this.bounds === 'self' ? this.editorElem : this.bounds) : this.doc.body,
       strict: this.strict,
       scrollingContainer: this.scrollingContainer
     });
