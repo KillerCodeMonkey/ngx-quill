@@ -55,6 +55,7 @@ export class QuillEditorComponent
   editorElem: HTMLElement;
   emptyArray: any[] = [];
   content: any;
+  isFocused: boolean;
   defaultModules = {
     toolbar: [
       ['bold', 'italic', 'underline', 'strike'], // toggled buttons
@@ -79,7 +80,21 @@ export class QuillEditorComponent
       ['clean'], // remove formatting button
 
       ['link', 'image', 'video'] // link and image, video
-    ]
+    ],
+    // Overwrite tab keyup to allow tabIndex change (focus the next input)
+    // and emit blur event
+    keyboard: {
+      bindings: {
+        tab: {
+          key: 9,
+          handler: () => {
+            this.isFocused = false;
+            this.blur.emit(this.quillEditor);
+            return true;
+          }
+        },
+      }
+    }
   };
 
   @Input() theme: string;
@@ -96,6 +111,9 @@ export class QuillEditorComponent
   @Input() bounds: HTMLElement | string;
   @Input() customOptions: CustomOption[] = [];
 
+  // Emit blur & focus events to allow binding as in regular inputs
+  @Output() blur: EventEmitter<any> = new EventEmitter();
+  @Output() focus: EventEmitter<any> = new EventEmitter();
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter();
   @Output() onContentChanged: EventEmitter<any> = new EventEmitter();
   @Output() onSelectionChanged: EventEmitter<any> = new EventEmitter();
@@ -173,55 +191,75 @@ export class QuillEditorComponent
       this.quillEditor.history.clear();
     }
 
+    // Set tabIndex = -1 to all toolbar options to avoid focus on it
+    // and jump directly to the text input.
+    this.elementRef
+          .nativeElement
+          .querySelector('.ql-toolbar')
+          .querySelectorAll('button')
+          .forEach(element => {
+            element.tabIndex = -1;
+          });
+
     this.onEditorCreated.emit(this.quillEditor);
 
     // mark model as touched if editor lost focus
-    this.quillEditor.on(
-      'selection-change',
-      (range: any, oldRange: any, source: string) => {
-        this.zone.run(() => {
-          this.onSelectionChanged.emit({
-            editor: this.quillEditor,
-            range: range,
-            oldRange: oldRange,
-            source: source
-          });
+    this.quillEditor
+          .on('selection-change',
+              (range: any, oldRange: any, source: string) => {
+                this.zone.run(() => {
+                  this.onSelectionChanged.emit({
+                    editor: this.quillEditor,
+                    range: range,
+                    oldRange: oldRange,
+                    source: source
+                  });
 
-          if (!range) {
-            this.onModelTouched();
-          }
-        });
-      }
-    );
+                  // Emit blur event when the user leaves the editor (range is null)
+                  // or emit focus event
+                  if (!range) {
+                    this.onModelTouched();
+                    this.isFocused = false;
+                    this.blur.emit(this.quillEditor);
+                  } else {
+                    if (!this.isFocused) {
+                      this.isFocused = true;
+                      this.focus.emit(this.quillEditor);
+                    }
+                  }
+                });
+              }
+            );
 
     // update model if text changes
-    this.quillEditor.on(
-      'text-change',
-      (delta: any, oldDelta: any, source: string) => {
+    this.quillEditor
+          .on('text-change',
+              (delta: any, oldDelta: any, source: string) => {
 
-        const text = this.quillEditor.getText();
+                const text = this.quillEditor.getText();
 
-        let html: string | null = this.editorElem.children[0].innerHTML;
-        if (html === '<p><br></p>' || html === '<div><br><div>') {
-          html = null;
-        }
+                let html: string | null = this.editorElem.children[0].innerHTML;
+                if (html === '<p><br></p>' || html === '<div><br><div>') {
+                  html = null;
+                }
 
-        this.zone.run(() => {
-          this.onModelChange(
-            this.valueGetter(this.quillEditor, this.editorElem)
-          );
+                this.zone.run(() => {
+                  this.onModelChange(
+                    this.valueGetter(this.quillEditor, this.editorElem)
+                  );
 
-          this.onContentChanged.emit({
-            editor: this.quillEditor,
-            html: html,
-            text: text,
-            delta: delta,
-            oldDelta: oldDelta,
-            source: source
-          });
-        });
-      }
-    );
+                  this.onContentChanged.emit({
+                    editor: this.quillEditor,
+                    html: html,
+                    text: text,
+                    delta: delta,
+                    oldDelta: oldDelta,
+                    source: source
+                  });
+                });
+              }
+            );
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
