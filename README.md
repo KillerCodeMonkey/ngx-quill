@@ -2,6 +2,10 @@
 
 Angular (>=2) component for rich text editor Quill
 
+- angular v4 - ngx-quill <=1.6.0
+- angular v5 - ngx-quill > 1.6.0
+- angular v6 - ngx-quill >= 3.0.0
+
 <img src="https://cloud.githubusercontent.com/assets/2264672/20601381/a51753d4-b258-11e6-92c2-1d79efa5bede.png" width="200px">
 
 ngx-quill is the new angular (>=2) implementation of ngQuill.
