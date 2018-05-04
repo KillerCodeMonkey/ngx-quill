@@ -1,6 +1,3 @@
-const ENV = process.env.npm_lifecycle_event
-const isTestWatch = ENV === 'test-watch'
-const isTest = ENV === 'test' || isTestWatch
 const path = require('path')
 
 let _config = {
@@ -10,44 +7,35 @@ let _config = {
   },
   entry: {
     'ngx-quill': path.resolve(__dirname, 'index.ts')
+  },
+  devtool: 'inline-source-map',
+  module: {
+    rules: [{
+      test: /\.ts$/,
+      use: [{
+        loader: 'awesome-typescript-loader',
+        options: {
+          inlineSourceMap: true,
+          sourceMap: false
+        }
+      }]
+    }, {
+      // instrument only testing sources with Istanbul, covers ts files
+      test: /\.ts$/,
+      enforce: 'post',
+      use: [{
+        loader: 'istanbul-instrumenter-loader',
+        options: {
+          embedSource: true,
+          noAutoWrap: true
+        }
+      }],
+      exclude: [
+        'node_modules',
+        /\.(e2e|spec)\.ts$/
+      ]
+    }]
   }
 }
-
-if (isTest) {
-  _config.devtool = 'inline-source-map'
-}
-
-let atlOptions = {}
-// awesome-typescript-loader needs to output inlineSourceMap for code coverage to work with source maps.
-atlOptions.inlineSourceMap = true
-atlOptions.sourceMap = false
-
-_config.module = {
-  rules: []
-}
-_config.module.rules.push({
-  test: /\.ts$/,
-  use: [{
-    loader: 'awesome-typescript-loader',
-    options: atlOptions
-  }]
-})
-
-// instrument only testing sources with Istanbul, covers ts files
-_config.module.rules.push({
-  test: /\.ts$/,
-  enforce: 'post',
-  use: [{
-    loader: 'istanbul-instrumenter-loader',
-    options: {
-      embedSource: true,
-      noAutoWrap: true
-    }
-  }],
-  exclude: [
-    'node_modules',
-    /\.(e2e|spec)\.ts$/
-  ]
-})
 
 module.exports = _config

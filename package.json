@@ -1,7 +1,7 @@
 {
   "name": "ngx-quill",
   "license": "MIT",
-  "version": "3.0.0-1",
+  "version": "3.0.0-2",
   "author": {
     "name": "Bengt Weiße"
   },
@@ -22,8 +22,7 @@
     "build": "rm -rf ./dist && tsc && npm run bundle && npm run build:aot && npm run copyStaticToDist",
     "build:aot": "rm -rf aot && node_modules/.bin/ngc -p tsconfig-aot.json && rm -rf ./dist/aot/node_modules",
     "pretest": "npm run lint",
-    "test": "./node_modules/.bin/karma start",
-    "test-watch": "./node_modules/.bin/karma start --no-single-run --auto-watch"
+    "test": "./node_modules/.bin/karma start"
   },
   "keywords": [
     "editor",
@@ -78,11 +77,9 @@
     "source-map-loader": "^0.2.3",
     "ts-helpers": "^1.1.2",
     "tslint": "^4.0.0 || ^5.10.0",
-    "tslint-loader": "^3.6.0",
     "typescript": ">=2.4.2 || <2.8",
     "webpack": "^4.6.0",
     "webpack-cli": "^2.1.2",
-    "webpack-dev-server": "^3.1.4",
     "webpack-node-externals": "^1.7.2",
     "zone.js": "^0.8.26"
   },
