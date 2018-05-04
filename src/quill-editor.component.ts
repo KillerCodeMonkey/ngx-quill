@@ -106,11 +106,11 @@ export class QuillEditorComponent
       html = null;
     }
     return html;
-  };
+  }
   @Input()
   valueSetter = (quillEditor: any, value: any): any => {
     return quillEditor.clipboard.convert(value);
-  };
+  }
 
   onModelChange: Function = () => {};
   onModelTouched: Function = () => {};
