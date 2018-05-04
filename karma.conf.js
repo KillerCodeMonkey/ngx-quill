@@ -1,9 +1,6 @@
 const webpackConfig = require('./webpack.config.test')
 const karmaWebpack = require('karma-webpack')
 
-const ENV = process.env.npm_lifecycle_event
-const isTestWatch = ENV === 'test-watch'
-
 module.exports = function (config) {
   const _config = {
     basePath: '',
@@ -39,13 +36,11 @@ module.exports = function (config) {
     singleRun: true
   }
 
-  if (!isTestWatch) {
-    _config.reporters.push('coverage-istanbul')
+  _config.reporters.push('coverage-istanbul')
 
-    _config.coverageIstanbulReporter = {
-      fixWebpackSourcePaths: true,
-      reports: ['text-summary']
-    }
+  _config.coverageIstanbulReporter = {
+    fixWebpackSourcePaths: true,
+    reports: ['text-summary']
   }
 
   config.set(_config)
