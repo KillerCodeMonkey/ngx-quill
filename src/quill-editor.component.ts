@@ -1,13 +1,17 @@
+import { isPlatformServer } from '@angular/common';
+
 import {
   AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
   forwardRef,
+  Inject,
   Input,
   NgZone,
   OnChanges,
   Output,
+  PLATFORM_ID,
   Renderer2,
   SimpleChanges,
   ViewEncapsulation
@@ -19,8 +23,8 @@ import {
   ControlValueAccessor,
   Validator
 } from '@angular/forms';
-import { Inject } from '@angular/core';
-import { DOCUMENT } from '@angular/platform-browser';
+
+import { DOCUMENT } from '@angular/common';
 
 import * as QuillNamespace from 'quill';
 let Quill: any = QuillNamespace;
@@ -118,11 +122,16 @@ export class QuillEditorComponent
   constructor(
     private elementRef: ElementRef,
     @Inject(DOCUMENT) private doc: any,
+    @Inject(PLATFORM_ID) private platformId: Object,
     private renderer: Renderer2,
     private zone: NgZone
   ) {}
 
   ngAfterViewInit() {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
+
     const toolbarElem = this.elementRef.nativeElement.querySelector(
       '[quill-editor-toolbar]'
     );
