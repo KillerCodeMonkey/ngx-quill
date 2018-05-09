@@ -1,7 +1,7 @@
 {
   "name": "ngx-quill",
   "license": "MIT",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "author": {
     "name": "Bengt Weiße"
   },
@@ -13,7 +13,7 @@
     "url": "https://github.com/KillerCodeMonkey/ngx-quill"
   },
   "engines": {
-    "node": "8"
+    "node": ">= 8"
   },
   "scripts": {
     "lint": "tslint --force \"src/**/*.ts\"",
@@ -57,12 +57,12 @@
     "@angular/platform-browser": "^5.0.0 || ^6.0.0",
     "@angular/platform-browser-dynamic": "^5.0.0 || ^6.0.0",
     "@types/jasmine": "^2.8.7",
-    "@types/node": "^10.0.3",
-    "awesome-typescript-loader": "^5.0.0",
+    "@types/node": "^10.0.6",
+    "ajv": "^6.0.0",
     "codelyzer": "^4.3.0",
-    "core-js": "^2.5.5",
+    "core-js": "^2.5.6",
     "istanbul-instrumenter-loader": "^3.0.1",
-    "jasmine-core": "^2.99.0",
+    "jasmine-core": "^3.1.0",
     "karma": "^2.0.2",
     "karma-coverage": "^1.1.2",
     "karma-coverage-istanbul-reporter": "^1.4.2",
@@ -76,10 +76,11 @@
     "rxjs": "^5.5.2 || ^6.1.0",
     "source-map-loader": "^0.2.3",
     "ts-helpers": "^1.1.2",
+    "ts-loader": "4.3.0",
     "tslint": "^4.0.0 || ^5.10.0",
     "typescript": ">=2.4.2 || <2.8",
-    "webpack": "^4.6.0",
-    "webpack-cli": "^2.1.2",
+    "webpack": "^4.8.1",
+    "webpack-cli": "^2.1.3",
     "webpack-node-externals": "^1.7.2",
     "zone.js": "^0.8.26"
   },
