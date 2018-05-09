@@ -26,10 +26,7 @@ module.exports = {
       {
         test: /\.ts$/,
         use: [{
-          loader: 'awesome-typescript-loader',
-          options: {
-            declaration: false
-          }
+          loader: 'ts-loader'
         }]
       }
     ]

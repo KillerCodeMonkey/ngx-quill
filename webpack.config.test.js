@@ -13,11 +13,7 @@ let _config = {
     rules: [{
       test: /\.ts$/,
       use: [{
-        loader: 'awesome-typescript-loader',
-        options: {
-          inlineSourceMap: true,
-          sourceMap: false
-        }
+        loader: 'ts-loader'
       }]
     }, {
       // instrument only testing sources with Istanbul, covers ts files
