@@ -64,6 +64,7 @@ packages: {
 }
 ```
 - follow the steps of **For standard webpack and tsc builds**
+- for builds with angular-cli >=6 only add quilljs to your scripts!
 
 ## Config
 - ngModel - set initial value or allow two-way databinding
