@@ -26,8 +26,11 @@ import {
 
 import { DOCUMENT } from '@angular/common';
 
-import * as QuillNamespace from 'quill';
-let Quill: any = QuillNamespace;
+// import * as QuillNamespace from 'quill';
+// Because quill uses `document` directly, we cannot `import` during SSR
+// instead, we load dynamically via `require('quill')` in `ngAfterViewInit()`
+declare var require: any;
+var Quill: any = undefined;
 
 export interface CustomOption {
   import: string;
@@ -130,6 +133,9 @@ export class QuillEditorComponent
   ngAfterViewInit() {
     if (isPlatformServer(this.platformId)) {
       return;
+    }
+    else if (!Quill) {
+      Quill = require('quill');
     }
 
     const toolbarElem = this.elementRef.nativeElement.querySelector(
@@ -235,7 +241,7 @@ export class QuillEditorComponent
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.quillEditor) {
-      return null;
+      return;
     }
     if (changes['readOnly']) {
       this.quillEditor.enable(!changes['readOnly'].currentValue);
