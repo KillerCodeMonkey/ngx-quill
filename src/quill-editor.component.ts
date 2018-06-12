@@ -134,7 +134,7 @@ export class QuillEditorComponent
     if (isPlatformServer(this.platformId)) {
       return;
     }
-    else if (!Quill) {
+    if (!Quill) {
       Quill = require('quill');
     }
 
