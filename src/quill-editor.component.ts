@@ -10,6 +10,7 @@ import {
   Input,
   NgZone,
   OnChanges,
+  OnDestroy,
   Output,
   PLATFORM_ID,
   Renderer2,
@@ -57,11 +58,13 @@ export interface CustomOption {
   encapsulation: ViewEncapsulation.None
 })
 export class QuillEditorComponent
-  implements AfterViewInit, ControlValueAccessor, OnChanges, Validator {
+  implements AfterViewInit, ControlValueAccessor, OnChanges, OnDestroy, Validator {
   quillEditor: any;
   editorElem: HTMLElement;
   emptyArray: any[] = [];
   content: any;
+  selectionChangeEvent: any;
+  textChangeEvent: any;
   defaultModules = {
     toolbar: [
       ['bold', 'italic', 'underline', 'strike'], // toggled buttons
@@ -89,6 +92,7 @@ export class QuillEditorComponent
     ]
   };
 
+  @Input() format: 'object' | 'html' | 'text' = 'html';
   @Input() theme: string;
   @Input() modules: { [index: string]: Object };
   @Input() readOnly: boolean;
@@ -112,11 +116,23 @@ export class QuillEditorComponent
     if (html === '<p><br></p>' || html === '<div><br><div>') {
       html = null;
     }
-    return html;
+    let modelValue = html;
+
+    if (this.format === 'text') {
+      modelValue = quillEditor.getText();
+    } else if (this.format === 'object') {
+      modelValue = quillEditor.getContents();
+    }
+
+    return modelValue;
   }
   @Input()
-  valueSetter = (quillEditor: any, value: any): any => {
-    return quillEditor.clipboard.convert(value);
+  valueSetter = (quillEditor: any, value: any, format: 'object' | 'html'): any => {
+    if (this.format === 'html') {
+      return quillEditor.clipboard.convert(value);
+    }
+
+    return value;
   }
 
   onModelChange: Function = () => {};
@@ -134,7 +150,7 @@ export class QuillEditorComponent
     if (isPlatformServer(this.platformId)) {
       return;
     }
-    else if (!Quill) {
+    if (!Quill) {
       Quill = require('quill');
     }
 
@@ -183,15 +199,22 @@ export class QuillEditorComponent
     });
 
     if (this.content) {
-      const contents = this.quillEditor.clipboard.convert(this.content);
-      this.quillEditor.setContents(contents);
+      if (this.format === 'object') {
+        this.quillEditor.setContents(this.content, 'silent');
+      } else if (this.format === 'text') {
+        this.quillEditor.setText(this.content, 'silent');
+      } else {
+        const contents = this.quillEditor.clipboard.convert(this.content);
+        this.quillEditor.setContents(contents, 'silent');
+      }
+
       this.quillEditor.history.clear();
     }
 
     this.onEditorCreated.emit(this.quillEditor);
 
     // mark model as touched if editor lost focus
-    this.quillEditor.on(
+    this.selectionChangeEvent = this.quillEditor.on(
       'selection-change',
       (range: any, oldRange: any, source: string) => {
         this.zone.run(() => {
@@ -210,11 +233,12 @@ export class QuillEditorComponent
     );
 
     // update model if text changes
-    this.quillEditor.on(
+    this.textChangeEvent = this.quillEditor.on(
       'text-change',
       (delta: any, oldDelta: any, source: string) => {
 
         const text = this.quillEditor.getText();
+        const content = this.quillEditor.getContents();
 
         let html: string | null = this.editorElem.children[0].innerHTML;
         if (html === '<p><br></p>' || html === '<div><br><div>') {
@@ -230,6 +254,7 @@ export class QuillEditorComponent
             editor: this.quillEditor,
             html: html,
             text: text,
+            content: content,
             delta: delta,
             oldDelta: oldDelta,
             source: source
@@ -237,6 +262,15 @@ export class QuillEditorComponent
         });
       }
     );
+  }
+
+  ngOnDestroy() {
+    if (this.selectionChangeEvent) {
+      this.selectionChangeEvent.removeListener('selection-change');
+    }
+    if (this.textChangeEvent) {
+      this.textChangeEvent.removeListener('text-change');
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -257,9 +291,13 @@ export class QuillEditorComponent
 
     if (this.quillEditor) {
       if (currentValue) {
-        this.quillEditor.setContents(
-          this.valueSetter(this.quillEditor, this.content)
-        );
+        if (this.format === 'text') {
+          this.quillEditor.setText(currentValue);
+        } else {
+          this.quillEditor.setContents(
+            this.valueSetter(this.quillEditor, this.content, this.format)
+          );
+        }
         return;
       }
       this.quillEditor.setText('');

@@ -70,6 +70,7 @@ packages: {
 - ngModel - set initial value or allow two-way databinding
 - readOnly (true | false) if user can edit content
 - formats - array of allowed formats/groupings
+- format - model format - default: `html`, values: `html | object | text`, sets the model value type - html = html string, object = quill operation object, text = plain text
 - modules - configure/disable quill modules, e.g toolbar or add custom toolbar via html element default is
 ```
 {
@@ -142,6 +143,7 @@ editor
   editor: editorInstance,
   html: html,
   text: text,
+  content: content,
   delta: delta,
   oldDelta: oldDelta,
   source: source
