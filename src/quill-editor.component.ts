@@ -102,22 +102,33 @@ export class QuillEditorComponent
   @Input() scrollingContainer: HTMLElement | string;
   @Input() bounds: HTMLElement | string;
   @Input() customOptions: CustomOption[] = [];
+  @Input() format: string = 'html'; // 'html' or 'json'
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter();
   @Output() onContentChanged: EventEmitter<any> = new EventEmitter();
   @Output() onSelectionChanged: EventEmitter<any> = new EventEmitter();
+
   @Input()
   valueGetter = (quillEditor: any, editorElement: HTMLElement): any => {
-    let html: string | null = editorElement.children[0].innerHTML;
-    if (html === '<p><br></p>' || html === '<div><br><div>') {
-      html = null;
+    if(this.format == 'html') {
+      let html: string | null = editorElement.children[0].innerHTML;
+      if (html === '<p><br></p>' || html === '<div><br><div>') {
+        html = null;
+      }
+      return html;
+    } else if(this.format == 'json') {
+      return JSON.stringify(quillEditor.getContents());
     }
-    return html;
-  }
+  };
+
   @Input()
   valueSetter = (quillEditor: any, value: any): any => {
-    return quillEditor.clipboard.convert(value);
-  }
+    if(this.format == 'html') {
+      return quillEditor.clipboard.convert(value);
+    } else if(this.format == 'json') {
+      return JSON.parse(value);
+    }
+  };
 
   onModelChange: Function = () => {};
   onModelTouched: Function = () => {};
@@ -183,7 +194,7 @@ export class QuillEditorComponent
     });
 
     if (this.content) {
-      const contents = this.quillEditor.clipboard.convert(this.content);
+      const contents = this.valueSetter(this.quillEditor, this.content);
       this.quillEditor.setContents(contents);
       this.quillEditor.history.clear();
     }

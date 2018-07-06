@@ -97,6 +97,7 @@ packages: {
 };
 ```
 - theme - bubble/snow, default is `snow`
+- format - data format, `html` or `json`, default is `html`
 - style - set a style object, e.g. `[style]="{height: '250px'}"`
 - placeholder - placeholder text, default is `Insert text here ...`
 - bounds - boundary of the editor, default `document.body`, pass 'self' to attach the editor element
