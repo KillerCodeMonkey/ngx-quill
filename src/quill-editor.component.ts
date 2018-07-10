@@ -210,7 +210,11 @@ export class QuillEditorComponent
       } else if (this.format === 'text') {
         this.quillEditor.setText(this.content, 'silent');
       } else if (this.format === 'json') {
-        this.quillEditor.setContents(JSON.parse(this.content), 'silent');
+        try {
+          this.quillEditor.setContents(JSON.parse(this.content), 'silent');
+        } catch (e) {
+          this.quillEditor.setText(this.content, 'silent');
+        }
       } else {
         const contents = this.quillEditor.clipboard.convert(this.content);
         this.quillEditor.setContents(contents, 'silent');
