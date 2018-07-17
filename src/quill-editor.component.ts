@@ -124,7 +124,11 @@ export class QuillEditorComponent
     } else if (this.format === 'object') {
       modelValue = quillEditor.getContents();
     } else if (this.format === 'json') {
-      modelValue = JSON.stringify(quillEditor.getContents());
+      try {
+        modelValue = JSON.stringify(quillEditor.getContents());
+      } catch (e) {
+        modelValue = quillEditor.getText();
+      }
     }
 
     return modelValue;
@@ -135,7 +139,11 @@ export class QuillEditorComponent
     if (this.format === 'html') {
       return quillEditor.clipboard.convert(value);
     } else if (this.format === 'json') {
-      return JSON.parse(value);
+      try {
+        return JSON.parse(value);
+      } catch (e) {
+        return value;
+      }
     }
 
     return value;
