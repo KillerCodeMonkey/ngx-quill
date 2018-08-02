@@ -92,7 +92,7 @@ export class QuillEditorComponent
     ]
   };
 
-  @Input() format: 'object' | 'html' | 'text' = 'html';
+  @Input() format: 'object' | 'html' | 'text' | 'json' = 'html';
   @Input() theme: string;
   @Input() modules: { [index: string]: Object };
   @Input() readOnly: boolean;
@@ -110,6 +110,7 @@ export class QuillEditorComponent
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter();
   @Output() onContentChanged: EventEmitter<any> = new EventEmitter();
   @Output() onSelectionChanged: EventEmitter<any> = new EventEmitter();
+
   @Input()
   valueGetter = (quillEditor: any, editorElement: HTMLElement): any => {
     let html: string | null = editorElement.children[0].innerHTML;
@@ -122,14 +123,27 @@ export class QuillEditorComponent
       modelValue = quillEditor.getText();
     } else if (this.format === 'object') {
       modelValue = quillEditor.getContents();
+    } else if (this.format === 'json') {
+      try {
+        modelValue = JSON.stringify(quillEditor.getContents());
+      } catch (e) {
+        modelValue = quillEditor.getText();
+      }
     }
 
     return modelValue;
   }
+
   @Input()
-  valueSetter = (quillEditor: any, value: any, format: 'object' | 'html'): any => {
+  valueSetter = (quillEditor: any, value: any, format: 'object' | 'html' | 'json'): any => {
     if (this.format === 'html') {
       return quillEditor.clipboard.convert(value);
+    } else if (this.format === 'json') {
+      try {
+        return JSON.parse(value);
+      } catch (e) {
+        return value;
+      }
     }
 
     return value;
@@ -203,6 +217,12 @@ export class QuillEditorComponent
         this.quillEditor.setContents(this.content, 'silent');
       } else if (this.format === 'text') {
         this.quillEditor.setText(this.content, 'silent');
+      } else if (this.format === 'json') {
+        try {
+          this.quillEditor.setContents(JSON.parse(this.content), 'silent');
+        } catch (e) {
+          this.quillEditor.setText(this.content, 'silent');
+        }
       } else {
         const contents = this.quillEditor.clipboard.convert(this.content);
         this.quillEditor.setContents(contents, 'silent');

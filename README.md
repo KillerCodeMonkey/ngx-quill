@@ -70,7 +70,7 @@ packages: {
 - ngModel - set initial value or allow two-way databinding
 - readOnly (true | false) if user can edit content
 - formats - array of allowed formats/groupings
-- format - model format - default: `html`, values: `html | object | text`, sets the model value type - html = html string, object = quill operation object, text = plain text
+- format - model format - default: `html`, values: `html | object | text | json`, sets the model value type - html = html string, object = quill operation object, json = quill operation json, text = plain text
 - modules - configure/disable quill modules, e.g toolbar or add custom toolbar via html element default is
 ```
 {
@@ -101,8 +101,8 @@ packages: {
 - style - set a style object, e.g. `[style]="{height: '250px'}"`
 - placeholder - placeholder text, default is `Insert text here ...`
 - bounds - boundary of the editor, default `document.body`, pass 'self' to attach the editor element
-- maxLength - add valdiation for maxlength - set model state to `invalid` and add `ng-invalid` class
-- minLength - add valdiation for minlength - set model state to `invalid` and add `ng-invalid` class, only set invalid if editor text not empty --> if you want to check if text is required --> use the required attribute
+- maxLength - add validation for maxlength - set model state to `invalid` and add `ng-invalid` class
+- minLength - add validation for minlength - set model state to `invalid` and add `ng-invalid` class, only set invalid if editor text not empty --> if you want to check if text is required --> use the required attribute
 - required - add validation as a required field - `[required]="true"` - default: false, boolean expected (no strings!)
 - strict - default: true, sets editor in strict mode
 - scrollingContainer - default '.ql-editor', allows to set scrolling container
