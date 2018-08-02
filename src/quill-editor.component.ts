@@ -132,7 +132,7 @@ export class QuillEditorComponent
     }
 
     return modelValue;
-  };
+  }
 
   @Input()
   valueSetter = (quillEditor: any, value: any, format: 'object' | 'html' | 'json'): any => {
@@ -147,7 +147,7 @@ export class QuillEditorComponent
     }
 
     return value;
-  };
+  }
 
   onModelChange: Function = () => {};
   onModelTouched: Function = () => {};
