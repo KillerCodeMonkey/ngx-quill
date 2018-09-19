@@ -17,10 +17,7 @@
   },
   "scripts": {
     "lint": "tslint --force \"src/**/*.ts\"",
-    "bundle": "webpack --display-error-details --mode development && cp dist/bundles/ngx-quill.umd.js dist/bundles/index.js",
-    "copyStaticToDist": "cp ./package.json ./dist && cp ./README.md ./dist && cp ./LICENSE.txt ./dist",
-    "build": "rm -rf ./dist && tsc && npm run bundle && npm run build:aot && npm run copyStaticToDist",
-    "build:aot": "rm -rf aot && node_modules/.bin/ngc -p tsconfig-aot.json && rm -rf ./dist/aot/node_modules",
+    "build": "ng-packagr -p package.json",
     "pretest": "npm run lint",
     "test": "./node_modules/.bin/karma start"
   },
@@ -38,14 +35,18 @@
     "text editor"
   ],
   "main": "./bundles/index.js",
+  "module": "./src/quill.module.js",
   "typings": "index.d.ts",
-  "dependencies": {
-    "@types/quill": "1.3.3",
-    "quill": "^1.3.6"
+  "ngPackage": {
+    "lib": {
+      "entryFile": "index.ts"
+    }
   },
+  "$schema": "./node_modules/ng-packagr/package.schema.json",
   "peerDependencies": {
     "@angular/core": "^5.0.0 || ^6.0.0",
     "@angular/forms": "^5.0.0 || ^6.0.0",
+    "quill": "^1.3.6",
     "rxjs": "^5.5.2 || ^6.1.0"
   },
   "devDependencies": {
@@ -58,6 +59,7 @@
     "@angular/platform-browser-dynamic": "^5.0.0 || ^6.0.0",
     "@types/jasmine": "^2.8.7",
     "@types/node": "^10.0.6",
+    "@types/quill": "^1.3.10",
     "ajv": "^6.0.0",
     "codelyzer": "^4.3.0",
     "core-js": "^2.5.6",
@@ -72,6 +74,8 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^3.0.0",
     "loader-utils": "^1.1.0",
+    "ng-packagr": "^4.2.0",
+    "quill": "^1.3.6",
     "reflect-metadata": "^0.1.12",
     "rxjs": "^5.5.2 || ^6.1.0",
     "source-map-loader": "^0.2.3",
