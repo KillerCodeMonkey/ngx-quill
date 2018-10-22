@@ -5,22 +5,27 @@ Angular (>=2) component for rich text editor Quill
 - angular v4 - ngx-quill <=1.6.0
 - angular v5 - ngx-quill > 1.6.0
 - angular v6 - ngx-quill >= 3.0.0
+- angular v7 - ngx-quill >= 4.0.0
 
 <img src="https://cloud.githubusercontent.com/assets/2264672/20601381/a51753d4-b258-11e6-92c2-1d79efa5bede.png" width="200px">
 
 ngx-quill is the new angular (>=2) implementation of ngQuill.
 
 ## Examples
+
 - [demo-page](https://killercodemonkey.github.io/ngx-quill-example)
 - [example-repo](https://github.com/killerCodeMonkey/ngx-quill-example)
 
 
 ## Installation
+
 - `npm install ngx-quill`
 - for projects using Angular < v5.0.0 install `npm install ngx-quill@1.6.0`
-- include theme stylings: bubble.css, snow.css of quilljs in your index.html
+- install `@angular/core`, `@angular/forms`, `quill` and `rxjs` - peer dependencies of ngx-quill
+- include theme stylings: bubble.css, snow.css of quilljs in your index.html, or add them in your css/scss files with `@import` statements, or add them external stylings in your build process.
 
 ### For standard webpack and tsc builds
+
 - import `QuillModule` from `ngx-quill`:
 ```
 import { QuillModule } from 'ngx-quill'
@@ -41,6 +46,7 @@ class YourModule { ... }
 - do not forget to include quill + theme css in your buildprocess, module or index.html!
 
 ### For SystemJS builds (Config)
+
 - add quill and ngx-quill to your `paths`:
 ```
 paths: {
@@ -67,6 +73,7 @@ packages: {
 - for builds with angular-cli >=6 only add quilljs to your scripts!
 
 ## Config
+
 - ngModel - set initial value or allow two-way databinding
 - readOnly (true | false) if user can edit content
 - formats - array of allowed formats/groupings
@@ -133,6 +140,7 @@ packages: {
 ```
 
 ## Outputs
+
 - onEditorCreated - editor instance
 ```
 editor

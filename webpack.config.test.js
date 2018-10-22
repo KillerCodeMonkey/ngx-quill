@@ -27,7 +27,7 @@ let _config = {
         }
       }],
       exclude: [
-        'node_modules',
+        /node_modules/,
         /\.(e2e|spec)\.ts$/
       ]
     }]
