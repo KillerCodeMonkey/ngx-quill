@@ -15,6 +15,8 @@ ngx-quill is the new angular (>=2) implementation of ngQuill.
 
 - [demo-page](https://killercodemonkey.github.io/ngx-quill-example)
 - [example-repo](https://github.com/killerCodeMonkey/ngx-quill-example)
+- [angular-cli-example-repo](https://github.com/KillerCodeMonkey/ngx-quill-angular-cli)
+- [ionic-v3-example-repo](https://github.com/KillerCodeMonkey/ngx-quill-ionic-v3)
 
 
 ## Installation
