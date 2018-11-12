@@ -1,6 +1,6 @@
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, AfterViewInit, ViewChild, OnInit } from '@angular/core';
+import { FormsModule, FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { QuillEditorComponent } from '../src/quill-editor.component';
 
@@ -69,6 +69,15 @@ class TestToolbarComponent {
   handleChange(event: any) {}
 }
 
+@Component({
+  template: `
+    <quill-editor [formControl]='formControl'></quill-editor>
+`
+})
+class ReactiveFormTestComponent {
+  formControl: FormControl = new FormControl(null);
+  @ViewChild(QuillEditorComponent) editor: QuillEditorComponent;
+}
 
 describe('Basic QuillEditorComponent', () => {
 
@@ -92,6 +101,30 @@ describe('Basic QuillEditorComponent', () => {
     this.fixture.detectChanges();
     expect(element.querySelectorAll('div.ql-container.ql-snow').length).toBe(1);
     expect(this.fixture.componentInstance.quillEditor).toBeDefined();
+  }));
+});
+
+describe('Reactive forms integration', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [ReactiveFormTestComponent, QuillEditorComponent],
+      imports: [FormsModule, ReactiveFormsModule],
+    });
+
+    this.fixture = TestBed.createComponent(ReactiveFormTestComponent) as ComponentFixture<ReactiveFormTestComponent>;
+    this.fixture.detectChanges();
+  });
+
+  it('should be disabled', async(() => {
+    const component = this.fixture.componentInstance;
+    component.formControl.disable();
+    expect(component.editor.quillEditor.container.classList.contains('ql-disabled')).toBeTruthy();
+  }));
+
+  it('has "disabled" attribute', async(() => {
+    const component = this.fixture.componentInstance;
+    component.formControl.disable();
+    expect(this.fixture.nativeElement.children[0].attributes.disabled).toBeDefined();
   }));
 });
 
