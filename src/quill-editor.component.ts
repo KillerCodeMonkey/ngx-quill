@@ -92,6 +92,8 @@ export class QuillEditorComponent
     ]
   };
 
+  private disabled = false; // used to store initial value before ViewInit
+
   @Input() format: 'object' | 'html' | 'text' | 'json' = 'html';
   @Input() theme: string;
   @Input() modules: { [index: string]: Object };
@@ -135,7 +137,7 @@ export class QuillEditorComponent
   }
 
   @Input()
-  valueSetter = (quillEditor: any, value: any, format: 'object' | 'html' | 'json'): any => {
+  valueSetter = (quillEditor: any, value: any): any => {
     if (this.format === 'html') {
       return quillEditor.clipboard.convert(value);
     } else if (this.format === 'json') {
@@ -231,6 +233,9 @@ export class QuillEditorComponent
       this.quillEditor.history.clear();
     }
 
+    // initialize disabled status based on this.disabled as default value
+    this.setDisabledState();
+
     this.onEditorCreated.emit(this.quillEditor);
 
     // mark model as touched if editor lost focus
@@ -315,12 +320,26 @@ export class QuillEditorComponent
           this.quillEditor.setText(currentValue);
         } else {
           this.quillEditor.setContents(
-            this.valueSetter(this.quillEditor, this.content, this.format)
+            this.valueSetter(this.quillEditor, this.content)
           );
         }
         return;
       }
       this.quillEditor.setText('');
+    }
+  }
+
+  setDisabledState(isDisabled: boolean = this.disabled): void {
+    // store initial value to set appropriate disabled status after ViewInit
+    this.disabled = isDisabled;
+    if (this.quillEditor) {
+      if (isDisabled) {
+        this.quillEditor.disable();
+        this.renderer.setAttribute(this.elementRef.nativeElement, 'disabled', 'disabled');
+      } else {
+        this.quillEditor.enable();
+        this.renderer.removeAttribute(this.elementRef.nativeElement, 'disabled');
+      }
     }
   }
 
