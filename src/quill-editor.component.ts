@@ -137,7 +137,7 @@ export class QuillEditorComponent
   }
 
   @Input()
-  valueSetter = (quillEditor: any, value: any, format: 'object' | 'html' | 'json'): any => {
+  valueSetter = (quillEditor: any, value: any): any => {
     if (this.format === 'html') {
       return quillEditor.clipboard.convert(value);
     } else if (this.format === 'json') {
@@ -320,7 +320,7 @@ export class QuillEditorComponent
           this.quillEditor.setText(currentValue);
         } else {
           this.quillEditor.setContents(
-            this.valueSetter(this.quillEditor, this.content, this.format)
+            this.valueSetter(this.quillEditor, this.content)
           );
         }
         return;

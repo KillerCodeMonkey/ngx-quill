@@ -115,17 +115,27 @@ describe('Reactive forms integration', () => {
     this.fixture.detectChanges();
   });
 
-  it('should be disabled', async(() => {
+  it('should be disabled', () => {
     const component = this.fixture.componentInstance;
     component.formControl.disable();
     expect(component.editor.quillEditor.container.classList.contains('ql-disabled')).toBeTruthy();
-  }));
+  });
 
-  it('has "disabled" attribute', async(() => {
+  it('has "disabled" attribute', () => {
     const component = this.fixture.componentInstance;
     component.formControl.disable();
     expect(this.fixture.nativeElement.children[0].attributes.disabled).toBeDefined();
-  }));
+  });
+
+  it('should re-enable', () => {
+    const component = this.fixture.componentInstance;
+    component.formControl.disable();
+
+    component.formControl.enable();
+
+    expect(component.editor.quillEditor.container.classList.contains('ql-disabled')).toBeFalsy();
+    expect(this.fixture.nativeElement.children[0].attributes.disabled).not.toBeDefined();
+  });
 });
 
 describe('Advanced QuillEditorComponent', () => {
