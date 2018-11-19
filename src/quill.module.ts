@@ -1,4 +1,4 @@
-import { Config } from './quill-editor.interfaces';
+import { QuillConfig } from './quill-editor.interfaces';
 import { NgModule, ModuleWithProviders } from '@angular/core';
 
 import { QuillEditorComponent } from './quill-editor.component';
@@ -9,10 +9,15 @@ import { QuillEditorComponent } from './quill-editor.component';
   ],
   imports: [],
   exports: [QuillEditorComponent],
-  providers: []
+  providers: [
+    {
+      provide: 'config',
+      useValue: undefined,
+    }
+  ]
 })
 export class QuillModule {
-  static forRoot(config: Config): ModuleWithProviders {
+  static forRoot(config: QuillConfig): ModuleWithProviders {
     return {
       ngModule: QuillModule,
       providers: [
