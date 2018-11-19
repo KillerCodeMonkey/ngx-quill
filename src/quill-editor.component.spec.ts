@@ -7,6 +7,15 @@ import { QuillEditorComponent } from '../src/quill-editor.component';
 import * as QuillNamespace from 'quill';
 let Quill: any = QuillNamespace;
 
+beforeEach(() => {
+  TestBed.configureTestingModule({ providers: [
+    {
+      provide: 'config',
+      useValue: undefined
+    }
+  ] });
+});
+
 @Component({
   template: `
 <quill-editor [(ngModel)]="title" [customOptions]="[{import: 'attributors/style/size', whitelist: ['14']}]" [style]="{height: '30px'}" [required]="required" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event);" (onSelectionChanged)="handleSelection($event);"></quill-editor>
