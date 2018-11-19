@@ -1,4 +1,4 @@
-import { Config } from './quill-editor.interfaces';
+import { QuillConfig, QuillModules } from './quill-editor.interfaces';
 import { isPlatformServer } from '@angular/common';
 
 import {
@@ -66,7 +66,7 @@ export class QuillEditorComponent
   content: any;
   selectionChangeEvent: any;
   textChangeEvent: any;
-   defaultModules: Config = this.config || {
+  defaultModules: QuillModules = {
     toolbar: [
       ['bold', 'italic', 'underline', 'strike'], // toggled buttons
       ['blockquote', 'code-block'],
@@ -97,7 +97,7 @@ export class QuillEditorComponent
 
   @Input() format: 'object' | 'html' | 'text' | 'json' = 'html';
   @Input() theme: string;
-  @Input() modules: { [index: string]: Object };
+  @Input() modules: QuillModules;
   @Input() readOnly: boolean;
   @Input() placeholder: string;
   @Input() maxLength: number;
@@ -161,8 +161,10 @@ export class QuillEditorComponent
     @Inject(PLATFORM_ID) private platformId: Object,
     private renderer: Renderer2,
     private zone: NgZone,
-    @Inject('config') private config: Config,
-  ) {}
+    @Inject('config') private config: QuillConfig,
+  ) {
+    this.defaultModules = this.config && this.config.modules || this.defaultModules;
+  }
 
   ngAfterViewInit() {
     if (isPlatformServer(this.platformId)) {
@@ -175,7 +177,7 @@ export class QuillEditorComponent
     const toolbarElem = this.elementRef.nativeElement.querySelector(
       '[quill-editor-toolbar]'
     );
-    let modules: any = this.modules || this.defaultModules;
+    let modules: QuillModules = this.modules || this.defaultModules;
     let placeholder = 'Insert text here ...';
 
     if (this.placeholder !== null && this.placeholder !== undefined) {
