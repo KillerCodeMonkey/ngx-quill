@@ -1,3 +1,4 @@
+import { Config } from './quill-editor.interfaces';
 import { isPlatformServer } from '@angular/common';
 
 import {
@@ -65,7 +66,7 @@ export class QuillEditorComponent
   content: any;
   selectionChangeEvent: any;
   textChangeEvent: any;
-  defaultModules = {
+   defaultModules: Config = this.config || {
     toolbar: [
       ['bold', 'italic', 'underline', 'strike'], // toggled buttons
       ['blockquote', 'code-block'],
@@ -159,7 +160,8 @@ export class QuillEditorComponent
     @Inject(DOCUMENT) private doc: any,
     @Inject(PLATFORM_ID) private platformId: Object,
     private renderer: Renderer2,
-    private zone: NgZone
+    private zone: NgZone,
+    @Inject('config') private config: Config,
   ) {}
 
   ngAfterViewInit() {
