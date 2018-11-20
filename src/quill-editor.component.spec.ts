@@ -5,6 +5,7 @@ import { FormsModule, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { QuillEditorComponent } from '../src/quill-editor.component';
 
 import * as QuillNamespace from 'quill';
+import { QuillModule } from './quill.module';
 let Quill: any = QuillNamespace;
 
 @Component({
@@ -83,7 +84,9 @@ describe('Basic QuillEditorComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [QuillEditorComponent]
+      imports: [
+        QuillModule.forRoot()
+      ]
     });
 
     this.fixture = TestBed.createComponent(QuillEditorComponent) as ComponentFixture<QuillEditorComponent>;
@@ -107,8 +110,8 @@ describe('Basic QuillEditorComponent', () => {
 describe('Reactive forms integration', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ReactiveFormTestComponent, QuillEditorComponent],
-      imports: [FormsModule, ReactiveFormsModule],
+      declarations: [ReactiveFormTestComponent],
+      imports: [FormsModule, ReactiveFormsModule, QuillModule],
     });
 
     this.fixture = TestBed.createComponent(ReactiveFormTestComponent) as ComponentFixture<ReactiveFormTestComponent>;
@@ -142,8 +145,8 @@ describe('Advanced QuillEditorComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [QuillEditorComponent, TestComponent, TestToolbarComponent],
-      imports: [FormsModule]
+      declarations: [TestComponent, TestToolbarComponent],
+      imports: [FormsModule, QuillModule]
     }).compileComponents();
 
     this.fixture = TestBed.createComponent(TestComponent) as ComponentFixture<TestComponent>;
@@ -360,4 +363,27 @@ describe('Advanced QuillEditorComponent', () => {
     const editorComponent = this.fixture.debugElement.children[0].componentInstance;
     expect(editorComponent.required).toBe(true);
   }));
+});
+
+describe('QuillEditor - base config', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [TestComponent, TestToolbarComponent],
+      imports: [FormsModule, QuillModule.forRoot({
+        modules: {
+          toolbar: [
+            ['bold']
+          ]
+        }
+      })]
+    }).compileComponents();
+  });
+
+  it('renders editor with root toolbar config', () => {
+    this.fixture = TestBed.createComponent(TestComponent) as ComponentFixture<TestComponent>;
+    this.fixture.detectChanges();
+
+    expect(this.fixture.nativeElement.querySelector('.ql-toolbar').querySelectorAll('button').length).toBe(1);
+    expect(this.fixture.nativeElement.querySelector('.ql-toolbar').querySelector('button.ql-bold')).toBeDefined();
+  });
 });

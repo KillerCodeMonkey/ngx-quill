@@ -1,3 +1,4 @@
+import { QuillConfig, QuillModules } from './quill-editor.interfaces';
 import { isPlatformServer } from '@angular/common';
 
 import {
@@ -65,32 +66,7 @@ export class QuillEditorComponent
   content: any;
   selectionChangeEvent: any;
   textChangeEvent: any;
-  defaultModules = {
-    toolbar: [
-      ['bold', 'italic', 'underline', 'strike'], // toggled buttons
-      ['blockquote', 'code-block'],
-
-      [{ header: 1 }, { header: 2 }], // custom button values
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-      [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-      [{ direction: 'rtl' }], // text direction
-
-      [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-      [
-        { color: this.emptyArray.slice() },
-        { background: this.emptyArray.slice() }
-      ], // dropdown with defaults from theme
-      [{ font: this.emptyArray.slice() }],
-      [{ align: this.emptyArray.slice() }],
-
-      ['clean'], // remove formatting button
-
-      ['link', 'image', 'video'] // link and image, video
-    ]
-  };
+  defaultModules: QuillModules | {};
 
   private disabled = false; // used to store initial value before ViewInit
 
@@ -159,8 +135,11 @@ export class QuillEditorComponent
     @Inject(DOCUMENT) private doc: any,
     @Inject(PLATFORM_ID) private platformId: Object,
     private renderer: Renderer2,
-    private zone: NgZone
-  ) {}
+    private zone: NgZone,
+    @Inject('config') private config: QuillConfig,
+  ) {
+    this.defaultModules = this.config && this.config.modules || {};
+  }
 
   ngAfterViewInit() {
     if (isPlatformServer(this.platformId)) {
@@ -173,7 +152,7 @@ export class QuillEditorComponent
     const toolbarElem = this.elementRef.nativeElement.querySelector(
       '[quill-editor-toolbar]'
     );
-    let modules: any = this.modules || this.defaultModules;
+    let modules = this.modules || this.defaultModules;
     let placeholder = 'Insert text here ...';
 
     if (this.placeholder !== null && this.placeholder !== undefined) {

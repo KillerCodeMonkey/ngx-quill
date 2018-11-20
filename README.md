@@ -141,6 +141,27 @@ packages: {
 </quill-editor>
 ```
 
+## Global Config
+
+It is possible to set custom default toolbar modules with the import of the `QuillModule`.
+
+```
+@NgModule({
+  imports: [
+    ...,
+
+    QuillModule.forRoot({
+      modules: {
+        toolbar: [...]
+      }
+    })
+  ],
+  ...
+})
+class YourModule { ... }
+
+```
+
 ## Outputs
 
 - onEditorCreated - editor instance
