@@ -370,3 +370,30 @@ describe('Advanced QuillEditorComponent', () => {
     expect(editorComponent.required).toBe(true);
   }));
 });
+
+describe('QuillEditor - base config', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [{
+        provide: 'config',
+        useValue: {
+          modules: {
+            toolbar: [
+              ['bold']
+            ]
+          }
+        }
+      }],
+      declarations: [QuillEditorComponent, TestComponent, TestToolbarComponent],
+      imports: [FormsModule]
+    }).compileComponents();
+  });
+
+  it('renders editor with root toolbar config', () => {
+    this.fixture = TestBed.createComponent(TestComponent) as ComponentFixture<TestComponent>;
+    this.fixture.detectChanges();
+
+    expect(this.fixture.nativeElement.querySelector('.ql-toolbar').querySelectorAll('button').length).toBe(1);
+    expect(this.fixture.nativeElement.querySelector('.ql-toolbar').querySelector('button.ql-bold')).toBeDefined();
+  });
+});
