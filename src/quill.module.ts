@@ -26,6 +26,6 @@ export class QuillModule {
           useValue: config,
         }
       ]
-    }
+    };
   }
 }
