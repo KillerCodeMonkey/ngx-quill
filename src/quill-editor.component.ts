@@ -66,32 +66,7 @@ export class QuillEditorComponent
   content: any;
   selectionChangeEvent: any;
   textChangeEvent: any;
-  defaultModules: QuillModules = {
-    toolbar: [
-      ['bold', 'italic', 'underline', 'strike'], // toggled buttons
-      ['blockquote', 'code-block'],
-
-      [{ header: 1 }, { header: 2 }], // custom button values
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-      [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-      [{ direction: 'rtl' }], // text direction
-
-      [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-      [
-        { color: this.emptyArray.slice() },
-        { background: this.emptyArray.slice() }
-      ], // dropdown with defaults from theme
-      [{ font: this.emptyArray.slice() }],
-      [{ align: this.emptyArray.slice() }],
-
-      ['clean'], // remove formatting button
-
-      ['link', 'image', 'video'] // link and image, video
-    ]
-  };
+  defaultModules: QuillModules | {};
 
   private disabled = false; // used to store initial value before ViewInit
 
@@ -163,7 +138,7 @@ export class QuillEditorComponent
     private zone: NgZone,
     @Inject('config') private config: QuillConfig,
   ) {
-    this.defaultModules = this.config && this.config.modules || this.defaultModules;
+    this.defaultModules = this.config && this.config.modules || {};
   }
 
   ngAfterViewInit() {

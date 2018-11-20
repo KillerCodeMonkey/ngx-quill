@@ -5,16 +5,8 @@ import { FormsModule, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { QuillEditorComponent } from '../src/quill-editor.component';
 
 import * as QuillNamespace from 'quill';
+import { QuillModule } from './quill.module';
 let Quill: any = QuillNamespace;
-
-beforeEach(() => {
-  TestBed.configureTestingModule({ providers: [
-    {
-      provide: 'config',
-      useValue: undefined
-    }
-  ] });
-});
 
 @Component({
   template: `
@@ -92,7 +84,9 @@ describe('Basic QuillEditorComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [QuillEditorComponent]
+      imports: [
+        QuillModule.forRoot()
+      ]
     });
 
     this.fixture = TestBed.createComponent(QuillEditorComponent) as ComponentFixture<QuillEditorComponent>;
@@ -116,8 +110,8 @@ describe('Basic QuillEditorComponent', () => {
 describe('Reactive forms integration', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ReactiveFormTestComponent, QuillEditorComponent],
-      imports: [FormsModule, ReactiveFormsModule],
+      declarations: [ReactiveFormTestComponent],
+      imports: [FormsModule, ReactiveFormsModule, QuillModule],
     });
 
     this.fixture = TestBed.createComponent(ReactiveFormTestComponent) as ComponentFixture<ReactiveFormTestComponent>;
@@ -151,8 +145,8 @@ describe('Advanced QuillEditorComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [QuillEditorComponent, TestComponent, TestToolbarComponent],
-      imports: [FormsModule]
+      declarations: [TestComponent, TestToolbarComponent],
+      imports: [FormsModule, QuillModule]
     }).compileComponents();
 
     this.fixture = TestBed.createComponent(TestComponent) as ComponentFixture<TestComponent>;
@@ -374,18 +368,14 @@ describe('Advanced QuillEditorComponent', () => {
 describe('QuillEditor - base config', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{
-        provide: 'config',
-        useValue: {
-          modules: {
-            toolbar: [
-              ['bold']
-            ]
-          }
+      declarations: [TestComponent, TestToolbarComponent],
+      imports: [FormsModule, QuillModule.forRoot({
+        modules: {
+          toolbar: [
+            ['bold']
+          ]
         }
-      }],
-      declarations: [QuillEditorComponent, TestComponent, TestToolbarComponent],
-      imports: [FormsModule]
+      })]
     }).compileComponents();
   });
 

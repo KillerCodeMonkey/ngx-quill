@@ -16,5 +16,5 @@ export type QuillModules = {
 };
 
 export interface QuillConfig {
-  modules: QuillModules;
+  modules?: QuillModules;
 }
