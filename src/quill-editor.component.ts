@@ -97,7 +97,7 @@ export class QuillEditorComponent
 
   @Input() format: 'object' | 'html' | 'text' | 'json' = 'html';
   @Input() theme: string;
-  @Input() modules: QuillModules;
+  @Input() modules: { [index: string]: Object };
   @Input() readOnly: boolean;
   @Input() placeholder: string;
   @Input() maxLength: number;
@@ -177,7 +177,7 @@ export class QuillEditorComponent
     const toolbarElem = this.elementRef.nativeElement.querySelector(
       '[quill-editor-toolbar]'
     );
-    let modules: QuillModules = this.modules || this.defaultModules;
+    let modules = this.modules || this.defaultModules;
     let placeholder = 'Insert text here ...';
 
     if (this.placeholder !== null && this.placeholder !== undefined) {
