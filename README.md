@@ -107,6 +107,7 @@ packages: {
 };
 ```
 - theme - bubble/snow, default is `snow`
+- santize - uses angulars DomSanitizer to santize html values - default: `true`, boolean (only for format="html")
 - style - set a style object, e.g. `[style]="{height: '250px'}"`
 - placeholder - placeholder text, default is `Insert text here ...`
 - bounds - boundary of the editor, default `document.body`, pass 'self' to attach the editor element
@@ -189,3 +190,14 @@ editor
   source: source
 }
 ```
+
+## Security Hint
+
+Angular templates provide some assurance against XSS in the form of client side sanitizing of all inputs https://angular.io/guide/security#xss.
+
+Ngx-quill providers the config paramter `sanitize` to sanitize html-strings passed as `ngModel` or `formControl` to the component.
+
+It is **deactivated per default** to avoid stripping content or styling, which is not expected.
+
+But it is **recommended** to activate this option, if you are working with html strings as model values.
+
