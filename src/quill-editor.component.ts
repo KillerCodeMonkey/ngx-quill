@@ -1,5 +1,7 @@
 import { QuillConfig, QuillModules } from './quill-editor.interfaces';
 import { isPlatformServer } from '@angular/common';
+import { DomSanitizer } from '@angular/platform-browser';
+
 
 import {
   AfterViewInit,
@@ -16,7 +18,8 @@ import {
   PLATFORM_ID,
   Renderer2,
   SimpleChanges,
-  ViewEncapsulation
+  ViewEncapsulation,
+  SecurityContext
 } from '@angular/core';
 
 import {
@@ -79,6 +82,7 @@ export class QuillEditorComponent
   @Input() minLength: number;
   @Input() required: boolean;
   @Input() formats: string[];
+  @Input() sanitize: boolean = false;
   @Input() style: any = {};
   @Input() strict: boolean = true;
   @Input() scrollingContainer: HTMLElement | string;
@@ -115,6 +119,9 @@ export class QuillEditorComponent
   @Input()
   valueSetter = (quillEditor: any, value: any): any => {
     if (this.format === 'html') {
+      if (this.sanitize) {
+        value = this.domSanitizer.sanitize(SecurityContext.HTML, value);
+      }
       return quillEditor.clipboard.convert(value);
     } else if (this.format === 'json') {
       try {
@@ -132,6 +139,7 @@ export class QuillEditorComponent
 
   constructor(
     private elementRef: ElementRef,
+    private domSanitizer: DomSanitizer,
     @Inject(DOCUMENT) private doc: any,
     @Inject(PLATFORM_ID) private platformId: Object,
     private renderer: Renderer2,
@@ -205,6 +213,9 @@ export class QuillEditorComponent
           this.quillEditor.setText(this.content, 'silent');
         }
       } else {
+        if (this.sanitize) {
+          this.content = this.domSanitizer.sanitize(SecurityContext.HTML, this.content);
+        }
         const contents = this.quillEditor.clipboard.convert(this.content);
         this.quillEditor.setContents(contents, 'silent');
       }
