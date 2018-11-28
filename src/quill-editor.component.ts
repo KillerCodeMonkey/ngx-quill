@@ -76,7 +76,7 @@ export class QuillEditorComponent
   @Input() format: 'object' | 'html' | 'text' | 'json' = 'html';
   @Input() theme: string;
   @Input() modules: { [index: string]: Object };
-  @Input() readOnly: boolean;
+  @Input() readOnly: boolean = false;
   @Input() placeholder: string;
   @Input() maxLength: number;
   @Input() minLength: number;
@@ -190,10 +190,11 @@ export class QuillEditorComponent
       Quill.register(newCustomOption, true);
     });
 
+
     this.quillEditor = new Quill(this.editorElem, {
       modules: modules,
+      readOnly: this.readOnly,
       placeholder: placeholder,
-      readOnly: this.readOnly || false,
       theme: this.theme || 'snow',
       formats: this.formats,
       bounds: this.bounds ? (this.bounds === 'self' ? this.editorElem : this.bounds) : this.doc.body,
@@ -327,7 +328,9 @@ export class QuillEditorComponent
         this.quillEditor.disable();
         this.renderer.setAttribute(this.elementRef.nativeElement, 'disabled', 'disabled');
       } else {
-        this.quillEditor.enable();
+        if (!this.readOnly) {
+          this.quillEditor.enable();
+        }
         this.renderer.removeAttribute(this.elementRef.nativeElement, 'disabled');
       }
     }
