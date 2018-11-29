@@ -10,7 +10,7 @@ let Quill: any = QuillNamespace;
 
 @Component({
   template: `
-<quill-editor [(ngModel)]="title" [customOptions]="[{import: 'attributors/style/size', whitelist: ['14']}]" [style]="{height: '30px'}" [required]="required" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event);" (onSelectionChanged)="handleSelection($event);"></quill-editor>
+<quill-editor [(ngModel)]="title" [customOptions]="[{import: 'attributors/style/size', whitelist: ['14']}]" [style]="style" [required]="required" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event);" (onSelectionChanged)="handleSelection($event);"></quill-editor>
 `
 })
 class TestComponent {
@@ -19,6 +19,7 @@ class TestComponent {
   required = false;
   minLength = 0;
   maxLength = 0;
+  style = { height: '30px' };
 
   changed: any;
   selected: any;
@@ -172,6 +173,51 @@ describe('Advanced QuillEditorComponent', () => {
       expect(editorCmp.readOnly).toBe(true);
       expect(editorElem.nativeElement.querySelectorAll('div.ql-container.ql-disabled').length).toBe(1);
       expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.height).toBe('30px');
+    });
+  }));
+
+  it('should update editor style', async(() => {
+    this.fixture.detectChanges();
+
+    const editorElem = this.fixture.debugElement.children[0];
+
+    this.fixture.componentInstance.style = { backgroundColor: 'red' };
+    this.fixture.detectChanges();
+
+    this.fixture.whenStable().then(() => {
+      expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.backgroundColor).toBe('red');
+      expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.height).toEqual('');
+    });
+  }));
+
+  it('should update editor style to null and readd styling', async(() => {
+    this.fixture.detectChanges();
+
+    const editorElem = this.fixture.debugElement.children[0];
+
+    this.fixture.componentInstance.style = null;
+    this.fixture.detectChanges();
+
+    this.fixture.whenStable().then(() => {
+      this.fixture.componentInstance.style = {color: 'red'};
+      expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.height).toEqual('');
+      this.fixture.detectChanges();
+      return this.fixture.whenStable();
+    }).then(() => {
+      expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.color).toBe('red');
+    });
+  }));
+
+  it('should not update editor style if nothing changed', async(() => {
+    this.fixture.detectChanges();
+
+    const editorElem = this.fixture.debugElement.children[0];
+
+    this.fixture.componentInstance.readOnly = true;
+    this.fixture.detectChanges();
+
+    this.fixture.whenStable().then(() => {
+      expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.height).toEqual('30px');
     });
   }));
 

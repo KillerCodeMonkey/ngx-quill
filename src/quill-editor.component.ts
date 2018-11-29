@@ -299,6 +299,21 @@ export class QuillEditorComponent
       this.quillEditor.root.dataset.placeholder =
         changes['placeholder'].currentValue;
     }
+    if (changes['style']) {
+      const currentStyling = changes['style'].currentValue;
+      const previousStyling = changes['style'].previousValue;
+
+      if (previousStyling) {
+        Object.keys(previousStyling).forEach((key: string) => {
+          this.renderer.removeStyle(this.editorElem, key);
+        });
+      }
+      if (currentStyling) {
+        Object.keys(currentStyling).forEach((key: string) => {
+          this.renderer.setStyle(this.editorElem, key, this.style[key]);
+        });
+      }
+    }
   }
 
   writeValue(currentValue: any) {
