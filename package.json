@@ -32,6 +32,9 @@
     "quilljs",
     "angular 2",
     "angular",
+    "angular2",
+    "ng",
+    "ngx",
     "text editor"
   ],
   "main": "./bundles/index.js",
