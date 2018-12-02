@@ -126,7 +126,7 @@ export class QuillEditorComponent
       try {
         return JSON.parse(value);
       } catch (e) {
-        return value;
+        return [{ insert: value }];
       }
     }
 
