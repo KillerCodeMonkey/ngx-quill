@@ -108,6 +108,358 @@ describe('Basic QuillEditorComponent', () => {
   }));
 });
 
+describe('Formats', () => {
+  describe('object', () => {
+    @Component({
+      template: `
+    <quill-editor [(ngModel)]="title" format="object" (onEditorCreated)="handleEditorCreated($event);"></quill-editor>
+    `
+    })
+    class ObjectComponent {
+      title = [{
+        insert: 'Hello'
+      }];
+      editor: any;
+
+      handleEditorCreated(event: any) {
+        this.editor = event;
+      }
+    }
+
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        declarations: [ObjectComponent],
+        imports: [FormsModule, QuillModule],
+      });
+
+      this.fixture = TestBed.createComponent(ObjectComponent) as ComponentFixture<ObjectComponent>;
+      this.fixture.detectChanges();
+    });
+    it('should be set object', async(() => {
+      const component = this.fixture.componentInstance;
+
+      this.fixture.whenStable().then(() => {
+        expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({"ops":[{"insert":"Hello\n"}]}));
+      });
+    }));
+
+    it('should update text', async(() => {
+      const component = this.fixture.componentInstance;
+      this.fixture.whenStable().then(() => {
+        component.title = [{ insert: '1234' }];
+        this.fixture.detectChanges();
+
+        return this.fixture.whenStable();
+      }).then(() => {
+        expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({"ops":[{"insert":"1234\n"}]}));
+      });
+    }));
+
+    it('should update model if editor text changes', async(() => {
+      const component = this.fixture.componentInstance;
+
+      this.fixture.whenStable().then(() => {
+        component.editor.setContents([{ insert: '123' }]);
+        this.fixture.detectChanges();
+
+        return this.fixture.whenStable();
+      }).then(() => {
+        expect(JSON.stringify(component.title)).toEqual(JSON.stringify({"ops":[{"insert":"123\n"}]}));
+      });
+    }));
+  });
+
+  describe('html', () => {
+    @Component({
+      template: `
+    <quill-editor [(ngModel)]="title" format="html" (onEditorCreated)="handleEditorCreated($event);"></quill-editor>
+    `
+    })
+    class HTMLComponent {
+      title = '<p>Hallo</p>';
+      editor: any;
+
+      handleEditorCreated(event: any) {
+        this.editor = event;
+      }
+    }
+
+    @Component({
+      template: `
+    <quill-editor [(ngModel)]="title" [sanitize]="true" format="html" (onEditorCreated)="handleEditorCreated($event);"></quill-editor>
+    `
+    })
+    class HTMLSanitizeComponent {
+      title = '<p>Hallo <img src="wroooong.jpg" onerror="window.alert(\'sanitize me\')"></p>';
+      editor: any;
+
+      handleEditorCreated(event: any) {
+        this.editor = event;
+      }
+    }
+
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        declarations: [HTMLComponent, HTMLSanitizeComponent],
+        imports: [FormsModule, QuillModule],
+      });
+
+      this.fixture = TestBed.createComponent(HTMLComponent) as ComponentFixture<HTMLComponent>;
+      this.fixture.detectChanges();
+    });
+    it('should be set html', async(() => {
+      const component = this.fixture.componentInstance;
+
+      this.fixture.whenStable().then(() => {
+        expect(component.editor.getText().trim()).toEqual('Hallo');
+      });
+    }));
+
+    it('should update html', async(() => {
+      const component = this.fixture.componentInstance;
+      component.title = '<p>test</p>';
+      this.fixture.detectChanges();
+
+      this.fixture.whenStable().then(() => {
+        expect(component.editor.getText().trim()).toEqual('test');
+      });
+    }));
+
+    it('should update model if editor html changes', async(() => {
+      const component = this.fixture.componentInstance;
+      this.fixture.whenStable().then(() => {
+        expect(component.title.trim()).toEqual('<p>Hallo</p>');
+        component.editor.setText('1234');
+        return this.fixture.detectChanges();
+      }).then(() => {
+        expect(component.title.trim()).toEqual('<p>1234</p>');
+      });
+
+
+      this.fixture.whenStable().then(() => {
+
+      });
+    }));
+
+    it('should sanitize html', async(() => {
+      this.fixture = TestBed.createComponent(HTMLSanitizeComponent) as ComponentFixture<HTMLSanitizeComponent>;
+      this.fixture.detectChanges();
+      const component = this.fixture.componentInstance;
+
+      this.fixture.whenStable().then(() => {
+        expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({"ops":[{"insert":"Hallo "},{"insert":{"image":"wroooong.jpg"}},{"insert":"\n"}]}));
+
+        component.title = '<p><img src="xxxx" onerror="window.alert()"></p>';
+        this.fixture.detectChanges();
+
+        return this.fixture.whenStable();
+      }).then(() => {
+        expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({"ops":[{"insert":{"image":"xxxx"}},{"insert":"\n"}]}));
+      });
+    }));
+  });
+
+  describe('text', () => {
+    @Component({
+      template: `
+    <quill-editor [(ngModel)]="title" format="text" (onEditorCreated)="handleEditorCreated($event);"></quill-editor>
+    `
+    })
+    class TextComponent {
+      title = 'Hallo';
+      editor: any;
+
+      handleEditorCreated(event: any) {
+        this.editor = event;
+      }
+    }
+
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        declarations: [TextComponent],
+        imports: [FormsModule, QuillModule],
+      });
+
+      this.fixture = TestBed.createComponent(TextComponent) as ComponentFixture<TextComponent>;
+      this.fixture.detectChanges();
+    });
+    it('should be set text', async(() => {
+      const component = this.fixture.componentInstance;
+      this.fixture.whenStable().then(() => {
+        expect(component.editor.getText().trim()).toEqual('Hallo');
+      });
+    }));
+
+    it('should update text', async(() => {
+      const component = this.fixture.componentInstance;
+      component.title = 'test';
+      this.fixture.detectChanges();
+
+      this.fixture.whenStable().then(() => {
+        expect(component.editor.getText().trim()).toEqual('test');
+      });
+    }));
+
+    it('should update model if editor text changes', async(() => {
+      const component = this.fixture.componentInstance;
+      this.fixture.whenStable().then(() => {
+        component.editor.setText('123');
+        this.fixture.detectChanges();
+        return this.fixture.whenStable();
+      }).then(() => {
+        expect(component.title.trim()).toEqual('123');
+      });
+    }));
+  });
+
+  describe('json', () => {
+    @Component({
+      template: `
+    <quill-editor [(ngModel)]="title" format="json" (onEditorCreated)="handleEditorCreated($event);"></quill-editor>
+    `
+    })
+    class JSONComponent {
+      title = JSON.stringify([{
+        insert: 'Hallo'
+      }]);
+      editor: any;
+
+      handleEditorCreated(event: any) {
+        this.editor = event;
+      }
+    }
+
+    @Component({
+      template: `
+    <quill-editor [(ngModel)]="title" format="json" (onEditorCreated)="handleEditorCreated($event);"></quill-editor>
+    `
+    })
+    class JSONInvalidComponent {
+      title = JSON.stringify([{
+        insert: 'Hallo'
+      }]) + '{';
+      editor: any;
+
+      handleEditorCreated(event: any) {
+        this.editor = event;
+      }
+    }
+
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        declarations: [JSONComponent, JSONInvalidComponent],
+        imports: [FormsModule, QuillModule],
+      });
+
+      this.fixture = TestBed.createComponent(JSONComponent) as ComponentFixture<JSONComponent>;
+      this.fixture.detectChanges();
+    });
+
+    it('should set json string', async(() => {
+      const component = this.fixture.componentInstance;
+      this.fixture.whenStable().then(() => {
+        expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({"ops":[{"insert":"Hallo\n"}]}));
+      });
+    }));
+
+    it('should update json string', async(() => {
+      const component = this.fixture.componentInstance;
+      component.title = JSON.stringify([{
+        insert: 'Hallo 123'
+      }]);
+      this.fixture.detectChanges();
+      this.fixture.whenStable().then(() => {
+        expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({"ops":[{"insert":"Hallo 123\n"}]}));
+      });
+    }));
+
+    it('should update model if editor changes', async(() => {
+      const component = this.fixture.componentInstance;
+
+      this.fixture.whenStable().then(() => {
+
+        component.editor.setContents([{
+          insert: 'Hallo 123'
+        }]);
+        this.fixture.detectChanges();
+        return this.fixture.whenStable();
+      }).then(() => {
+        expect(component.title).toEqual(JSON.stringify({"ops":[{"insert":"Hallo 123\n"}]}));
+      });
+    }));
+
+    it('should set as text if invalid JSON', async(() => {
+      this.fixture = TestBed.createComponent(JSONInvalidComponent) as ComponentFixture<JSONInvalidComponent>;
+      this.fixture.detectChanges();
+      const component = this.fixture.componentInstance;
+      this.fixture.whenStable().then(() => {
+        expect(component.editor.getText().trim()).toEqual(JSON.stringify([{
+          insert: 'Hallo'
+        }]) + '{');
+
+        component.title = JSON.stringify([{
+          insert: 'Hallo 1234'
+        }]) + '{';
+        this.fixture.detectChanges();
+        return this.fixture.whenStable();
+      }).then(() => {
+        expect(component.editor.getText().trim()).toEqual(JSON.stringify([{
+          insert: 'Hallo 1234'
+        }]) + '{');
+      });
+    }));
+  });
+});
+
+describe('Dynamic styles', () => {
+  @Component({
+    template: `
+  <quill-editor [bounds]="'self'" [(ngModel)]="title" format="text" [style]="style" (onEditorCreated)="handleEditorCreated($event);"></quill-editor>
+  `
+  })
+  class StylingComponent {
+    title = 'Hallo';
+    style = {
+      backgroundColor: 'red'
+    };
+    editor: any;
+
+    handleEditorCreated(event: any) {
+      this.editor = event;
+    }
+  }
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [StylingComponent],
+      imports: [FormsModule, QuillModule],
+    });
+
+    this.fixture = TestBed.createComponent(StylingComponent) as ComponentFixture<StylingComponent>;
+    this.fixture.detectChanges();
+  });
+
+  it('set inital style', async(() => {
+    const component = this.fixture.componentInstance;
+    this.fixture.whenStable().then(() => {
+      expect(component.editor.container.style.backgroundColor).toEqual('red');
+    });
+  }));
+
+  it('set style', async(() => {
+    const component = this.fixture.componentInstance;
+    this.fixture.whenStable().then(() => {
+      component.style = {
+        backgroundColor: 'gray'
+      };
+      this.fixture.detectChanges();
+      return this.fixture.whenStable();
+    }).then(() => {
+      expect(component.editor.container.style.backgroundColor).toEqual('gray');
+    });
+  }));
+});
+
 describe('Reactive forms integration', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
