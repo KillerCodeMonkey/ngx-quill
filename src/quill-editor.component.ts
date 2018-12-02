@@ -2,7 +2,6 @@ import { QuillConfig, QuillModules } from './quill-editor.interfaces';
 import { isPlatformServer } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 
-
 import {
   AfterViewInit,
   Component,
@@ -127,7 +126,7 @@ export class QuillEditorComponent
       try {
         return JSON.parse(value);
       } catch (e) {
-        return value;
+        return [{ insert: value }];
       }
     }
 

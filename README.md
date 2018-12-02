@@ -1,23 +1,77 @@
 # ngx-quill [![Build Status](https://travis-ci.org/KillerCodeMonkey/ngx-quill.svg?branch=develop)](https://travis-ci.org/KillerCodeMonkey/ngx-quill)
 
-Angular (>=2) component for rich text editor Quill
-
-- angular v4 - ngx-quill <=1.6.0
-- angular v5 - ngx-quill > 1.6.0
-- angular v6 - ngx-quill >= 3.0.0
-- angular v7 - ngx-quill >= 4.0.0
-
 <img src="https://cloud.githubusercontent.com/assets/2264672/20601381/a51753d4-b258-11e6-92c2-1d79efa5bede.png" width="200px">
 
-ngx-quill is the new angular (>=2) implementation of ngQuill.
+ngx-quill is an angular (>=2) component for the [Quill Rich Text Editor](https://quilljs.com/).
+
+## Donate/Support
+
+If you like my work, feel free to support it. Donations to the project are always welcomed :)
+
+PayPal: [PayPal.Me/bengtler](PayPal.Me/bengtler)
+
+BTC Wallet Address:
+`3QVyr2tpRLBCw1kBQ59sTDraV6DTswq8Li`
+
+ETH Wallet Address:
+`0x394d44f3b6e3a4f7b4d44991e7654b0cab4af68f`
+
+LTC Wallet Address:
+`MFif769WSZ1g7ReAzzDE7TJVqtkFpmoTyT`
+
+XRP Wallet Address:
+`rXieaAC3nevTKgVu2SYoShjTCS2Tfczqx?dt=159046833`
 
 ## Examples
 
-- [demo-page](https://killercodemonkey.github.io/ngx-quill-example)
-- [example-repo](https://github.com/killerCodeMonkey/ngx-quill-example)
-- [angular-cli-example-repo](https://github.com/KillerCodeMonkey/ngx-quill-angular-cli)
-- [ionic-v3-example-repo](https://github.com/KillerCodeMonkey/ngx-quill-ionic-v3)
+- [Webpack Demo](https://github.com/killerCodeMonkey/ngx-quill-example)
+- [Angular CLI Demo](https://github.com/KillerCodeMonkey/ngx-quill-angular-cli)
+- [Ionic v3 Demo](https://github.com/KillerCodeMonkey/ngx-quill-ionic-v3)
 
+## Compatibility to Angular Versions
+
+<table>
+  <thead>
+    <tr>
+      <th>Angular</th>
+      <th>ngx-quill</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        v4
+      </td>
+      <td>
+        <= 1.6.0
+      </td>
+    </tr>
+    <tr>
+      <td>
+        v5
+      </td>
+      <td>
+        > 1.6.0
+      </td>
+    </tr>
+    <tr>
+      <td>
+        v6
+      </td>
+      <td>
+        >= 3.0.0
+      </td>
+    </tr>
+    <tr>
+      <td>
+        v7
+      </td>
+      <td>
+        >= 4.0.0
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 ## Installation
 
@@ -107,7 +161,7 @@ packages: {
 };
 ```
 - theme - bubble/snow, default is `snow`
-- santize - uses angulars DomSanitizer to santize html values - default: `true`, boolean (only for format="html")
+- sanitize - uses angulars DomSanitizer to santize html values - default: `true`, boolean (only for format="html")
 - style - set a style object, e.g. `[style]="{height: '250px'}"`
 - placeholder - placeholder text, default is `Insert text here ...`
 - bounds - boundary of the editor, default `document.body`, pass 'self' to attach the editor element
@@ -195,7 +249,7 @@ editor
 
 Angular templates provide some assurance against XSS in the form of client side sanitizing of all inputs https://angular.io/guide/security#xss.
 
-Ngx-quill providers the config paramter `sanitize` to sanitize html-strings passed as `ngModel` or `formControl` to the component.
+Ngx-quill provides the config paramter `sanitize` to sanitize html-strings passed as `ngModel` or `formControl` to the component.
 
 It is **deactivated per default** to avoid stripping content or styling, which is not expected.
 

@@ -1,7 +1,7 @@
 {
   "name": "ngx-quill",
   "license": "MIT",
-  "version": "4.3.2",
+  "version": "4.3.3",
   "author": {
     "name": "Bengt Weiße"
   },
@@ -32,6 +32,9 @@
     "quilljs",
     "angular 2",
     "angular",
+    "angular2",
+    "ng",
+    "ngx",
     "text editor"
   ],
   "main": "./bundles/index.js",
