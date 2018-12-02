@@ -249,7 +249,7 @@ editor
 
 Angular templates provide some assurance against XSS in the form of client side sanitizing of all inputs https://angular.io/guide/security#xss.
 
-Ngx-quill providers the config paramter `sanitize` to sanitize html-strings passed as `ngModel` or `formControl` to the component.
+Ngx-quill provides the config paramter `sanitize` to sanitize html-strings passed as `ngModel` or `formControl` to the component.
 
 It is **deactivated per default** to avoid stripping content or styling, which is not expected.
 
