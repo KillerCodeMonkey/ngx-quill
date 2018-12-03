@@ -128,6 +128,13 @@ packages: {
 - follow the steps of **For standard webpack and tsc builds**
 - for builds with angular-cli >=6 only add quilljs to your scripts!
 
+## Hint
+
+Ngx-quill updates the ngModel or formControl for every `user` change in the editor.
+Checkout the [QuillJS Source](https://quilljs.com/docs/api/#events) parameter of the `text-change` event.
+
+If you are using the editor reference to directly manipulate the editor content and want to update the model, pass `'user'` as the source parameter to the QuillJS api methods.
+
 ## Config
 
 - ngModel - set initial value or allow two-way databinding
