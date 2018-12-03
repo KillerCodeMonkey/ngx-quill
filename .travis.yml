@@ -1,8 +1,15 @@
 language: node_js
 node_js:
   - "8"
-  - "9"
   - "10"
+addons:
+  chrome: stable
+before_install:
+  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+cache:
+  npm: true
+  directories:
+    - node_modules
 install:
   - npm install
 script:

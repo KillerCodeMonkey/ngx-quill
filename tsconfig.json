@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "alwaysStrict": true,
     "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
@@ -20,11 +21,7 @@
     "node",
     "core-js"
   ],
-  "files": [
-    "index.ts",
-    "./src/quill-editor.component.ts",
-    "./src/quill.module.ts"
-  ],
+  "strict": true,
   "exclude": [
     "node_modules",
     "bundles",
