@@ -85,6 +85,7 @@
     "source-map-loader": "^0.2.4",
     "ts-helpers": "^1.1.2",
     "ts-loader": "5.2.2",
+    "tslint-eslint-rules": "^5.1.0",
     "tsickle": "0.33.1",
     "tslint": "^4.0.0 || ^5.10.0",
     "typescript": ">=2.4.2 || <2.8 || ^3.1",

@@ -1,9 +1,9 @@
-import { QuillConfig } from './quill-editor.interfaces';
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { ModuleWithProviders, NgModule } from '@angular/core'
 
-import { QuillEditorComponent } from './quill-editor.component';
+import { QuillEditorComponent } from './quill-editor.component'
+import { QuillConfig } from './quill-editor.interfaces'
 
-const emptyArray: any[] = [];
+const emptyArray: any[] = []
 const defaultModules = {
   toolbar: [
     ['bold', 'italic', 'underline', 'strike'], // toggled buttons
@@ -29,18 +29,18 @@ const defaultModules = {
 
     ['link', 'image', 'video'] // link and image, video
   ]
-};
+}
 
 @NgModule({
   declarations: [
     QuillEditorComponent
   ],
-  imports: [],
   exports: [QuillEditorComponent],
+  imports: [],
   providers: [
     {
       provide: 'config',
-      useValue: defaultModules,
+      useValue: defaultModules
     }
   ]
 })
@@ -51,9 +51,9 @@ export class QuillModule {
       providers: [
         {
           provide: 'config',
-          useValue: config || defaultModules,
+          useValue: config || defaultModules
         }
       ]
-    };
+    }
   }
 }
