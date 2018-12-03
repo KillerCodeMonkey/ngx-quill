@@ -261,9 +261,12 @@ export class QuillEditorComponent
         }
 
         this.zone.run(() => {
-          this.onModelChange(
-            this.valueGetter(this.quillEditor, this.editorElem)
-          );
+
+          if (source === 'user') {
+            this.onModelChange(
+              this.valueGetter(this.quillEditor, this.editorElem)
+            );
+          }
 
           this.onContentChanged.emit({
             editor: this.quillEditor,

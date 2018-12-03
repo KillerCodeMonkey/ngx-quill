@@ -140,6 +140,42 @@ describe('Reactive forms integration', () => {
     expect(component.editor.quillEditor.container.classList.contains('ql-disabled')).toBeFalsy();
     expect(this.fixture.nativeElement.children[0].attributes.disabled).not.toBeDefined();
   });
+
+  it('should leave form pristine when content of editor changed programmatically', async(() => {
+    const values: string[] = [];
+    (this.fixture.componentInstance.formControl as FormControl).valueChanges.subscribe(value => values.push(value));
+    this.fixture.detectChanges();
+
+    this.fixture.whenStable().then(() => {
+      this.fixture.componentInstance.formControl.setValue('1234');
+      this.fixture.detectChanges();
+      return this.fixture.whenStable();
+    }).then(() => {
+      expect(this.fixture.nativeElement.querySelector('div.ql-editor').textContent).toEqual('1234');
+      expect(this.fixture.componentInstance.formControl.value).toEqual('1234');
+      expect(this.fixture.componentInstance.formControl.pristine).toBeTruthy();
+      expect(values).toEqual(['1234']);
+    });
+  }));
+
+  it('should mark form dirty when content of editor changed by user', async(() => {
+    const values: string[] = [];
+    (this.fixture.componentInstance.formControl as FormControl).valueChanges.subscribe(value => values.push(value));
+    this.fixture.detectChanges();
+
+    this.fixture.whenStable().then(() => {
+      appendText(this.fixture.nativeElement.querySelector('div.ql-editor'), '1234');
+      return new Promise(resolve => setTimeout(resolve, 10));
+    }).then(() => {
+      this.fixture.detectChanges();
+      return this.fixture.whenStable();
+    }).then(() => {
+      expect(this.fixture.nativeElement.querySelector('div.ql-editor').textContent).toEqual('1234');
+      expect(getTextContent(this.fixture.componentInstance.formControl.value)).toEqual('1234');
+      expect(this.fixture.componentInstance.formControl.dirty).toBeTruthy();
+      expect(values.map(getTextContent)).toEqual(['1234']);
+    });
+  }));
 });
 
 describe('Advanced QuillEditorComponent', () => {
@@ -251,13 +287,30 @@ describe('Advanced QuillEditorComponent', () => {
     expect(this.fixture.componentInstance.handleEditorCreated).toHaveBeenCalledWith(editorComponent.quillEditor);
   }));
 
-  it('should emit onContentChanged when content of editor changed', async(() => {
+  it('should emit onContentChanged when content of editor changed programmatically', async(() => {
     spyOn(this.fixture.componentInstance, 'handleChange').and.callThrough();
     this.fixture.detectChanges();
     this.fixture.whenStable().then(() => {
       this.fixture.componentInstance.title = '1234';
-      return this.fixture.detectChanges();
+      this.fixture.detectChanges();
+      return this.fixture.whenStable();
     }).then(() => {
+      expect(this.fixture.nativeElement.querySelector('div.ql-editor').textContent).toEqual('1234');
+      expect(this.fixture.componentInstance.handleChange).toHaveBeenCalledWith(this.fixture.componentInstance.changed);
+    });
+  }));
+
+  it('should emit onContentChanged when content of editor changed by user', async(() => {
+    spyOn(this.fixture.componentInstance, 'handleChange').and.callThrough();
+    this.fixture.detectChanges();
+    this.fixture.whenStable().then(() => {
+      appendText(this.fixture.nativeElement.querySelector('div.ql-editor'), '1234');
+      return new Promise(resolve => setTimeout(resolve, 10));
+    }).then(() => {
+      this.fixture.detectChanges();
+      return this.fixture.whenStable();
+    }).then(() => {
+      expect(this.fixture.nativeElement.querySelector('div.ql-editor').textContent).toEqual('Hallo1234');
       expect(this.fixture.componentInstance.handleChange).toHaveBeenCalledWith(this.fixture.componentInstance.changed);
     });
   }));
@@ -433,3 +486,29 @@ describe('QuillEditor - base config', () => {
     expect(this.fixture.nativeElement.querySelector('.ql-toolbar').querySelector('button.ql-bold')).toBeDefined();
   });
 });
+
+function appendText(el: HTMLElement, str: string) {
+  if (document.activeElement !== el) {
+    el.focus();
+  }
+
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+
+  const range = document.createRange();
+  range.setStart(el, el.childNodes.length);
+  range.setEnd(el, el.childNodes.length);
+  sel.addRange(range);
+
+  range.insertNode(document.createTextNode(str));
+
+  const ev = document.createEvent('Event');
+  ev.initEvent('input', true, true);
+  el.dispatchEvent(ev);
+}
+
+function getTextContent(str: string): string {
+  const el = document.createElement('div');
+  el.innerHTML = str;
+  return el.textContent;
+}
