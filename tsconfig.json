@@ -21,6 +21,7 @@
     "node",
     "core-js"
   ],
+  "strict": true,
   "exclude": [
     "node_modules",
     "bundles",

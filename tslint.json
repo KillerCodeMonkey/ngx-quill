@@ -1,66 +1,21 @@
 {
-  "rulesDirectory": [
-    "node_modules/codelyzer"
-  ],
+  "extends": "tslint:recommended",
   "rules": {
-    "class-name": true,
-    "curly": true,
-    "forin": true,
-    "indent": [
-      true,
-      "spaces"
-    ],
-    "label-position": true,
-    "member-access": false,
-    "no-arg": true,
-    "no-bitwise": true,
-    "no-console": [
-      true,
-      "debug",
-      "info",
-      "time",
-      "timeEnd",
-      "trace"
-    ],
-    "no-construct": true,
+    "interface-name": [true, "never-prefix"],
+    "quotemark": [true, "single", "avoid-escape", "avoid-template"],
+    "max-line-length": false,
+    "trailing-comma": [true, {"multiline": "never", "singleline": "never"}],
+    "member-access": [true, "no-public"],
     "no-duplicate-variable": true,
-    "no-empty": false,
-    "no-eval": true,
-    "no-inferrable-types": false,
-    "no-shadowed-variable": true,
-    "no-string-literal": false,
-    "no-unused-expression": true,
-    "object-literal-sort-keys": false,
-    "one-line": [
-      true,
-      "check-open-brace",
-      "check-catch",
-      "check-else",
-      "check-whitespace"
-    ],
-    "radix": true,
-    "semicolon": [
+    "no-unused-variable": [
       true
     ],
-    "triple-equals": [
-      true,
-      "allow-null-check"
-    ],
-    "typedef-whitespace": [
-      true,
-      {
-        "call-signature": "nospace",
-        "index-signature": "nospace",
-        "parameter": "nospace",
-        "property-declaration": "nospace",
-        "variable-declaration": "nospace"
-      }
-    ],
-    "variable-name": false,
-    "use-input-property-decorator": true,
-    "use-output-property-decorator": true,
-    "use-host-property-decorator": false,
-    "use-life-cycle-interface": true,
-    "use-pipe-transform-interface": true
-  }
+    "variable-name": [true, "allow-leading-underscore"],
+    "object-literal-sort-keys": true,
+    "no-empty": true,
+    "semicolon": [true, "never"]
+  },
+  "rulesDirectory": [
+    "node_modules/tslint-eslint-rules/dist/rules"
+  ]
 }
