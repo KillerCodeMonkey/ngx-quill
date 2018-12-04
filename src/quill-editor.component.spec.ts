@@ -325,6 +325,17 @@ describe('Formats', () => {
         expect(component.title.trim()).toEqual('123')
       })
     }))
+
+    it('should not update model if editor content changed by api', async(() => {
+      const component = fixture.componentInstance
+      fixture.whenStable().then(() => {
+        component.editor.setText('123')
+        fixture.detectChanges()
+        return fixture.whenStable()
+      }).then(() => {
+        expect(component.title.trim()).toEqual('Hallo')
+      })
+    }))
   })
 
   describe('json', () => {
