@@ -257,9 +257,6 @@ export class QuillEditorComponent
       'text-change',
       (delta: any, oldDelta: any, source: string): void => {
         // only emit changes emitted by user interactions
-        if (source !== 'user' || !this.onModelChange) {
-          return null
-        }
 
         const text = this.quillEditor.getText()
         const content = this.quillEditor.getContents()
@@ -270,9 +267,11 @@ export class QuillEditorComponent
         }
 
         this.zone.run(() => {
-          this.onModelChange(
-            this.valueGetter(this.quillEditor, this.editorElem)
-          )
+          if (source === 'user' && this.onModelChange) {
+            this.onModelChange(
+              this.valueGetter(this.quillEditor, this.editorElem)
+            )
+          }
 
           this.onContentChanged.emit({
             content,
