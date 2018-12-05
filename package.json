@@ -1,7 +1,7 @@
 {
   "name": "ngx-quill",
   "license": "MIT",
-  "version": "4.4.1",
+  "version": "4.4.2",
   "author": {
     "name": "Bengt Weiße"
   },
@@ -47,6 +47,7 @@
   },
   "$schema": "./node_modules/ng-packagr/package.schema.json",
   "peerDependencies": {
+    "@angular/common": "^5.0.0 || ^6.0.0 || ^7.0.0",
     "@angular/core": "^5.0.0 || ^6.0.0 || ^7.0.0",
     "@angular/forms": "^5.0.0 || ^6.0.0 || ^7.0.0",
     "quill": "^1.3.6",
