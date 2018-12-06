@@ -26,7 +26,7 @@ class TestComponent {
     backgroundColor?: string,
     color?: string,
     height?: string
-  } = { height: '30px' }
+  } | null = { height: '30px' }
   editor: any
 
   changed: any
@@ -90,7 +90,7 @@ class TestToolbarComponent {
 })
 class ReactiveFormTestComponent {
   formControl: FormControl = new FormControl(null)
-  @ViewChild(QuillEditorComponent) editor: QuillEditorComponent
+  @ViewChild(QuillEditorComponent) editor!: QuillEditorComponent
 }
 
 describe('Basic QuillEditorComponent', () => {

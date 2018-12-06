@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "strict": true,
     "alwaysStrict": true,
     "target": "es5",
     "module": "commonjs",
@@ -21,7 +22,6 @@
     "node",
     "core-js"
   ],
-  "strict": true,
   "exclude": [
     "node_modules",
     "bundles",

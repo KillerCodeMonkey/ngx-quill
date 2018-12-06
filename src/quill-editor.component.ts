@@ -77,19 +77,19 @@ export class QuillEditorComponent
   onModelTouched: any
 
   @Input() format: 'object' | 'html' | 'text' | 'json' = 'html'
-  @Input() theme: string
+  @Input() theme: string = 'snow'
   // tslint:disable-next-line:ban-types
-  @Input() modules: { [index: string]: Object }
+  @Input() modules: { [index: string]: Object } | null = null
   @Input() readOnly: boolean = false
-  @Input() placeholder: string
-  @Input() maxLength: number
-  @Input() minLength: number
-  @Input() required: boolean
-  @Input() formats: string[]
+  @Input() placeholder: string = 'Insert text here ...'
+  @Input() maxLength: number | null = null
+  @Input() minLength: number | null = null
+  @Input() required: boolean = false
+  @Input() formats: string[] | null = null
   @Input() sanitize: boolean = false
-  @Input() style: any = {}
+  @Input() style: any = null
   @Input() strict: boolean = true
-  @Input() scrollingContainer: HTMLElement | string
+  @Input() scrollingContainer: HTMLElement | string | null = null
   @Input() bounds: HTMLElement | string
   @Input() customOptions: CustomOption[] = []
 
@@ -110,6 +110,14 @@ export class QuillEditorComponent
     @Inject('config') private config: QuillConfig
   ) {
     this.defaultModules = this.config && this.config.modules || {}
+    this.bounds = this.doc.body
+    this.elementRef.nativeElement.insertAdjacentHTML(
+      'beforeend',
+      '<div quill-editor-element></div>'
+    )
+    this.editorElem = this.elementRef.nativeElement.querySelector(
+      '[quill-editor-element]'
+    )
   }
 
   @Input()
@@ -165,7 +173,7 @@ export class QuillEditorComponent
       '[quill-editor-toolbar]'
     )
     const modules = this.modules || this.defaultModules
-    let placeholder = 'Insert text here ...'
+    let placeholder = this.placeholder
 
     if (this.placeholder !== null && this.placeholder !== undefined) {
       placeholder = this.placeholder.trim()
@@ -175,13 +183,6 @@ export class QuillEditorComponent
       // tslint:disable-next-line:no-string-literal
       modules['toolbar'] = toolbarElem
     }
-    this.elementRef.nativeElement.insertAdjacentHTML(
-      'beforeend',
-      '<div quill-editor-element></div>'
-    )
-    this.editorElem = this.elementRef.nativeElement.querySelector(
-      '[quill-editor-element]'
-    )
 
     if (this.style) {
       Object.keys(this.style).forEach((key: string) => {
