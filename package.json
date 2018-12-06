@@ -19,7 +19,7 @@
     "lint": "tslint --force \"src/**/*.ts\"",
     "build": "ng-packagr -p package.json",
     "pretest": "npm run lint",
-    "test": "./node_modules/.bin/karma start && npm run lint"
+    "test": "./node_modules/.bin/karma start"
   },
   "keywords": [
     "editor",

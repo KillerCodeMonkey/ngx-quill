@@ -248,7 +248,8 @@ describe('Formats', () => {
       fixture.whenStable().then(() => {
         expect(component.title.trim()).toEqual('<p>Hallo</p>')
         component.editor.setText('1234', 'user')
-        return fixture.detectChanges()
+        fixture.detectChanges()
+        return fixture.whenStable()
       }).then(() => {
         expect(component.title.trim()).toEqual('<p>1234</p>')
       })
@@ -674,7 +675,8 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.whenStable().then(() => {
       const editorFixture = fixture.debugElement.children[0]
       editorFixture.componentInstance.quillEditor.setText('1234', 'user')
-      return fixture.detectChanges()
+      fixture.detectChanges()
+      return fixture.whenStable()
     }).then(() => {
       expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
     })
