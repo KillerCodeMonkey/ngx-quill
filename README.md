@@ -80,7 +80,7 @@ XRP Wallet Address:
 - install `@angular/core`, `@angular/common`, `@angular/forms`, `quill` and `rxjs` - peer dependencies of ngx-quill
 - include theme stylings: bubble.css, snow.css of quilljs in your index.html, or add them in your css/scss files with `@import` statements, or add them external stylings in your build process.
 
-### For standard webpack and tsc builds
+### For standard webpack, angular-cli and tsc builds
 
 - import `QuillModule` from `ngx-quill`:
 ```
@@ -100,6 +100,8 @@ class YourModule { ... }
 ```
 - use `<quill-editor></quill-editor>` in your templates to add a default quill editor
 - do not forget to include quill + theme css in your buildprocess, module or index.html!
+
+**HINT:** *If you are using lazy loading modules, you have to add `QuillModule` to your imports in your root module to make sure the `Config` services is registered.*
 
 ### For SystemJS builds (Config)
 
