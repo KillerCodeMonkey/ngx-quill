@@ -207,7 +207,7 @@ If you are using the editor reference to directly manipulate the editor content 
 
 ## Global Config
 
-It is possible to set custom default toolbar modules with the import of the `QuillModule`.
+It is possible to set custom default modules (toolbar and syntax) with the import of the `QuillModule`.
 
 ```
 @NgModule({
@@ -216,6 +216,7 @@ It is possible to set custom default toolbar modules with the import of the `Qui
 
     QuillModule.forRoot({
       modules: {
+        syntax: true,
         toolbar: [...]
       }
     })
@@ -225,6 +226,9 @@ It is possible to set custom default toolbar modules with the import of the `Qui
 class YourModule { ... }
 
 ```
+
+If you want to use the `syntax` module follow the [Syntax Highlight Module Guide](https://quilljs.com/docs/modules/syntax/#syntax-highlighter-module).
+
 
 ## Outputs
 
