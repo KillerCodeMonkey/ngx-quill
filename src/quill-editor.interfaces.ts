@@ -14,6 +14,7 @@ export type QuillToolbarConfig = Array<Array<
 >>
 
 export interface QuillModules {
+  syntax?: boolean
   toolbar: QuillToolbarConfig
 }
 
