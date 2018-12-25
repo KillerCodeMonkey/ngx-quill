@@ -1,7 +1,7 @@
 import { isPlatformServer } from '@angular/common'
 import { DomSanitizer } from '@angular/platform-browser'
 
-import { QuillConfig, QuillModules } from './quill-editor.interfaces'
+import { QUILL_CONFIG_TOKEN, QuillConfig, QuillModules } from './quill-editor.interfaces'
 
 import {
   AfterViewInit,
@@ -107,7 +107,7 @@ export class QuillEditorComponent
     @Inject(PLATFORM_ID) private platformId: Object,
     private renderer: Renderer2,
     private zone: NgZone,
-    @Inject('config') private config: QuillConfig
+    @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig
   ) {
     this.defaultModules = this.config && this.config.modules || {}
     this.bounds = this.doc.body

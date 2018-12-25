@@ -1,3 +1,5 @@
+import { InjectionToken } from '@angular/core'
+
 export type QuillToolbarConfig = Array<Array<
   string | {
     indent?: string
@@ -21,3 +23,5 @@ export interface QuillModules {
 export interface QuillConfig {
   modules?: QuillModules
 }
+
+export const QUILL_CONFIG_TOKEN = new InjectionToken<QuillConfig>('config')
