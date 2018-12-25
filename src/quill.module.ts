@@ -1,7 +1,7 @@
 import { ModuleWithProviders, NgModule } from '@angular/core'
 
 import { QuillEditorComponent } from './quill-editor.component'
-import { QuillConfig } from './quill-editor.interfaces'
+import { QUILL_CONFIG_TOKEN, QuillConfig } from './quill-editor.interfaces'
 
 const emptyArray: any[] = []
 const defaultModules = {
@@ -39,8 +39,8 @@ const defaultModules = {
   imports: [],
   providers: [
     {
-      provide: 'config',
-      useValue: defaultModules
+      provide: QUILL_CONFIG_TOKEN,
+      useValue: { modules: defaultModules }
     }
   ]
 })
@@ -50,8 +50,8 @@ export class QuillModule {
       ngModule: QuillModule,
       providers: [
         {
-          provide: 'config',
-          useValue: config || defaultModules
+          provide: QUILL_CONFIG_TOKEN,
+          useValue: config || { modules: defaultModules }
         }
       ]
     }
