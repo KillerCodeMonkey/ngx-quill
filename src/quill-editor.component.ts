@@ -66,7 +66,7 @@ export class QuillEditorComponent
   implements AfterViewInit, ControlValueAccessor, OnChanges, OnDestroy, Validator {
 
   quillEditor: any
-  editorElem: HTMLElement
+  editorElem: HTMLElement | undefined
   emptyArray: any[] = []
   content: any
   selectionChangeEvent: any
@@ -111,13 +111,6 @@ export class QuillEditorComponent
   ) {
     this.defaultModules = this.config && this.config.modules || {}
     this.bounds = this.doc.body
-    this.elementRef.nativeElement.insertAdjacentHTML(
-      'beforeend',
-      '<div quill-editor-element></div>'
-    )
-    this.editorElem = this.elementRef.nativeElement.querySelector(
-      '[quill-editor-element]'
-    )
   }
 
   @Input()
@@ -168,6 +161,14 @@ export class QuillEditorComponent
     if (!Quill) {
       Quill = require('quill')
     }
+
+    this.elementRef.nativeElement.insertAdjacentHTML(
+      'beforeend',
+      '<div quill-editor-element></div>'
+    )
+    this.editorElem = this.elementRef.nativeElement.querySelector(
+      '[quill-editor-element]'
+    )
 
     const toolbarElem = this.elementRef.nativeElement.querySelector(
       '[quill-editor-toolbar]'
@@ -262,7 +263,7 @@ export class QuillEditorComponent
         const text = this.quillEditor.getText()
         const content = this.quillEditor.getContents()
 
-        let html: string | null = this.editorElem.children[0].innerHTML
+        let html: string | null = this.editorElem!.children[0].innerHTML
         if (html === '<p><br></p>' || html === '<div><br><div>') {
           html = null
         }
@@ -270,7 +271,7 @@ export class QuillEditorComponent
         this.zone.run(() => {
           if (source === 'user' && this.onModelChange) {
             this.onModelChange(
-              this.valueGetter(this.quillEditor, this.editorElem)
+              this.valueGetter(this.quillEditor, this.editorElem!)
             )
           }
 
