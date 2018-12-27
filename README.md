@@ -24,7 +24,7 @@ XRP Wallet Address:
 
 ## Examples
 
-- [Webpack Demo](https://github.com/killerCodeMonkey/ngx-quill-example)
+- [Webpack Demo](https://github.com/killerCodeMonkey/ngx-quill-example) - **Advanced examples and usages**
 - [Angular CLI Demo](https://github.com/KillerCodeMonkey/ngx-quill-angular-cli)
 - [Ionic v3 Demo](https://github.com/KillerCodeMonkey/ngx-quill-ionic-v3)
 
