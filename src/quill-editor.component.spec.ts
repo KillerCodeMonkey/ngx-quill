@@ -47,7 +47,7 @@ class TestComponent {
 
 @Component({
   template: `
-<quill-editor [(ngModel)]="title" [required]="true" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event)">
+<quill-editor [customToolbarPosition]="toolbarPosition" [(ngModel)]="title" [required]="true" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event)">
   <div quill-editor-toolbar="true">
     <span class="ql-formats">
       <button class="ql-bold" [title]="'Bold'"></button>
@@ -75,6 +75,7 @@ class TestToolbarComponent {
   isReadOnly = false
   minLength = 0
   maxLength = 0
+  toolbarPosition = 'top'
 
   // tslint:disable-next-line:no-empty
   handleEditorCreated(event: any) {}
@@ -824,10 +825,25 @@ describe('Advanced QuillEditorComponent', () => {
     const toolbarFixture = TestBed.createComponent(TestToolbarComponent) as ComponentFixture<TestToolbarComponent>
 
     toolbarFixture.detectChanges()
-    expect(toolbarFixture.nativeElement.querySelector('[quill-editor-toolbar]').querySelector('span[title=Alignment]')).toBeDefined()
+    expect(toolbarFixture.debugElement.children[0].nativeElement.children[1].attributes['quill-editor-element']).toBeDefined()
+    expect(toolbarFixture.debugElement.children[0].nativeElement.children[0].attributes['quill-editor-toolbar']).toBeDefined()
 
     const editorComponent = toolbarFixture.debugElement.children[0].componentInstance
     expect(editorComponent.required).toBe(true)
+    expect(editorComponent.customToolbarPosition).toEqual('top')
+  }))
+
+  it('should add custom toolbar at the end', async(() => {
+    // get editor component
+    const toolbarFixture = TestBed.createComponent(TestToolbarComponent) as ComponentFixture<TestToolbarComponent>
+    toolbarFixture.componentInstance.toolbarPosition = 'bottom'
+    toolbarFixture.detectChanges()
+
+    expect(toolbarFixture.debugElement.children[0].nativeElement.children[0].attributes['quill-editor-element']).toBeDefined()
+    expect(toolbarFixture.debugElement.children[0].nativeElement.children[1].attributes['quill-editor-toolbar']).toBeDefined()
+
+    const editorComponent = toolbarFixture.debugElement.children[0].componentInstance
+    expect(editorComponent.customToolbarPosition).toEqual('bottom')
   }))
 })
 

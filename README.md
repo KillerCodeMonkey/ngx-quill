@@ -43,7 +43,7 @@ XRP Wallet Address:
         v4
       </td>
       <td>
-        <= 1.6.0
+        < 1.6.0
       </td>
     </tr>
     <tr>
@@ -204,6 +204,7 @@ If you are using the editor reference to directly manipulate the editor content 
   </div>
 </quill-editor>
 ```
+- customToolbarPosition - if you are working with a custom toolbar you can switch the position :). - default: `top`, possible values `top`, `bottom`
 
 ## Global Config
 

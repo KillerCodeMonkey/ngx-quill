@@ -86,6 +86,7 @@ export class QuillEditorComponent
   @Input() minLength: number | null = null
   @Input() required: boolean = false
   @Input() formats: string[] | null = null
+  @Input() customToolbarPosition: 'top' | 'bottom' = 'top'
   @Input() sanitize: boolean = false
   @Input() style: any = null
   @Input() strict: boolean = true
@@ -162,10 +163,17 @@ export class QuillEditorComponent
       Quill = require('quill')
     }
 
-    this.elementRef.nativeElement.insertAdjacentHTML(
-      'beforeend',
-      '<div quill-editor-element></div>'
-    )
+    if (this.customToolbarPosition === 'top') {
+      this.elementRef.nativeElement.insertAdjacentHTML(
+        'beforeend',
+        '<div quill-editor-element></div>'
+      )
+    } else {
+      this.elementRef.nativeElement.insertAdjacentHTML(
+        'afterbegin',
+        '<div quill-editor-element></div>'
+      )
+    }
     this.editorElem = this.elementRef.nativeElement.querySelector(
       '[quill-editor-element]'
     )
