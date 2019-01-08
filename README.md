@@ -206,6 +206,8 @@ If you are using the editor reference to directly manipulate the editor content 
 ```
 - customToolbarPosition - if you are working with a custom toolbar you can switch the position :). - default: `top`, possible values `top`, `bottom`
 
+[Full Quill Toolbar HTML](https://github.com/quilljs/quill/blob/f75ff2973f068c3db44f949915eb8a74faf162a8/docs/_includes/full-toolbar.html)
+
 ## Global Config
 
 It is possible to set custom default modules (toolbar and syntax) with the import of the `QuillModule`.
