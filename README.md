@@ -25,6 +25,21 @@ XRP Wallet Address:
 ## Examples
 
 - [Webpack Demo](https://github.com/killerCodeMonkey/ngx-quill-example) - **Advanced examples and usages**
+  - integration of [quill-emoji](https://github.com/contentco/quill-emoji)
+  - integration of [quill-mention](https://github.com/afconsult/quill-mention)
+  - integration of [quill-image-resize](https://github.com/kensnyder/quill-image-resize-module)
+  - custom word count module
+  - custom toolbar with custom fonts and formats, toolbar position
+  - show the differences between sanitizing and not sanitizing your content if your content format is html
+  - usage of different content formats
+  - template-driven and reactive forms
+  - code + syntax highlighting
+  - formulas
+  - custom key-bindings, e.g. shift + b for bold
+  - dynamic styles and placeholder
+  - toggle readonly
+  - bubble toolbar
+  - change default blocks from `p` to `div` tags
 - [Angular CLI Demo](https://github.com/KillerCodeMonkey/ngx-quill-angular-cli)
 - [Ionic v3 Demo](https://github.com/KillerCodeMonkey/ngx-quill-ionic-v3)
 
