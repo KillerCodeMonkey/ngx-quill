@@ -40,6 +40,7 @@ XRP Wallet Address:
   - toggle readonly
   - bubble toolbar
   - change default blocks from `p` to `div` tags
+  - activate formats after editor initialisation, e.g. rtl direction
 - [Angular CLI Demo](https://github.com/KillerCodeMonkey/ngx-quill-angular-cli)
 - [Ionic v3 Demo](https://github.com/KillerCodeMonkey/ngx-quill-ionic-v3)
 
