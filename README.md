@@ -24,7 +24,7 @@ XRP Wallet Address:
 
 ## Examples
 
-- [Webpack Demo](https://github.com/killerCodeMonkey/ngx-quill-example) - **Advanced examples and usages**
+- [Advanced Demo](https://github.com/killerCodeMonkey/ngx-quill-example)
   - integration of [quill-emoji](https://github.com/contentco/quill-emoji)
   - integration of [quill-mention](https://github.com/afconsult/quill-mention)
   - integration of [quill-image-resize](https://github.com/kensnyder/quill-image-resize-module)
@@ -39,9 +39,7 @@ XRP Wallet Address:
   - dynamic styles and placeholder
   - toggle readonly
   - bubble toolbar
-  - change default blocks from `p` to `div` tags
   - activate formats after editor initialisation, e.g. rtl direction
-- [Angular CLI Demo](https://github.com/KillerCodeMonkey/ngx-quill-angular-cli)
 - [Ionic v3 Demo](https://github.com/KillerCodeMonkey/ngx-quill-ionic-v3)
 
 ## Compatibility to Angular Versions
