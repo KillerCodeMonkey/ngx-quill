@@ -3,7 +3,6 @@ import { ModuleWithProviders, NgModule } from '@angular/core'
 import { QuillEditorComponent } from './quill-editor.component'
 import { QUILL_CONFIG_TOKEN, QuillConfig } from './quill-editor.interfaces'
 
-const emptyArray: any[] = []
 const defaultModules = {
   toolbar: [
     ['bold', 'italic', 'underline', 'strike'], // toggled buttons
@@ -19,11 +18,11 @@ const defaultModules = {
     [{ header: [1, 2, 3, 4, 5, 6, false] }],
 
     [
-      { color: emptyArray.slice() },
-      { background: emptyArray.slice() }
+      { color: [] },
+      { background: [] }
     ], // dropdown with defaults from theme
-    [{ font: emptyArray.slice() }],
-    [{ align: emptyArray.slice() }],
+    [{ font: [] }],
+    [{ align: [] }],
 
     ['clean'], // remove formatting button
 
