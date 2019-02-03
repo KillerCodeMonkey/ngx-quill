@@ -31,7 +31,6 @@ import {
 
 import { DOCUMENT } from '@angular/common'
 
-// import * as QuillNamespace from 'quill'
 // Because quill uses `document` directly, we cannot `import` during SSR
 // instead, we load dynamically via `require('quill')` in `ngAfterViewInit()`
 declare var require: any
@@ -41,6 +40,11 @@ let Quill: any = null
 export interface CustomOption {
   import: string
   whitelist: any[]
+}
+
+export interface Range {
+  index: number
+  length: number
 }
 
 @Component({
@@ -67,36 +71,46 @@ export class QuillEditorComponent
 
   quillEditor: any
   editorElem: HTMLElement | undefined
-  emptyArray: any[] = []
   content: any
-  selectionChangeEvent: any
-  textChangeEvent: any
   defaultModules: QuillModules | {}
 
-  onModelChange: any
-  onModelTouched: any
-
-  @Input() format: 'object' | 'html' | 'text' | 'json' = 'html'
-  @Input() theme: string = 'snow'
-  // tslint:disable-next-line:ban-types
-  @Input() modules: { [index: string]: Object } | null = null
-  @Input() readOnly: boolean = false
-  @Input() placeholder: string = 'Insert text here ...'
-  @Input() maxLength: number | null = null
-  @Input() minLength: number | null = null
+  @Input() format?: 'object' | 'html' | 'text' | 'json' = 'html'
+  @Input() theme?: string
+  @Input() modules?: {
+    [key: string]: any
+  }
+  @Input() debug?: 'warn' | 'log' | 'error' | false
+  @Input() readOnly?: boolean
+  @Input() placeholder?: string
+  @Input() maxLength?: number
+  @Input() minLength?: number
   @Input() required: boolean = false
-  @Input() formats: string[] | null = null
+  @Input() formats?: string[] | null
   @Input() customToolbarPosition: 'top' | 'bottom' = 'top'
   @Input() sanitize: boolean = false
   @Input() style: any = null
   @Input() strict: boolean = true
-  @Input() scrollingContainer: HTMLElement | string | null = null
-  @Input() bounds: HTMLElement | string
+  @Input() scrollingContainer?: HTMLElement | string | null
+  @Input() bounds?: HTMLElement | string
   @Input() customOptions: CustomOption[] = []
+  @Input() trackChanges?: 'user' | 'all'
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
-  @Output() onContentChanged: EventEmitter<any> = new EventEmitter()
-  @Output() onSelectionChanged: EventEmitter<any> = new EventEmitter()
+  @Output() onContentChanged: EventEmitter<{
+    content: any
+    delta: any
+    editor: any
+    html: string | null
+    oldDelta: any
+    source: string
+    text: string
+  }> = new EventEmitter()
+  @Output() onSelectionChanged: EventEmitter<{
+    editor: any
+    oldRange: Range | null
+    range: Range | null
+    source: string
+  }> = new EventEmitter()
 
   private disabled = false // used to store initial value before ViewInit
 
@@ -114,8 +128,13 @@ export class QuillEditorComponent
     this.bounds = this.doc.body
   }
 
+  // tslint:disable-next-line:no-empty
+  onModelChange(modelValue?: any) {}
+  // tslint:disable-next-line:no-empty
+  onModelTouched() {}
+
   @Input()
-  valueGetter = (quillEditor: any, editorElement: HTMLElement): any => {
+  valueGetter = (quillEditor: any, editorElement: HTMLElement): string | any  => {
     let html: string | null = editorElement.children[0].innerHTML
     if (html === '<p><br></p>' || html === '<div><br><div>') {
       html = null
@@ -187,6 +206,9 @@ export class QuillEditorComponent
     if (this.placeholder !== null && this.placeholder !== undefined) {
       placeholder = this.placeholder.trim()
     }
+    if (!placeholder && this.config.placeholder) {
+      placeholder = this.config.placeholder !== undefined ? this.config.placeholder : 'Insert text here ...'
+    }
 
     if (toolbarElem) {
       // tslint:disable-next-line:no-string-literal
@@ -205,15 +227,41 @@ export class QuillEditorComponent
       Quill.register(newCustomOption, true)
     })
 
+    let bounds = this.bounds && this.bounds === 'self' ? this.editorElem : this.bounds
+    if (!bounds) {
+      bounds = this.config.bounds ? this.config.bounds : this.doc.body
+    }
+
+    let debug = this.debug
+    if (!debug && debug !== false && this.config.debug) {
+      debug = this.config.debug
+    }
+
+    let readOnly = this.readOnly
+    if (!readOnly && this.readOnly !== false) {
+      readOnly = this.config.readOnly !== undefined ? this.config.readOnly : false
+    }
+
+    let scrollingContainer = this.scrollingContainer
+    if (!scrollingContainer && this.scrollingContainer !== null) {
+      scrollingContainer = this.config.scrollingContainer === null || this.config.scrollingContainer ? this.config.scrollingContainer : null
+    }
+
+    let formats = this.formats
+    if (!formats && formats !== undefined) {
+      formats = this.config.formats || this.config.formats === null ? this.config.formats : []
+    }
+
     this.quillEditor = new Quill(this.editorElem, {
-      bounds: this.bounds ? (this.bounds === 'self' ? this.editorElem : this.bounds) : this.doc.body,
-      formats: this.formats,
+      bounds,
+      debug,
+      formats,
       modules,
       placeholder,
-      readOnly: this.readOnly,
-      scrollingContainer: this.scrollingContainer,
+      readOnly,
+      scrollingContainer,
       strict: this.strict,
-      theme: this.theme || 'snow'
+      theme: this.theme || (this.config.theme ? this.config.theme : 'snow')
     })
 
     if (this.content) {
@@ -244,65 +292,68 @@ export class QuillEditorComponent
     this.onEditorCreated.emit(this.quillEditor)
 
     // mark model as touched if editor lost focus
-    this.selectionChangeEvent = this.quillEditor.on(
+    this.quillEditor.on(
       'selection-change',
-      (range: any, oldRange: any, source: string) => {
-        this.zone.run(() => {
-          this.onSelectionChanged.emit({
-            editor: this.quillEditor,
-            oldRange,
-            range,
-            source
-          })
-
-          if (!range && this.onModelTouched) {
-            this.onModelTouched()
-          }
-        })
-      }
+      this.selectionChangeHandler
     )
 
     // update model if text changes
-    this.textChangeEvent = this.quillEditor.on(
+    this.quillEditor.on(
       'text-change',
-      (delta: any, oldDelta: any, source: string): void => {
-        // only emit changes emitted by user interactions
-
-        const text = this.quillEditor.getText()
-        const content = this.quillEditor.getContents()
-
-        let html: string | null = this.editorElem!.children[0].innerHTML
-        if (html === '<p><br></p>' || html === '<div><br><div>') {
-          html = null
-        }
-
-        this.zone.run(() => {
-          if (source === 'user' && this.onModelChange) {
-            this.onModelChange(
-              this.valueGetter(this.quillEditor, this.editorElem!)
-            )
-          }
-
-          this.onContentChanged.emit({
-            content,
-            delta,
-            editor: this.quillEditor,
-            html,
-            oldDelta,
-            source,
-            text
-          })
-        })
-      }
+      this.textChangeHandler
     )
   }
 
-  ngOnDestroy() {
-    if (this.selectionChangeEvent) {
-      this.selectionChangeEvent.removeListener('selection-change')
+  selectionChangeHandler = (range: Range | null, oldRange: Range | null, source: string) => {
+    this.zone.run(() => {
+      this.onSelectionChanged.emit({
+        editor: this.quillEditor,
+        oldRange,
+        range,
+        source
+      })
+
+      if (!range && this.onModelTouched) {
+        this.onModelTouched()
+      }
+    })
+  }
+
+  textChangeHandler = (delta: any, oldDelta: any, source: string): void => {
+    // only emit changes emitted by user interactions
+
+    const text = this.quillEditor.getText()
+    const content = this.quillEditor.getContents()
+
+    let html: string | null = this.editorElem!.children[0].innerHTML
+    if (html === '<p><br></p>' || html === '<div><br><div>') {
+      html = null
     }
-    if (this.textChangeEvent) {
-      this.textChangeEvent.removeListener('text-change')
+
+    this.zone.run(() => {
+      const trackChanges = this.trackChanges || this.config.trackChanges
+      if ((source === Quill.sources.USER || trackChanges && trackChanges === 'all') && this.onModelChange) {
+        this.onModelChange(
+          this.valueGetter(this.quillEditor, this.editorElem!)
+        )
+      }
+
+      this.onContentChanged.emit({
+        content,
+        delta,
+        editor: this.quillEditor,
+        html,
+        oldDelta,
+        source,
+        text
+      })
+    })
+  }
+
+  ngOnDestroy() {
+    if (this.quillEditor) {
+      this.quillEditor.off('selection-change', this.selectionChangeHandler)
+      this.quillEditor.off('text-change', this.textChangeHandler)
     }
   }
 
@@ -370,11 +421,11 @@ export class QuillEditorComponent
     }
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (modelValue: any) => void): void {
     this.onModelChange = fn
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onModelTouched = fn
   }
 

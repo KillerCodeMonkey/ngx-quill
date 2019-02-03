@@ -16,12 +16,38 @@ export type QuillToolbarConfig = Array<Array<
 >>
 
 export interface QuillModules {
+  [key: string]: any
+  clipboard?: {
+    mathers?: any[]
+  } | boolean
+  history?: {
+    delay?: number
+    maxStack?: number
+    userOnly?: boolean
+  } | boolean
+  keyboard?: {
+    bindings?: any
+  } | boolean
   syntax?: boolean
-  toolbar: QuillToolbarConfig
+  toolbar: QuillToolbarConfig | string | {
+    container?: string | QuillToolbarConfig
+    handlers?: {
+      [key: string]: any
+    }
+  }
 }
 
 export interface QuillConfig {
+  bounds?: HTMLElement | string
+  debug?: 'error' | 'warn' | 'log' | false
+  formats?: any
   modules?: QuillModules
+  placeholder?: string
+  readOnly?: boolean
+  scrollingContainer?: HTMLElement | string | null
+  theme?: string
+  // Custom Config to track all changes or only changes by 'user'
+  trackChanges?: 'user' | 'all'
 }
 
 export const QUILL_CONFIG_TOKEN = new InjectionToken<QuillConfig>('config')

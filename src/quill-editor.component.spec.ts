@@ -95,6 +95,7 @@ class ReactiveFormTestComponent {
 }
 
 describe('Basic QuillEditorComponent', () => {
+  let fixture: ComponentFixture<QuillEditorComponent>
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -103,10 +104,8 @@ describe('Basic QuillEditorComponent', () => {
       ]
     })
 
-    fixture = TestBed.createComponent(QuillEditorComponent) as ComponentFixture<QuillEditorComponent>
+    fixture = TestBed.createComponent(QuillEditorComponent)
   })
-
-  let fixture: ComponentFixture<QuillEditorComponent>
 
   it('should render toolbar', async(() => {
     const element = fixture.nativeElement
@@ -854,20 +853,35 @@ describe('QuillEditor - base config', () => {
     TestBed.configureTestingModule({
       declarations: [TestComponent, TestToolbarComponent],
       imports: [FormsModule, QuillModule.forRoot({
+        bounds: 'body',
+        debug: false,
+        formats: ['bold'],
         modules: {
           toolbar: [
             ['bold']
           ]
-        }
+        },
+        placeholder: 'placeholder',
+        readOnly: true,
+        scrollingContainer: null,
+        theme: 'snow',
+        trackChanges: 'all'
       })]
     }).compileComponents()
   })
 
-  it('renders editor with root toolbar config', () => {
-    fixture = TestBed.createComponent(TestComponent) as ComponentFixture<TestComponent>
+  it('renders editor with config', () => {
+    fixture = TestBed.createComponent(TestComponent)
     fixture.detectChanges()
+    const editor = fixture.componentInstance.editor as QuillNamespace.Quill
 
     expect(fixture.nativeElement.querySelector('.ql-toolbar').querySelectorAll('button').length).toBe(1)
     expect(fixture.nativeElement.querySelector('.ql-toolbar').querySelector('button.ql-bold')).toBeDefined()
+
+    editor.setText('content', 'api')
+    fixture.detectChanges()
+
+    expect(fixture.componentInstance.title).toEqual('<p>content</p>')
+    expect(editor.root.dataset.placeholder).toEqual('placeholder')
   })
 })

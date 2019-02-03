@@ -114,6 +114,7 @@ class YourModule { ... }
 ```
 - use `<quill-editor></quill-editor>` in your templates to add a default quill editor
 - do not forget to include quill + theme css in your buildprocess, module or index.html!
+- for builds with angular-cli >=6 only add quilljs to your scripts or scripts section of angular.json, if you need it as a global :)!
 
 **HINT:** *If you are using lazy loading modules, you have to add `QuillModule` to your imports in your root module to make sure the `Config` services is registered.*
 
@@ -142,7 +143,6 @@ packages: {
 }
 ```
 - follow the steps of **For standard webpack and tsc builds**
-- for builds with angular-cli >=6 only add quilljs to your scripts!
 
 ## Hint
 
@@ -219,6 +219,8 @@ If you are using the editor reference to directly manipulate the editor content 
 </quill-editor>
 ```
 - customToolbarPosition - if you are working with a custom toolbar you can switch the position :). - default: `top`, possible values `top`, `bottom`
+- debug - set log level `warn`, `error`, `log` or `false` to deactivate logging, default: `warn`
+- trackChanges - check if only `user` (quill source user) or `all` change should be trigger model update, default `user`
 
 [Full Quill Toolbar HTML](https://github.com/quilljs/quill/blob/f75ff2973f068c3db44f949915eb8a74faf162a8/docs/_includes/full-toolbar.html)
 
