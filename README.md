@@ -220,13 +220,13 @@ If you are using the editor reference to directly manipulate the editor content 
 ```
 - customToolbarPosition - if you are working with a custom toolbar you can switch the position :). - default: `top`, possible values `top`, `bottom`
 - debug - set log level `warn`, `error`, `log` or `false` to deactivate logging, default: `warn`
-- trackChanges - check if only `user` (quill source user) or `all` change should be trigger model update, default `user`
+- trackChanges - check if only `user` (quill source user) or `all` change should be trigger model update, default `user`. Using `all` is not recommended, it cause some unexpected sideeffects.
 
 [Full Quill Toolbar HTML](https://github.com/quilljs/quill/blob/f75ff2973f068c3db44f949915eb8a74faf162a8/docs/_includes/full-toolbar.html)
 
 ## Global Config
 
-It is possible to set custom default modules (toolbar and syntax) with the import of the `QuillModule`.
+It is possible to set custom default modules and Quill config options with the import of the `QuillModule`.
 
 ```
 @NgModule({
@@ -248,32 +248,33 @@ class YourModule { ... }
 
 If you want to use the `syntax` module follow the [Syntax Highlight Module Guide](https://quilljs.com/docs/modules/syntax/#syntax-highlighter-module).
 
+See [Quill Configuration](https://quilljs.com/docs/configuration/) for a full list of config options.
 
 ## Outputs
 
 - onEditorCreated - editor instance
 ```
-editor
+editor // Quill
 ```
 - onContentChanged - text is updated
 ```
 {
-  editor: editorInstance,
-  html: html,
-  text: text,
-  content: content,
-  delta: delta,
-  oldDelta: oldDelta,
-  source: source
+  editor: editorInstance, // Quill
+  html: html, // html string
+  text: text, // plain text string
+  content: content, // Content - operatins representation
+  delta: delta, // Delta
+  oldDelta: oldDelta, // Delta
+  source: source // ('user', 'api', 'silent' , undefined)
 }
 ```
 - onSelectionChanged - selection is updated
 ```
 {
-  editor: editorInstance,
-  range: range,
-  oldRange: oldRange,
-  source: source
+  editor: editorInstance, // Quill
+  range: range, // Range
+  oldRange: oldRange, // Range
+  source: source // ('user', 'api', 'silent' , undefined)
 }
 ```
 
