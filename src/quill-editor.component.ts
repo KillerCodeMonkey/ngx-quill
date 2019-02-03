@@ -1,7 +1,7 @@
 import { isPlatformServer } from '@angular/common'
 import { DomSanitizer } from '@angular/platform-browser'
 
-import { QUILL_CONFIG_TOKEN, QuillConfig, QuillModules } from './quill-editor.interfaces'
+import { QUILL_CONFIG_TOKEN, QuillConfig } from './quill-editor.interfaces'
 
 import {
   AfterViewInit,

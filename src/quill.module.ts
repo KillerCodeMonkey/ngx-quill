@@ -3,7 +3,7 @@ import { ModuleWithProviders, NgModule } from '@angular/core'
 import { QuillEditorComponent } from './quill-editor.component'
 import { QUILL_CONFIG_TOKEN, QuillConfig } from './quill-editor.interfaces'
 
-const defaultModules = {
+export const defaultModules = {
   toolbar: [
     ['bold', 'italic', 'underline', 'strike'], // toggled buttons
     ['blockquote', 'code-block'],
