@@ -72,7 +72,6 @@ export class QuillEditorComponent
   quillEditor: any
   editorElem: HTMLElement | undefined
   content: any
-  defaultModules: QuillModules | {}
 
   @Input() format?: 'object' | 'html' | 'text' | 'json' = 'html'
   @Input() theme?: string
@@ -123,13 +122,10 @@ export class QuillEditorComponent
     private renderer: Renderer2,
     private zone: NgZone,
     @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig
-  ) {
-    this.defaultModules = this.config && this.config.modules || {}
-    this.bounds = this.doc.body
-  }
+  ) {}
 
   // tslint:disable-next-line:no-empty
-  onModelChange(modelValue?: any) {}
+  onModelChange(_modelValue?: any) {}
   // tslint:disable-next-line:no-empty
   onModelTouched() {}
 
@@ -200,14 +196,11 @@ export class QuillEditorComponent
     const toolbarElem = this.elementRef.nativeElement.querySelector(
       '[quill-editor-toolbar]'
     )
-    const modules = this.modules || this.defaultModules
-    let placeholder = this.placeholder
+    const modules = this.modules || (this.config.modules || {})
 
-    if (this.placeholder !== null && this.placeholder !== undefined) {
-      placeholder = this.placeholder.trim()
-    }
-    if (!placeholder && this.config.placeholder) {
-      placeholder = this.config.placeholder !== undefined ? this.config.placeholder : 'Insert text here ...'
+    let placeholder = this.placeholder !== undefined ? this.placeholder : this.config.placeholder
+    if (placeholder === undefined) {
+      placeholder = 'Insert text here ...'
     }
 
     if (toolbarElem) {
