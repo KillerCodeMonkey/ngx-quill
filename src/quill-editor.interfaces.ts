@@ -19,6 +19,7 @@ export interface QuillModules {
   [key: string]: any
   clipboard?: {
     mathers?: any[]
+    matchVisual?: boolean
   } | boolean
   history?: {
     delay?: number
@@ -29,7 +30,7 @@ export interface QuillModules {
     bindings?: any
   } | boolean
   syntax?: boolean
-  toolbar: QuillToolbarConfig | string | {
+  toolbar?: QuillToolbarConfig | string | {
     container?: string | QuillToolbarConfig
     handlers?: {
       [key: string]: any
