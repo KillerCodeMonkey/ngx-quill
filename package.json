@@ -1,7 +1,7 @@
 {
   "name": "ngx-quill",
   "license": "MIT",
-  "version": "4.5.2",
+  "version": "4.6.0-0",
   "author": {
     "name": "Bengt Weiße"
   },
@@ -13,7 +13,7 @@
     "url": "https://github.com/KillerCodeMonkey/ngx-quill"
   },
   "engines": {
-    "node": ">= 8"
+    "node": ">= 10"
   },
   "scripts": {
     "lint": "tslint --force \"src/**/*.ts\"",

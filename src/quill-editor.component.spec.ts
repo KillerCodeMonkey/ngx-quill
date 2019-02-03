@@ -107,6 +107,15 @@ describe('Basic QuillEditorComponent', () => {
     fixture = TestBed.createComponent(QuillEditorComponent)
   })
 
+  it('ngOnDestroy - removes listeners', () => {
+    fixture.detectChanges()
+    const spy = spyOn(fixture.componentInstance.quillEditor, 'off').and.callThrough()
+
+    fixture.componentInstance.ngOnDestroy()
+
+    expect(spy).toHaveBeenCalledTimes(2)
+  })
+
   it('should render toolbar', async(() => {
     const element = fixture.nativeElement
     fixture.detectChanges()
