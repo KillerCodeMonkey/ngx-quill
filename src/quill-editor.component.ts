@@ -1,7 +1,7 @@
 import { isPlatformServer } from '@angular/common'
 import { DomSanitizer } from '@angular/platform-browser'
 
-import { QUILL_CONFIG_TOKEN, QuillConfig } from './quill-editor.interfaces'
+import { QUILL_CONFIG_TOKEN, QuillConfig, QuillModules } from './quill-editor.interfaces'
 
 import {
   AfterViewInit,
@@ -75,9 +75,7 @@ export class QuillEditorComponent
 
   @Input() format?: 'object' | 'html' | 'text' | 'json' = 'html'
   @Input() theme?: string
-  @Input() modules?: {
-    [key: string]: any
-  }
+  @Input() modules?: QuillModules
   @Input() debug?: 'warn' | 'log' | 'error' | false
   @Input() readOnly?: boolean
   @Input() placeholder?: string
