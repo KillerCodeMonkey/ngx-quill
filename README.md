@@ -250,6 +250,8 @@ If you want to use the `syntax` module follow the [Syntax Highlight Module Guide
 
 See [Quill Configuration](https://quilljs.com/docs/configuration/) for a full list of config options.
 
+The `QuillModule` exports the `defaultModules` if you want to extend them :).
+
 ## Outputs
 
 - onEditorCreated - editor instance
