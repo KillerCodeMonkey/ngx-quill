@@ -35,7 +35,7 @@ export interface QuillModules {
     handlers?: {
       [key: string]: any
     }
-  }
+  } | boolean
 }
 
 export interface QuillConfig {
