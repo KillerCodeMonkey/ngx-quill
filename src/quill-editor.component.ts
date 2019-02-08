@@ -30,6 +30,7 @@ import {
 } from '@angular/forms'
 
 import { DOCUMENT } from '@angular/common'
+import { defaultModules } from './quill-defaults'
 
 // Because quill uses `document` directly, we cannot `import` during SSR
 // instead, we load dynamically via `require('quill')` in `ngAfterViewInit()`
@@ -194,7 +195,10 @@ export class QuillEditorComponent
     const toolbarElem = this.elementRef.nativeElement.querySelector(
       '[quill-editor-toolbar]'
     )
-    const modules = this.modules || (this.config.modules || {})
+    const modules = this.modules || (this.config.modules || defaultModules)
+    if (modules.toolbar === undefined) {
+      modules.toolbar = defaultModules.toolbar
+    }
 
     let placeholder = this.placeholder !== undefined ? this.placeholder : this.config.placeholder
     if (placeholder === undefined) {
