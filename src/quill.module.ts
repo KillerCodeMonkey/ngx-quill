@@ -44,7 +44,7 @@ export const defaultModules = {
   ]
 })
 export class QuillModule {
-  static forRoot(config?: QuillConfig): ModuleWithProviders {
+  static forRoot(config: QuillConfig = {}): ModuleWithProviders {
     return {
       ngModule: QuillModule,
       providers: [
@@ -52,7 +52,7 @@ export class QuillModule {
           provide: QUILL_CONFIG_TOKEN,
           useValue: Object.assign({}, {
             modules: defaultModules
-          }, {...config})
+          }, config)
         }
       ]
     }
