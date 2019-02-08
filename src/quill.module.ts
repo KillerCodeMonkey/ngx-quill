@@ -50,9 +50,9 @@ export class QuillModule {
       providers: [
         {
           provide: QUILL_CONFIG_TOKEN,
-          useValue: config || {
+          useValue: Object.assign({}, {...config}, {
             modules: defaultModules
-          }
+          })
         }
       ]
     }

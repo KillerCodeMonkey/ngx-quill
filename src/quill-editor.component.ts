@@ -239,8 +239,8 @@ export class QuillEditorComponent
     }
 
     let formats = this.formats
-    if (!formats && formats !== undefined) {
-      formats = this.config.formats || this.config.formats === null ? this.config.formats : []
+    if (!formats && formats === undefined) {
+      formats = this.config.formats || this.config.formats === null ? this.config.formats : undefined
     }
 
     this.quillEditor = new Quill(this.editorElem, {
