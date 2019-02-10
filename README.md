@@ -41,6 +41,7 @@ XRP Wallet Address:
   - bubble toolbar
   - activate formats after editor initialisation, e.g. rtl direction
 - [Ionic v3 Demo](https://github.com/KillerCodeMonkey/ngx-quill-ionic-v3)
+- [Ionic v4 Demo](https://github.com/KillerCodeMonkey/ngx-quill-ionic-v4)
 
 ## Compatibility to Angular Versions
 
