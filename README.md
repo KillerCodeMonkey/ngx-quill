@@ -50,23 +50,19 @@ XRP Wallet Address:
     <tr>
       <th>Angular</th>
       <th>ngx-quill</th>
+      <th>supported/maintained</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>
-        v4
+        v7
       </td>
       <td>
-        < 1.6.0
-      </td>
-    </tr>
-    <tr>
-      <td>
-        v5
+        >= 4.0.0
       </td>
       <td>
-        > 1.6.0
+        until Apr 18, 2020
       </td>
     </tr>
     <tr>
@@ -76,14 +72,29 @@ XRP Wallet Address:
       <td>
         >= 3.0.0
       </td>
+      <td>
+        until Nov 3, 2019
+      </td>
     </tr>
     <tr>
       <td>
-        v7
+        v5
       </td>
       <td>
-        >= 4.0.0
+        > 1.6.0
       </td>
+      <td>
+        until May 1, 2019
+      </td>
+    </tr>
+    <tr>
+      <td>
+        v4
+      </td>
+      <td>
+        < 1.6.0
+      </td>
+      <td>no</td>
     </tr>
   </tbody>
 </table>
