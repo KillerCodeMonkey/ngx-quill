@@ -13,7 +13,7 @@
     "url": "https://github.com/KillerCodeMonkey/ngx-quill"
   },
   "engines": {
-    "node": ">= 10"
+    "node": ">= 8"
   },
   "scripts": {
     "lint": "tslint --force \"src/**/*.ts\"",
