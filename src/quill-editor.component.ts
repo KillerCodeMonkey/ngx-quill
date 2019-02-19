@@ -130,7 +130,7 @@ export class QuillEditorComponent
 
   @Input()
   valueGetter = (quillEditor: any, editorElement: HTMLElement): string | any  => {
-    let html: string | null = editorElement.children[0].innerHTML
+    let html: string | null = editorElement.querySelector('.ql-editor')!.innerHTML
     if (html === '<p><br></p>' || html === '<div><br><div>') {
       html = null
     }
@@ -320,7 +320,7 @@ export class QuillEditorComponent
     const text = this.quillEditor.getText()
     const content = this.quillEditor.getContents()
 
-    let html: string | null = this.editorElem!.children[0].innerHTML
+    let html: string | null = this.editorElem!.querySelector('.ql-editor')!.innerHTML
     if (html === '<p><br></p>' || html === '<div><br><div>') {
       html = null
     }
