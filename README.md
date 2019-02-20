@@ -165,7 +165,8 @@ If you are using the editor reference to directly manipulate the editor content 
 
 ## Config
 
-- ngModel - set initial value or allow two-way databinding
+- ngModel - set initial value or allow two-way databinding for template driven forms
+- formControl/formControlName - set initial value or allow two-way databinding for reactive forms
 - readOnly (true | false) if user can edit content
 - formats - array of allowed formats/groupings
 - format - model format - default: `html`, values: `html | object | text | json`, sets the model value type - html = html string, object = quill operation object, json = quill operation json, text = plain text
