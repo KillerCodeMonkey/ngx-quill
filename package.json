@@ -1,7 +1,7 @@
 {
   "name": "ngx-quill",
   "license": "MIT",
-  "version": "4.6.11",
+  "version": "4.6.12",
   "author": {
     "name": "Bengt Weiße"
   },
@@ -56,7 +56,7 @@
   "devDependencies": {
     "@angular/common": "^7.2.5",
     "@angular/compiler": "^7.2.5",
-    "@angular/compiler-cli": "^7.2.5",
+    "@angular/compiler-cli": "^7.2.7",
     "@angular/core": "^7.2.5",
     "@angular/forms": "^7.2.5",
     "@angular/platform-browser": "^7.2.5",
@@ -69,7 +69,7 @@
     "core-js": "^2.6.5",
     "istanbul-instrumenter-loader": "^3.0.1",
     "jasmine-core": "^3.3.0",
-    "karma": "^4.0.0",
+    "karma": "^4.0.1",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage": "^1.1.2",
     "karma-coverage-istanbul-reporter": "^2.0.4",

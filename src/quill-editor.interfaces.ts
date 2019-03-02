@@ -31,7 +31,7 @@ export interface QuillModules {
   } | boolean
   syntax?: boolean
   toolbar?: QuillToolbarConfig | string | {
-    container?: string | QuillToolbarConfig
+    container?: string | string[] | QuillToolbarConfig
     handlers?: {
       [key: string]: any
     }
