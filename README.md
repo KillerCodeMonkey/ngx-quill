@@ -293,6 +293,32 @@ editor // Quill
 }
 ```
 
+## How to present the editor content
+
+In most cases a wysiwyg editor is used in backoffice to store the content to the database. On the other side this value should be used, to show the content to the enduser.
+
+In most cases the `html` format is used, but it is not recommended by QuillJS, because it has the intention to be a solid, easy to maintain editor. Because of that it uses blots and object representations of the content and operation.
+
+This content object is easy to store and to maintain, because there is no html syntax parsing necessary. So you even switching to another editor is very easy when you can work with that.
+
+### Using QuillJS to render content
+
+In general QuillJS recommends to use a QuillJS instance to present your content.
+Just create a quill editor without a toolbar and in readonly mode. With some simple css lines you can remove the default border around the content.
+
+### Using angular [innerHTML]
+
+Most of you will use the `html` format (even it is not recommended). To render custom html with angular you should use the `[innerHTML]` attribute.
+
+But there are some pitfalls:
+
+1. You need to have the quill css files loaded, when using classes and not inline styling (https://quilljs.com/guides/how-to-customize-quill/#class-vs-inline)
+2. Angular has html sanitation, so it will strip unkown or not trusted parts of your HTML - just mark your html as trusted ([DomSanitizer](https://angular.io/api/platform-browser/DomSanitizer))
+
+After that your content should look like what you expected.
+
+If you store html in your database, checkour your backend code, sometimes backends are stripping unwanted tags as well ;).
+
 ## Security Hint
 
 Angular templates provide some assurance against XSS in the form of client side sanitizing of all inputs https://angular.io/guide/security#xss.
