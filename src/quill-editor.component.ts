@@ -92,6 +92,7 @@ export class QuillEditorComponent
   @Input() bounds?: HTMLElement | string
   @Input() customOptions: CustomOption[] = []
   @Input() trackChanges?: 'user' | 'all'
+  @Input() preserveWhitespace: boolean = false
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
   @Output() onContentChanged: EventEmitter<{
@@ -177,17 +178,11 @@ export class QuillEditorComponent
       Quill = require('quill')
     }
 
-    if (this.customToolbarPosition === 'top') {
-      this.elementRef.nativeElement.insertAdjacentHTML(
-        'beforeend',
-        '<div quill-editor-element></div>'
-      )
-    } else {
-      this.elementRef.nativeElement.insertAdjacentHTML(
-        'afterbegin',
-        '<div quill-editor-element></div>'
-      )
-    }
+    this.elementRef.nativeElement.insertAdjacentHTML(
+      this.customToolbarPosition === 'top' ? 'beforeend' : 'afterbegin',
+      this.preserveWhitespace ? '<pre quill-editor-element></pre>' : '<div quill-editor-element></div>'
+    )
+
     this.editorElem = this.elementRef.nativeElement.querySelector(
       '[quill-editor-element]'
     )
