@@ -284,7 +284,7 @@ editor // Quill
   source: source // ('user', 'api', 'silent' , undefined)
 }
 ```
-- onSelectionChanged - selection is updated, also triggered for onBlur and onFocus
+- onSelectionChanged - selection is updated, also triggered for onBlur and onFocus, because the selection changed
 ```
 {
   editor: editorInstance, // Quill
