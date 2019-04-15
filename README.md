@@ -284,12 +284,26 @@ editor // Quill
   source: source // ('user', 'api', 'silent' , undefined)
 }
 ```
-- onSelectionChanged - selection is updated
+- onSelectionChanged - selection is updated, also triggered for onBlur and onFocus
 ```
 {
   editor: editorInstance, // Quill
   range: range, // Range
   oldRange: oldRange, // Range
+  source: source // ('user', 'api', 'silent' , undefined)
+}
+```
+- onFocus - editor is focused
+```
+{
+  editor: editorInstance, // Quill
+  source: source // ('user', 'api', 'silent' , undefined)
+}
+```
+- onBlur - editor is blured
+```
+{
+  editor: editorInstance, // Quill
   source: source // ('user', 'api', 'silent' , undefined)
 }
 ```

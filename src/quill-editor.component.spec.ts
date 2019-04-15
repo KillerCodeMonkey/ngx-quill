@@ -13,7 +13,7 @@ const Quill: any = QuillNamespace
 // tslint:disable:max-classes-per-file
 @Component({
   template: `
-<quill-editor [(ngModel)]="title" [customOptions]="[{import: 'attributors/style/size', whitelist: ['14']}]" [style]="style" [required]="required" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event)" (onSelectionChanged)="handleSelection($event)"></quill-editor>
+<quill-editor (onBlur)="blured = true" (onFocus)="focused = true" [(ngModel)]="title" [customOptions]="[{import: 'attributors/style/size', whitelist: ['14']}]" [style]="style" [required]="required" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event)" (onSelectionChanged)="handleSelection($event)"></quill-editor>
 `
 })
 class TestComponent {
@@ -21,6 +21,8 @@ class TestComponent {
   isReadOnly = false
   required = false
   minLength = 0
+  focused = false
+  blured = false
   maxLength = 0
   style: {
     backgroundColor?: string,
@@ -712,6 +714,29 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.detectChanges()
 
     expect(fixture.componentInstance.handleSelection).toHaveBeenCalledWith(fixture.componentInstance.selected)
+  }))
+
+  it('should emit onFocus when focused', async(() => {
+    fixture.detectChanges()
+
+    const editorFixture = fixture.debugElement.children[0]
+
+    editorFixture.componentInstance.quillEditor.focus()
+    fixture.detectChanges()
+
+    expect(fixture.componentInstance.focused).toBe(true)
+  }))
+
+  it('should emit onBlur when blured', async(() => {
+    fixture.detectChanges()
+
+    const editorFixture = fixture.debugElement.children[0]
+
+    editorFixture.componentInstance.quillEditor.focus()
+    editorFixture.componentInstance.quillEditor.blur()
+    fixture.detectChanges()
+
+    expect(fixture.componentInstance.blured).toBe(true)
   }))
 
   it('should validate minlength', async(() => {

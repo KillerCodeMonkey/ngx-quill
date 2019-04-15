@@ -110,6 +110,14 @@ export class QuillEditorComponent
     range: Range | null
     source: string
   }> = new EventEmitter()
+  @Output() onFocus: EventEmitter<{
+    editor: any
+    source: string
+  }> = new EventEmitter()
+  @Output() onBlur: EventEmitter<{
+    editor: any
+    source: string
+  }> = new EventEmitter()
 
   private disabled = false // used to store initial value before ViewInit
 
@@ -296,6 +304,18 @@ export class QuillEditorComponent
 
   selectionChangeHandler = (range: Range | null, oldRange: Range | null, source: string) => {
     this.zone.run(() => {
+      if (range === null) {
+        this.onBlur.emit({
+          editor: this.quillEditor,
+          source
+        })
+      } else if (oldRange === null) {
+        this.onFocus.emit({
+          editor: this.quillEditor,
+          source
+        })
+      }
+
       this.onSelectionChanged.emit({
         editor: this.quillEditor,
         oldRange,
