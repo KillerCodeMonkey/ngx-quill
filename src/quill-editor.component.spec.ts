@@ -13,7 +13,7 @@ const Quill: any = QuillNamespace
 // tslint:disable:max-classes-per-file
 @Component({
   template: `
-<quill-editor (onBlur)="blured = true" (onFocus)="focused = true" [(ngModel)]="title" [customOptions]="[{import: 'attributors/style/size', whitelist: ['14']}]" [style]="style" [required]="required" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event)" (onSelectionChanged)="handleSelection($event)"></quill-editor>
+<quill-editor (onBlur)="blured = true" (onFocus)="focused = true" [(ngModel)]="title" [customOptions]="[{import: 'attributors/style/size', whitelist: ['14']}]" [styles]="style" [required]="required" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event)" (onSelectionChanged)="handleSelection($event)"></quill-editor>
 `
 })
 class TestComponent {
@@ -464,7 +464,7 @@ describe('Formats', () => {
 describe('Dynamic styles', () => {
   @Component({
     template: `
-  <quill-editor [bounds]="'self'" [(ngModel)]="title" format="text" [style]="style" (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
+  <quill-editor [bounds]="'self'" [(ngModel)]="title" format="text" [styles]="style" (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
   `
   })
   class StylingComponent {
@@ -491,7 +491,7 @@ describe('Dynamic styles', () => {
     fixture.detectChanges()
   })
 
-  it('set inital style', async(() => {
+  it('set inital styles', async(() => {
     const component = fixture.componentInstance
     fixture.whenStable().then(() => {
       expect(component.editor.container.style.backgroundColor).toEqual('red')

@@ -86,7 +86,7 @@ export class QuillEditorComponent
   @Input() formats?: string[] | null
   @Input() customToolbarPosition: 'top' | 'bottom' = 'top'
   @Input() sanitize: boolean = false
-  @Input() style: any = null
+  @Input() styles: any = null
   @Input() strict: boolean = true
   @Input() scrollingContainer?: HTMLElement | string | null
   @Input() bounds?: HTMLElement | string
@@ -213,9 +213,9 @@ export class QuillEditorComponent
       modules['toolbar'] = toolbarElem
     }
 
-    if (this.style) {
-      Object.keys(this.style).forEach((key: string) => {
-        this.renderer.setStyle(this.editorElem, key, this.style[key])
+    if (this.styles) {
+      Object.keys(this.styles).forEach((key: string) => {
+        this.renderer.setStyle(this.editorElem, key, this.styles[key])
       })
     }
 
@@ -379,9 +379,9 @@ export class QuillEditorComponent
       this.quillEditor.root.dataset.placeholder =
         changes['placeholder'].currentValue
     }
-    if (changes['style']) {
-      const currentStyling = changes['style'].currentValue
-      const previousStyling = changes['style'].previousValue
+    if (changes['styles']) {
+      const currentStyling = changes['styles'].currentValue
+      const previousStyling = changes['styles'].previousValue
 
       if (previousStyling) {
         Object.keys(previousStyling).forEach((key: string) => {
@@ -390,7 +390,7 @@ export class QuillEditorComponent
       }
       if (currentStyling) {
         Object.keys(currentStyling).forEach((key: string) => {
-          this.renderer.setStyle(this.editorElem, key, this.style[key])
+          this.renderer.setStyle(this.editorElem, key, this.styles[key])
         })
       }
     }
