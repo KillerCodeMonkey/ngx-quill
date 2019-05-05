@@ -1,7 +1,7 @@
 import { isPlatformServer } from '@angular/common'
 import { DomSanitizer } from '@angular/platform-browser'
 
-import { QUILL_CONFIG_TOKEN, QuillConfig, QuillModules } from './quill-editor.interfaces'
+import { QUILL_CONFIG_TOKEN, QuillConfig, QuillFormat, QuillModules } from './quill-editor.interfaces'
 
 import {
   AfterViewInit,
@@ -48,6 +48,11 @@ export interface Range {
   length: number
 }
 
+const getFormat = (format?: QuillFormat, configFormat?: QuillFormat): QuillFormat => {
+  const passedFormat = format || configFormat
+  return passedFormat || 'html'
+}
+
 @Component({
   encapsulation: ViewEncapsulation.None,
   providers: [
@@ -74,7 +79,7 @@ export class QuillEditorComponent
   editorElem: HTMLElement | undefined
   content: any
 
-  @Input() format?: 'object' | 'html' | 'text' | 'json' = 'html'
+  @Input() format?: 'object' | 'html' | 'text' | 'json'
   @Input() theme?: string
   @Input() modules?: QuillModules
   @Input() debug?: 'warn' | 'log' | 'error' | false
@@ -144,12 +149,13 @@ export class QuillEditorComponent
       html = null
     }
     let modelValue = html
+    const format = getFormat(this.format, this.config.format)
 
-    if (this.format === 'text') {
+    if (format === 'text') {
       modelValue = quillEditor.getText()
-    } else if (this.format === 'object') {
+    } else if (format === 'object') {
       modelValue = quillEditor.getContents()
-    } else if (this.format === 'json') {
+    } else if (format === 'json') {
       try {
         modelValue = JSON.stringify(quillEditor.getContents())
       } catch (e) {
@@ -162,12 +168,13 @@ export class QuillEditorComponent
 
   @Input()
   valueSetter = (quillEditor: any, value: any): any => {
-    if (this.format === 'html') {
+    const format = getFormat(this.format, this.config.format)
+    if (format === 'html') {
       if (this.sanitize) {
         value = this.domSanitizer.sanitize(SecurityContext.HTML, value)
       }
       return quillEditor.clipboard.convert(value)
-    } else if (this.format === 'json') {
+    } else if (format === 'json') {
       try {
         return JSON.parse(value)
       } catch (e) {
@@ -263,11 +270,12 @@ export class QuillEditorComponent
     })
 
     if (this.content) {
-      if (this.format === 'object') {
+      const format = getFormat(this.format, this.config.format)
+      if (format === 'object') {
         this.quillEditor.setContents(this.content, 'silent')
-      } else if (this.format === 'text') {
+      } else if (format === 'text') {
         this.quillEditor.setText(this.content, 'silent')
-      } else if (this.format === 'json') {
+      } else if (format === 'json') {
         try {
           this.quillEditor.setContents(JSON.parse(this.content), 'silent')
         } catch (e) {
@@ -399,10 +407,11 @@ export class QuillEditorComponent
 
   writeValue(currentValue: any) {
     this.content = currentValue
+    const format = getFormat(this.format, this.config.format)
 
     if (this.quillEditor) {
       if (currentValue) {
-        if (this.format === 'text') {
+        if (format === 'text') {
           this.quillEditor.setText(currentValue)
         } else {
           this.quillEditor.setContents(

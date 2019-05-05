@@ -17,7 +17,7 @@ const Quill: any = QuillNamespace
 `
 })
 class TestComponent {
-  title = 'Hallo'
+  title: any = 'Hallo'
   isReadOnly = false
   required = false
   minLength = 0
@@ -899,6 +899,7 @@ describe('QuillEditor - base config', () => {
       imports: [FormsModule, QuillModule.forRoot({
         bounds: 'body',
         debug: false,
+        format: 'object',
         formats: ['bold'],
         modules: {
           toolbar: [
@@ -925,7 +926,10 @@ describe('QuillEditor - base config', () => {
     editor.setText('content', 'api')
     fixture.detectChanges()
 
-    expect(fixture.componentInstance.title).toEqual('<p>content</p>')
+    expect(JSON.stringify(fixture.componentInstance.title)).toEqual(JSON.stringify({
+      ops: [{ insert: `content
+` }]
+    }))
     expect(editor.root.dataset.placeholder).toEqual('placeholder')
   })
 })

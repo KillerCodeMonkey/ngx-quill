@@ -38,9 +38,12 @@ export interface QuillModules {
   } | boolean
 }
 
+export type QuillFormat = 'object' | 'json' | 'html' | 'text'
+
 export interface QuillConfig {
   bounds?: HTMLElement | string
   debug?: 'error' | 'warn' | 'log' | false
+  format?: QuillFormat
   formats?: any
   modules?: QuillModules
   placeholder?: string
