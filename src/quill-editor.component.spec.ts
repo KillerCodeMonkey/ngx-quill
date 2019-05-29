@@ -93,7 +93,7 @@ class TestToolbarComponent {
 })
 class ReactiveFormTestComponent {
   formControl: FormControl = new FormControl(null)
-  @ViewChild(QuillEditorComponent) editor!: QuillEditorComponent
+  @ViewChild(QuillEditorComponent, { static: true }) editor!: QuillEditorComponent
 }
 
 @Component({
@@ -103,7 +103,7 @@ class ReactiveFormTestComponent {
 })
 class PreserveWhitespaceTestComponent {
   content = '<p>test     test   </p>'
-  @ViewChild(QuillEditorComponent) editor!: QuillEditorComponent
+  @ViewChild(QuillEditorComponent, { static: true }) editor!: QuillEditorComponent
 }
 
 describe('Basic QuillEditorComponent', () => {

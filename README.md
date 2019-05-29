@@ -56,6 +56,17 @@ XRP Wallet Address:
   <tbody>
     <tr>
       <td>
+        v8
+      </td>
+      <td>
+        >= 5.2.0
+      </td>
+      <td>
+        until Nov 22, 2020
+      </td>
+    </tr>
+    <tr>
+      <td>
         v7
       </td>
       <td>
@@ -84,7 +95,7 @@ XRP Wallet Address:
         > 1.6.0
       </td>
       <td>
-        until May 1, 2019
+        no
       </td>
     </tr>
     <tr>
