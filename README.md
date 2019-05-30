@@ -114,7 +114,7 @@ XRP Wallet Address:
 
 ## Installation
 
-- `npm install ngx-quill --save`
+- `npm install ngx-quill quill --save`
 - for projects using Angular < v5.0.0 install `npm install ngx-quill@1.6.0`
 - install `@angular/core`, `@angular/common`, `@angular/forms`, `quill` and `rxjs` - peer dependencies of ngx-quill
 - include theme stylings: bubble.css, snow.css of quilljs in your index.html, or add them in your css/scss files with `@import` statements, or add them external stylings in your build process.
