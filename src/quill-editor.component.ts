@@ -372,6 +372,7 @@ export class QuillEditorComponent
     if (this.quillEditor) {
       this.quillEditor.off('selection-change', this.selectionChangeHandler)
       this.quillEditor.off('text-change', this.textChangeHandler)
+      this.quillEditor.off('click')
     }
   }
 
