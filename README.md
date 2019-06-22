@@ -345,7 +345,7 @@ But there are some pitfalls:
 
 After that your content should look like what you expected.
 
-If you store html in your database, checkour your backend code, sometimes backends are stripping unwanted tags as well ;).
+If you store html in your database, checkout your backend code, sometimes backends are stripping unwanted tags as well ;).
 
 ## Security Hint
 
