@@ -340,6 +340,17 @@ Just create a quill editor without a toolbar and in readonly mode. With some sim
 
 As a helper `ngx-quill` provides a component where you can pass many options of the `quill-editor` like modules, format, formats, customOptions, but renders only the content as readonly and without a toolbar. Import is the `content` input, where you can pass the editor content you want to present.
 
+#### Config
+
+- content - the content to be presented
+- formats - array of allowed formats/groupings
+- format - model format - default: `html`, values: `html | object | text | json`, sets the model value type - html = html string, object = quill operation object, json = quill operation json, text = plain text
+- modules - configure/disable quill modules
+- theme - bubble/snow, default is `snow`
+- debug - set log level `warn`, `error`, `log` or `false` to deactivate logging, default: `warn`
+- use custom-options for adding for example custom font sizes --> this overwrites this options **globally** !!!
+- strict - default: true, sets editor in strict mode
+
 ### QuillViewHTMLComponent - Using angular [innerHTML]
 
 Most of you will use the `html` format (even it is not recommended). To render custom html with angular you should use the `[innerHTML]` attribute.
@@ -370,7 +381,12 @@ As a helper `ngx-quill` provides a component where you can simply pass your html
 - add necessary css classes
 - bypass html sanitation
 
+#### Config
+
 As inputs you can set the `content` and optional the `theme` (default is `snow`).
+
+- content - html string to be presented
+- theme - bubble/snow, default is `snow`
 
 ## Security Hint
 

@@ -14,9 +14,9 @@ import {
 @Component({
   encapsulation: ViewEncapsulation.None,
   selector: 'quill-view-html',
-  styles: ['.ngx-quill-view-html { border-width: 0 }'],
+  styles: ['.ql-container.ngx-quill-view-html { border-width: 0 }'],
   template: `
-  <div class="ql-container ngx-quill-view-html" [ngClass]="themeClass">
+  <div class="ql-container" [ngClass]="themeClass">
     <div class="ql-editor" [innerHTML]="innerHTML">
     </div>
   </div>
@@ -37,7 +37,10 @@ export class QuillViewHTMLComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.theme) {
       const theme = changes.theme.currentValue || (this.config.theme ? this.config.theme : 'snow')
-      this.themeClass = `ql-${theme}`
+      this.themeClass = `ql-${theme} ngx-quill-view-html`
+    } else if (!this.theme) {
+      const theme = this.config.theme ? this.config.theme : 'snow'
+      this.themeClass = `ql-${theme} ngx-quill-view-html`
     }
     if (changes.content) {
       this.innerHTML = this.sanitizer.bypassSecurityTrustHtml(changes.content.currentValue)

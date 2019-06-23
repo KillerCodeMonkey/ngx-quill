@@ -10,6 +10,7 @@ import {
   Input,
   OnChanges,
   PLATFORM_ID,
+  Renderer2,
   SimpleChanges,
   ViewChild,
   ViewEncapsulation
@@ -32,9 +33,9 @@ const getFormat = (format?: QuillFormat, configFormat?: QuillFormat): QuillForma
 @Component({
   encapsulation: ViewEncapsulation.None,
   selector: 'quill-view',
-  styles: ['.ngx-quill-view { border-width: 0 }'],
+  styles: ['.ql-container.ngx-quill-view { border-width: 0 }'],
   template: `
-  <div class="ngx-quill-view" #quillView></div>
+  <div #quillView></div>
 `
 })
 export class QuillViewComponent implements AfterViewInit, OnChanges {
@@ -44,7 +45,6 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
 
   quillEditor: any
   editorElem: HTMLElement | undefined
-  themeClass: string = 'ql-snow'
 
   @Input() format?: 'object' | 'html' | 'text' | 'json'
   @Input() theme?: string
@@ -58,7 +58,8 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
   constructor(
     // tslint:disable-next-line:ban-types
     @Inject(PLATFORM_ID) private platformId: Object,
-    @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig
+    @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig,
+    private renderer: Renderer2
   ) {}
 
   valueSetter = (quillEditor: any, value: any): any => {
@@ -114,7 +115,6 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
       formats = this.config.formats || this.config.formats === null ? this.config.formats : undefined
     }
     const theme = this.theme || (this.config.theme ? this.config.theme : 'snow')
-    this.themeClass = `ql-${theme}`
 
     this.quillEditor = new Quill(this.editorElem, {
       debug,
@@ -124,6 +124,8 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
       strict: this.strict,
       theme
     })
+
+    this.renderer.addClass(this.editorElem, 'ngx-quill-view')
 
     if (this.content) {
       this.valueSetter(this.quillEditor, this.content)
