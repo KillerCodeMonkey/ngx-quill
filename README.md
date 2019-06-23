@@ -42,6 +42,7 @@ XRP Wallet Address:
   - toggle readonly
   - bubble toolbar
   - activate formats after editor initialisation, e.g. rtl direction
+  - present quilljs content with the `quill-view` and `quill-view-html` component
 - [Ionic v3 Demo](https://github.com/KillerCodeMonkey/ngx-quill-ionic-v3)
 - [Ionic v4 Demo](https://github.com/KillerCodeMonkey/ngx-quill-ionic-v4)
 
@@ -197,7 +198,7 @@ See [Quill Configuration](https://quilljs.com/docs/configuration/) for a full li
 
 The `QuillModule` exports the `defaultModules` if you want to extend them :).
 
-## QuillEditComponent
+## QuillEditorComponent
 
 ### Hint
 
@@ -351,6 +352,10 @@ As a helper `ngx-quill` provides a component where you can pass many options of 
 - use custom-options for adding for example custom font sizes --> this overwrites this options **globally** !!!
 - strict - default: true, sets editor in strict mode
 
+```HTML
+<quill-view [content]="content" format="text" theme="snow"></quill-view>
+```
+
 ### QuillViewHTMLComponent - Using angular [innerHTML]
 
 Most of you will use the `html` format (even it is not recommended). To render custom html with angular you should use the `[innerHTML]` attribute.
@@ -369,9 +374,6 @@ But there are some pitfalls:
 
 3. Angular has html sanitation, so it will strip unkown or not trusted parts of your HTML - just mark your html as trusted ([DomSanitizer](https://angular.io/api/platform-browser/DomSanitizer))
 
-[Demo with format `html` an presentation](https://killercodemonkey.github.io/ngx-quill-example/#html)
-[Code with format `html` an presentation](https://github.com/KillerCodeMonkey/ngx-quill-example/tree/master/src/app/format-html)
-
 After that your content should look like what you expected.
 
 If you store html in your database, checkout your backend code, sometimes backends are stripping unwanted tags as well ;).
@@ -380,6 +382,10 @@ As a helper `ngx-quill` provides a component where you can simply pass your html
 
 - add necessary css classes
 - bypass html sanitation
+
+```HTML
+<quill-view-html [content]="htmlstring" theme="snow"></quill-view-html>
+```
 
 #### Config
 
