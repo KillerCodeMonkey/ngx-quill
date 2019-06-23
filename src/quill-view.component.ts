@@ -32,9 +32,9 @@ const getFormat = (format?: QuillFormat, configFormat?: QuillFormat): QuillForma
 @Component({
   encapsulation: ViewEncapsulation.None,
   selector: 'quill-view',
-  styles: ['.ngx-quill-view > .ql-editor { border-width: 0 }'],
+  styles: ['.ngx-quill-view { border-width: 0 }'],
   template: `
-  <div #quillView></div>
+  <div class="ngx-quill-view" #quillView></div>
 `
 })
 export class QuillViewComponent implements AfterViewInit, OnChanges {

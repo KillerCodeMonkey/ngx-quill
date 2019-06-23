@@ -16,8 +16,8 @@ import {
   selector: 'quill-view-html',
   styles: ['.ngx-quill-view-html { border-width: 0 }'],
   template: `
-  <div class="ql-container" [ngClass]="themeClass">
-    <div class="ql-editor ngx-quill-view-html" [innerHTML]="innerHTML">
+  <div class="ql-container ngx-quill-view-html" [ngClass]="themeClass">
+    <div class="ql-editor" [innerHTML]="innerHTML">
     </div>
   </div>
 `
