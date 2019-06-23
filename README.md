@@ -347,11 +347,23 @@ Most of you will use the `html` format (even it is not recommended). To render c
 But there are some pitfalls:
 
 1. You need to have the quill css files loaded, when using classes and not inline styling (https://quilljs.com/guides/how-to-customize-quill/#class-vs-inline)
-2. Angular has html sanitation, so it will strip unkown or not trusted parts of your HTML - just mark your html as trusted ([DomSanitizer](https://angular.io/api/platform-browser/DomSanitizer))
+2. When using classes use a `div`-tag that has the `innerHTML` attribute and add the `ql-editor` class. Wrap your div in another `div`-tag with css classes `ql-container` and your theme, e.g. `ql-snow`.:
+
+```HTML
+<div class="ql-container ql-snow" style="border-width: 0;">
+  <div class="ql-editor" [innerHTML]="byPassedHTMLString">
+  </div>
+</div>
+```
+
+3. Angular has html sanitation, so it will strip unkown or not trusted parts of your HTML - just mark your html as trusted ([DomSanitizer](https://angular.io/api/platform-browser/DomSanitizer))
+
+[Demo with format `html` an presentation](https://killercodemonkey.github.io/ngx-quill-example/#html)
+[Code with format `html` an presentation](https://github.com/KillerCodeMonkey/ngx-quill-example/tree/master/src/app/format-html)
 
 After that your content should look like what you expected.
 
-If you store html in your database, checkour your backend code, sometimes backends are stripping unwanted tags as well ;).
+If you store html in your database, checkout your backend code, sometimes backends are stripping unwanted tags as well ;).
 
 As a helper `ngx-quill` provides a component where you can simply pass your html string and the component does everything for you to render it:
 
@@ -369,4 +381,3 @@ Ngx-quill provides the config paramter `sanitize` to sanitize html-strings passe
 It is **deactivated per default** to avoid stripping content or styling, which is not expected.
 
 But it is **recommended** to activate this option, if you are working with html strings as model values.
-
