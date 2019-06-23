@@ -116,7 +116,7 @@ XRP Wallet Address:
 
 - `npm install ngx-quill`
 - for projects using Angular < v5.0.0 install `npm install ngx-quill@1.6.0`
-- install `@angular/core`, `@angular/common`, `@angular/forms`, `quill` and `rxjs` - peer dependencies of ngx-quill
+- install `@angular/core`, `@angular/common`, `@angular/forms`, `@angular/platform-browser`, `quill` and `rxjs` - peer dependencies of ngx-quill
 - include theme stylings: bubble.css, snow.css of quilljs in your index.html, or add them in your css/scss files with `@import` statements, or add them external stylings in your build process.
 
 ### For standard webpack, angular-cli and tsc builds
@@ -169,14 +169,44 @@ packages: {
 ```
 - follow the steps of **For standard webpack and tsc builds**
 
-## Hint
+## Global Config
+
+It is possible to set custom default modules and Quill config options with the import of the `QuillModule`.
+
+```
+@NgModule({
+  imports: [
+    ...,
+
+    QuillModule.forRoot({
+      modules: {
+        syntax: true,
+        toolbar: [...]
+      }
+    })
+  ],
+  ...
+})
+class YourModule { ... }
+
+```
+
+If you want to use the `syntax` module follow the [Syntax Highlight Module Guide](https://quilljs.com/docs/modules/syntax/#syntax-highlighter-module).
+
+See [Quill Configuration](https://quilljs.com/docs/configuration/) for a full list of config options.
+
+The `QuillModule` exports the `defaultModules` if you want to extend them :).
+
+## QuillEditComponent
+
+### Hint
 
 Ngx-quill updates the ngModel or formControl for every `user` change in the editor.
 Checkout the [QuillJS Source](https://quilljs.com/docs/api/#events) parameter of the `text-change` event.
 
 If you are using the editor reference to directly manipulate the editor content and want to update the model, pass `'user'` as the source parameter to the QuillJS api methods.
 
-## Config
+### Config
 
 - ngModel - set initial value or allow two-way databinding for template driven forms
 - formControl/formControlName - set initial value or allow two-way databinding for reactive forms
@@ -251,35 +281,7 @@ If you are using the editor reference to directly manipulate the editor content 
 
 [Full Quill Toolbar HTML](https://github.com/quilljs/quill/blob/f75ff2973f068c3db44f949915eb8a74faf162a8/docs/_includes/full-toolbar.html)
 
-## Global Config
-
-It is possible to set custom default modules and Quill config options with the import of the `QuillModule`.
-
-```
-@NgModule({
-  imports: [
-    ...,
-
-    QuillModule.forRoot({
-      modules: {
-        syntax: true,
-        toolbar: [...]
-      }
-    })
-  ],
-  ...
-})
-class YourModule { ... }
-
-```
-
-If you want to use the `syntax` module follow the [Syntax Highlight Module Guide](https://quilljs.com/docs/modules/syntax/#syntax-highlighter-module).
-
-See [Quill Configuration](https://quilljs.com/docs/configuration/) for a full list of config options.
-
-The `QuillModule` exports the `defaultModules` if you want to extend them :).
-
-## Outputs
+### Outputs
 
 - onEditorCreated - editor instance
 ```
@@ -321,7 +323,7 @@ editor // Quill
 }
 ```
 
-## How to present the editor content
+## QuillViewComponent, QuillViewHTMLComponent & How to present the editor content
 
 In most cases a wysiwyg editor is used in backoffice to store the content to the database. On the other side this value should be used, to show the content to the enduser.
 
@@ -329,12 +331,16 @@ In most cases the `html` format is used, but it is not recommended by QuillJS, b
 
 This content object is easy to store and to maintain, because there is no html syntax parsing necessary. So you even switching to another editor is very easy when you can work with that.
 
-### Using QuillJS to render content
+`ngx-quill` provides some helper components, to present quilljs content.
+
+### QuillViewComponent - Using QuillJS to render content
 
 In general QuillJS recommends to use a QuillJS instance to present your content.
 Just create a quill editor without a toolbar and in readonly mode. With some simple css lines you can remove the default border around the content.
 
-### Using angular [innerHTML]
+As a helper `ngx-quill` provides a component where you can pass many options of the `quill-editor` like modules, format, formats, customOptions, but renders only the content as readonly and without a toolbar. Import is the `content` input, where you can pass the editor content you want to present.
+
+### QuillViewHTMLComponent - Using angular [innerHTML]
 
 Most of you will use the `html` format (even it is not recommended). To render custom html with angular you should use the `[innerHTML]` attribute.
 
@@ -346,6 +352,13 @@ But there are some pitfalls:
 After that your content should look like what you expected.
 
 If you store html in your database, checkour your backend code, sometimes backends are stripping unwanted tags as well ;).
+
+As a helper `ngx-quill` provides a component where you can simply pass your html string and the component does everything for you to render it:
+
+- add necessary css classes
+- bypass html sanitation
+
+As inputs you can set the `content` and optional the `theme` (default is `snow`).
 
 ## Security Hint
 
