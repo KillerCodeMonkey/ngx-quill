@@ -33,7 +33,11 @@ const getFormat = (format?: QuillFormat, configFormat?: QuillFormat): QuillForma
 @Component({
   encapsulation: ViewEncapsulation.None,
   selector: 'quill-view',
-  styles: ['.ql-container.ngx-quill-view { border-width: 0 }'],
+  styles: [`
+.ql-container.ngx-quill-view {
+  border: 0;
+}
+`],
   template: `
   <div #quillView></div>
 `

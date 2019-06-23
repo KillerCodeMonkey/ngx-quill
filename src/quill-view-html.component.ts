@@ -14,7 +14,11 @@ import {
 @Component({
   encapsulation: ViewEncapsulation.None,
   selector: 'quill-view-html',
-  styles: ['.ql-container.ngx-quill-view-html { border-width: 0 }'],
+  styles: [`
+.ql-container.ngx-quill-view-html {
+  border: 0;
+}
+`],
   template: `
   <div class="ql-container" [ngClass]="themeClass">
     <div class="ql-editor" [innerHTML]="innerHTML">
