@@ -18,7 +18,7 @@ export type QuillToolbarConfig = Array<Array<
 export interface QuillModules {
   [key: string]: any
   clipboard?: {
-    mathers?: any[]
+    matchers?: any[]
     matchVisual?: boolean
   } | boolean
   history?: {
