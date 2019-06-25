@@ -12,7 +12,6 @@ import {
   PLATFORM_ID,
   Renderer2,
   SimpleChanges,
-  ViewChild,
   ViewEncapsulation
 } from '@angular/core'
 
@@ -39,14 +38,9 @@ const getFormat = (format?: QuillFormat, configFormat?: QuillFormat): QuillForma
 }
 `],
   template: `
-  <div #quillView></div>
 `
 })
 export class QuillViewComponent implements AfterViewInit, OnChanges {
-  @ViewChild('quillView', {
-    static: true
-  }) viewElement: ElementRef | undefined
-
   quillEditor: any
   editorElem: HTMLElement | undefined
 
@@ -58,12 +52,14 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
   @Input() strict: boolean = true
   @Input() content: any
   @Input() customOptions: CustomOption[] = []
+  @Input() preserveWhitespace: boolean = false
 
   constructor(
     // tslint:disable-next-line:ban-types
     @Inject(PLATFORM_ID) private platformId: Object,
     @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private elementRef: ElementRef
   ) {}
 
   valueSetter = (quillEditor: any, value: any): any => {
@@ -98,8 +94,6 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
       Quill = require('quill')
     }
 
-    this.editorElem = this.viewElement!.nativeElement
-
     const modules = this.modules || (this.config.modules || defaultModules)
     modules.toolbar = false
 
@@ -119,6 +113,15 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
       formats = this.config.formats || this.config.formats === null ? this.config.formats : undefined
     }
     const theme = this.theme || (this.config.theme ? this.config.theme : 'snow')
+
+    this.elementRef.nativeElement.insertAdjacentHTML(
+      'afterbegin',
+      this.preserveWhitespace ? '<pre quill-view-element></pre>' : '<div quill-view-element></div>'
+    )
+
+    this.editorElem = this.elementRef.nativeElement.querySelector(
+      '[quill-view-element]'
+    )
 
     this.quillEditor = new Quill(this.editorElem, {
       debug,
