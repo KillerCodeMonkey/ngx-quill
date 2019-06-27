@@ -2,7 +2,7 @@
 
 <img src="https://cloud.githubusercontent.com/assets/2264672/20601381/a51753d4-b258-11e6-92c2-1d79efa5bede.png" width="200px">
 
-ngx-quill is an angular (>=2) component for the [Quill Rich Text Editor](https://quilljs.com/).
+ngx-quill is an angular (>=2) module for the [Quill Rich Text Editor](https://quilljs.com/) containing all components you need.
 
 ## Donate/Support
 
