@@ -124,7 +124,7 @@ export class QuillEditorComponent
     source: string
   }> = new EventEmitter()
 
-  private disabled = false // used to store initial value before ViewInit
+  disabled = false // used to store initial value before ViewInit
 
   constructor(
     private elementRef: ElementRef,
