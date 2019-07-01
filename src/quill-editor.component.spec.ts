@@ -683,9 +683,10 @@ describe('Advanced QuillEditorComponent', () => {
     })
   }))
 
-  it('should emit onEditorCreated with editor instance', async(() => {
+  it('should emit onEditorCreated with editor instance', async( async () => {
     spyOn(fixture.componentInstance, 'handleEditorCreated')
     fixture.detectChanges()
+    await fixture.whenStable()
     const editorComponent = fixture.debugElement.children[0].componentInstance
     expect(fixture.componentInstance.handleEditorCreated).toHaveBeenCalledWith(editorComponent.quillEditor)
   }))
@@ -915,9 +916,11 @@ describe('QuillEditor - base config', () => {
     }).compileComponents()
   })
 
-  it('renders editor with config', () => {
+  it('renders editor with config', async( async () => {
     fixture = TestBed.createComponent(TestComponent)
     fixture.detectChanges()
+    await fixture.whenStable()
+
     const editor = fixture.componentInstance.editor as QuillNamespace.Quill
 
     expect(fixture.nativeElement.querySelector('.ql-toolbar').querySelectorAll('button').length).toBe(1)
@@ -927,11 +930,11 @@ describe('QuillEditor - base config', () => {
     fixture.detectChanges()
 
     expect(JSON.stringify(fixture.componentInstance.title)).toEqual(JSON.stringify({
-      ops: [{ insert: `content
-` }]
+        ops: [{ insert: `content
+`     }]
     }))
     expect(editor.root.dataset.placeholder).toEqual('placeholder')
-  })
+  }))
 })
 
 describe('QuillEditor - preserveWhitespace', () => {

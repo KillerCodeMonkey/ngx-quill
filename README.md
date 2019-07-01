@@ -285,6 +285,7 @@ If you are using the editor reference to directly manipulate the editor content 
 ### Outputs
 
 - onEditorCreated - editor instance
+- Use this output to get the editor instance and use it directly. After this output has called the component is stable and all listeners are binded
 ```
 editor // Quill
 ```

@@ -4,7 +4,7 @@ import { DomSanitizer } from '@angular/platform-browser'
 import { QUILL_CONFIG_TOKEN, QuillConfig, QuillFormat, QuillModules } from './quill-editor.interfaces'
 
 import {
-  AfterViewInit,
+  AfterContentInit,
   Component,
   ElementRef,
   EventEmitter,
@@ -73,7 +73,7 @@ const getFormat = (format?: QuillFormat, configFormat?: QuillFormat): QuillForma
 `
 })
 export class QuillEditorComponent
-  implements AfterViewInit, ControlValueAccessor, OnChanges, OnDestroy, Validator {
+  implements AfterContentInit, ControlValueAccessor, OnChanges, OnDestroy, Validator {
 
   quillEditor: any
   editorElem: HTMLElement | undefined
@@ -185,7 +185,7 @@ export class QuillEditorComponent
     return value
   }
 
-  ngAfterViewInit() {
+  ngAfterContentInit() {
     if (isPlatformServer(this.platformId)) {
       return
     }
@@ -295,8 +295,6 @@ export class QuillEditorComponent
     // initialize disabled status based on this.disabled as default value
     this.setDisabledState()
 
-    this.onEditorCreated.emit(this.quillEditor)
-
     // mark model as touched if editor lost focus
     this.quillEditor.on(
       'selection-change',
@@ -308,6 +306,10 @@ export class QuillEditorComponent
       'text-change',
       this.textChangeHandler
     )
+
+    // trigger created in a timeout to avoid changed models after checked
+    // if you are using the editor api in created output to change the editor content
+    setTimeout(() => this.onEditorCreated.emit(this.quillEditor))
   }
 
   selectionChangeHandler = (range: Range | null, oldRange: Range | null, source: string) => {
