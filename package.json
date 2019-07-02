@@ -90,7 +90,7 @@
     "source-map-loader": "^0.2.4",
     "ts-helpers": "^1.1.2",
     "tslib": "^1.9.0",
-    "ts-loader": "6.0.1",
+    "ts-loader": "6.0.4",
     "tsickle": "^0.35.0",
     "tslint": "^5.16.0",
     "tslint-eslint-rules": "^5.4.0",
