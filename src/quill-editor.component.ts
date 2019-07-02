@@ -205,19 +205,17 @@ export class QuillEditorComponent
     const toolbarElem = this.elementRef.nativeElement.querySelector(
       '[quill-editor-toolbar]'
     )
-    const modules = this.modules || (this.config.modules || defaultModules)
-    if (modules.toolbar === undefined) {
+    const modules = Object.assign({}, this.modules || (this.config.modules || defaultModules))
+
+    if (toolbarElem) {
+      modules.toolbar = toolbarElem
+    } else if (modules.toolbar === undefined) {
       modules.toolbar = defaultModules.toolbar
     }
 
     let placeholder = this.placeholder !== undefined ? this.placeholder : this.config.placeholder
     if (placeholder === undefined) {
       placeholder = 'Insert text here ...'
-    }
-
-    if (toolbarElem) {
-      // tslint:disable-next-line:no-string-literal
-      modules['toolbar'] = toolbarElem
     }
 
     if (this.styles) {
@@ -254,7 +252,7 @@ export class QuillEditorComponent
 
     let formats = this.formats
     if (!formats && formats === undefined) {
-      formats = this.config.formats || this.config.formats === null ? this.config.formats : undefined
+      formats = this.config.formats ? Object.assign({}, this.config.formats) : (this.config.formats === null ? null : undefined)
     }
 
     this.quillEditor = new Quill(this.editorElem, {

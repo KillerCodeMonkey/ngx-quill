@@ -94,7 +94,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
       Quill = require('quill')
     }
 
-    const modules = this.modules || (this.config.modules || defaultModules)
+    const modules = Object.assign({}, this.modules || (this.config.modules || defaultModules))
     modules.toolbar = false
 
     this.customOptions.forEach((customOption) => {
@@ -110,7 +110,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
 
     let formats = this.formats
     if (!formats && formats === undefined) {
-      formats = this.config.formats || this.config.formats === null ? this.config.formats : undefined
+      formats = this.config.formats ? Object.assign({}, this.config.formats) : (this.config.formats === null ? null : undefined)
     }
     const theme = this.theme || (this.config.theme ? this.config.theme : 'snow')
 
