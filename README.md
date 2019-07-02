@@ -132,7 +132,7 @@ import { QuillModule } from 'ngx-quill'
   imports: [
     ...,
 
-    QuillModule
+    QuillModule.forRoot()
   ],
   ...
 })
@@ -142,7 +142,7 @@ class YourModule { ... }
 - do not forget to include quill + theme css in your buildprocess, module or index.html!
 - for builds with angular-cli >=6 only add quilljs to your scripts or scripts section of angular.json, if you need it as a global :)!
 
-**HINT:** *If you are using lazy loading modules, you have to add `QuillModule` to your imports in your root module to make sure the `Config` services is registered.*
+**HINT:** *If you are using lazy loading modules, you have to add `QuillModule.forRoot()` to your imports in your root module to make sure the `Config` services is registered.*
 
 ### For SystemJS builds (Config)
 
@@ -172,7 +172,7 @@ packages: {
 
 ## Global Config
 
-It is possible to set custom default modules and Quill config options with the import of the `QuillModule`.
+It is possible to set custom default modules and Quill config options with the import of the `QuillModule.forRoot()`.
 
 ```
 @NgModule({
