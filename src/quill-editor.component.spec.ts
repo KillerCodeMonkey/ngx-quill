@@ -112,8 +112,9 @@ describe('Basic QuillEditorComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        QuillModule.forRoot()
-      ]
+        QuillModule
+      ],
+      providers: QuillModule.forRoot().providers
     })
 
     fixture = TestBed.createComponent(QuillEditorComponent)
@@ -128,16 +129,20 @@ describe('Basic QuillEditorComponent', () => {
     expect(spy).toHaveBeenCalledTimes(2)
   })
 
-  it('should render toolbar', async(() => {
+  it('should render toolbar', async(async () => {
     const element = fixture.nativeElement
     fixture.detectChanges()
+    await fixture.whenStable()
+
     expect(element.querySelectorAll('div.ql-toolbar.ql-snow').length).toBe(1)
     expect(fixture.componentInstance.quillEditor).toBeDefined()
   }))
 
-  it('should render text div', async(() => {
+  it('should render text div', async(async () => {
     const element = fixture.nativeElement
     fixture.detectChanges()
+    await fixture.whenStable()
+
     expect(element.querySelectorAll('div.ql-container.ql-snow').length).toBe(1)
     expect(fixture.componentInstance.quillEditor).toBeDefined()
   }))
@@ -166,30 +171,28 @@ describe('Formats', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [ObjectComponent],
-        imports: [FormsModule, QuillModule]
+        imports: [FormsModule, QuillModule],
+        providers: QuillModule.forRoot().providers
       })
 
       fixture = TestBed.createComponent(ObjectComponent) as ComponentFixture<ObjectComponent>
       fixture.detectChanges()
     })
-    it('should be set object', async(() => {
+    it('should be set object', async(async () => {
       const component = fixture.componentInstance
 
-      fixture.whenStable().then(() => {
-        expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hello\n'}]}))
-      })
+      await fixture.whenStable()
+      expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hello\n'}]}))
     }))
 
-    it('should update text', async(() => {
+    it('should update text', async(async () => {
       const component = fixture.componentInstance
-      fixture.whenStable().then(() => {
-        component.title = [{ insert: '1234' }]
-        fixture.detectChanges()
+      await fixture.whenStable()
+      component.title = [{ insert: '1234' }]
+      fixture.detectChanges()
 
-        return fixture.whenStable()
-      }).then(() => {
-        expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: '1234\n'}]}))
-      })
+      await fixture.whenStable()
+      expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: '1234\n'}]}))
     }))
 
     it('should update model if editor text changes', async(() => {
@@ -240,57 +243,52 @@ describe('Formats', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [HTMLComponent, HTMLSanitizeComponent],
-        imports: [FormsModule, QuillModule]
+        imports: [FormsModule, QuillModule],
+        providers: QuillModule.forRoot().providers
       })
 
       fixture = TestBed.createComponent(HTMLComponent) as ComponentFixture<HTMLComponent>
       fixture.detectChanges()
     })
-    it('should be set html', async(() => {
+    it('should be set html', async(async () => {
       const component = fixture.componentInstance
 
-      fixture.whenStable().then(() => {
-        expect(component.editor.getText().trim()).toEqual('Hallo')
-      })
+      await fixture.whenStable()
+      expect(component.editor.getText().trim()).toEqual('Hallo')
     }))
 
-    it('should update html', async(() => {
+    it('should update html', async(async () => {
       const component = fixture.componentInstance
       component.title = '<p>test</p>'
       fixture.detectChanges()
 
-      fixture.whenStable().then(() => {
-        expect(component.editor.getText().trim()).toEqual('test')
-      })
+      await fixture.whenStable()
+      expect(component.editor.getText().trim()).toEqual('test')
     }))
 
-    it('should update model if editor html changes', async(() => {
+    it('should update model if editor html changes', async(async () => {
       const component = fixture.componentInstance
-      fixture.whenStable().then(() => {
-        expect(component.title.trim()).toEqual('<p>Hallo</p>')
-        component.editor.setText('1234', 'user')
-        fixture.detectChanges()
-        return fixture.whenStable()
-      }).then(() => {
-        expect(component.title.trim()).toEqual('<p>1234</p>')
-      })
+      await fixture.whenStable()
+      expect(component.title.trim()).toEqual('<p>Hallo</p>')
+      component.editor.setText('1234', 'user')
+      fixture.detectChanges()
+      await fixture.whenStable()
+      expect(component.title.trim()).toEqual('<p>1234</p>')
     }))
 
-    it('should sanitize html', async(() => {
+    it('should sanitize html', async(async () => {
       fixture = TestBed.createComponent(HTMLSanitizeComponent) as ComponentFixture<HTMLSanitizeComponent>
       fixture.detectChanges()
       const component = fixture.componentInstance
 
-      fixture.whenStable().then(() => {
-        expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hallo ' }, {insert: {image: 'wroooong.jpg'}}, {insert: '\n'}]}))
+      await fixture.whenStable()
+      expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hallo ' }, {insert: {image: 'wroooong.jpg'}}, {insert: '\n'}]}))
 
-        component.title = '<p><img src="xxxx" onerror="window.alert()"></p>'
-        fixture.detectChanges()
+      component.title = '<p><img src="xxxx" onerror="window.alert()"></p>'
+      fixture.detectChanges()
 
-        return fixture.whenStable()
-      }).then(() => {
-        expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: {image: 'xxxx'}}, {insert: '\n'}]}))
-      })
+      await fixture.whenStable()
+      expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: {image: 'xxxx'}}, {insert: '\n'}]}))
     }))
   })
 
@@ -314,49 +312,44 @@ describe('Formats', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [TextComponent],
-        imports: [FormsModule, QuillModule]
+        imports: [FormsModule, QuillModule],
+        providers: QuillModule.forRoot().providers
       })
 
       fixture = TestBed.createComponent(TextComponent) as ComponentFixture<TextComponent>
       fixture.detectChanges()
     })
-    it('should be set text', async(() => {
+    it('should be set text', async(async () => {
       const component = fixture.componentInstance
-      fixture.whenStable().then(() => {
-        expect(component.editor.getText().trim()).toEqual('Hallo')
-      })
+      await fixture.whenStable()
+      expect(component.editor.getText().trim()).toEqual('Hallo')
     }))
 
-    it('should update text', async(() => {
+    it('should update text', async(async () => {
       const component = fixture.componentInstance
       component.title = 'test'
       fixture.detectChanges()
 
-      fixture.whenStable().then(() => {
-        expect(component.editor.getText().trim()).toEqual('test')
-      })
+      await fixture.whenStable()
+      expect(component.editor.getText().trim()).toEqual('test')
     }))
 
-    it('should update model if editor text changes', async(() => {
+    it('should update model if editor text changes', async(async () => {
       const component = fixture.componentInstance
-      fixture.whenStable().then(() => {
-        component.editor.setText('123', 'user')
-        fixture.detectChanges()
-        return fixture.whenStable()
-      }).then(() => {
-        expect(component.title.trim()).toEqual('123')
-      })
+      await fixture.whenStable()
+      component.editor.setText('123', 'user')
+      fixture.detectChanges()
+      await fixture.whenStable()
+      expect(component.title.trim()).toEqual('123')
     }))
 
-    it('should not update model if editor content changed by api', async(() => {
+    it('should not update model if editor content changed by api', async(async () => {
       const component = fixture.componentInstance
-      fixture.whenStable().then(() => {
-        component.editor.setText('123')
-        fixture.detectChanges()
-        return fixture.whenStable()
-      }).then(() => {
-        expect(component.title.trim()).toEqual('Hallo')
-      })
+      await fixture.whenStable()
+      component.editor.setText('123')
+      fixture.detectChanges()
+      await fixture.whenStable()
+      expect(component.title.trim()).toEqual('Hallo')
     }))
   })
 
@@ -398,65 +391,61 @@ describe('Formats', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [JSONComponent, JSONInvalidComponent],
-        imports: [FormsModule, QuillModule]
+        imports: [FormsModule, QuillModule],
+        providers: QuillModule.forRoot().providers
       })
 
       fixture = TestBed.createComponent(JSONComponent) as ComponentFixture<JSONComponent>
       fixture.detectChanges()
     })
 
-    it('should set json string', async(() => {
+    it('should set json string', async(async () => {
       const component = fixture.componentInstance
-      fixture.whenStable().then(() => {
-        expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hallo\n'}]}))
-      })
+      await fixture.whenStable()
+      expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hallo\n'}]}))
     }))
 
-    it('should update json string', async(() => {
+    it('should update json string', async(async () => {
       const component = fixture.componentInstance
       component.title = JSON.stringify([{
         insert: 'Hallo 123'
       }])
       fixture.detectChanges()
-      fixture.whenStable().then(() => {
-        expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hallo 123\n'}]}))
-      })
+      await fixture.whenStable()
+      expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hallo 123\n'}]}))
     }))
 
-    it('should update model if editor changes', async(() => {
+    it('should update model if editor changes', async(async () => {
       const component = fixture.componentInstance
 
-      fixture.whenStable().then(() => {
+      await fixture.whenStable()
 
-        component.editor.setContents([{
-          insert: 'Hallo 123'
-        }], 'user')
-        fixture.detectChanges()
-        return fixture.whenStable()
-      }).then(() => {
-        expect(component.title).toEqual(JSON.stringify({ops: [{insert: 'Hallo 123\n'}]}))
-      })
+      component.editor.setContents([{
+        insert: 'Hallo 123'
+      }], 'user')
+      fixture.detectChanges()
+      await fixture.whenStable()
+
+      expect(component.title).toEqual(JSON.stringify({ops: [{insert: 'Hallo 123\n'}]}))
     }))
 
-    it('should set as text if invalid JSON', async(() => {
+    it('should set as text if invalid JSON', async(async () => {
       fixture = TestBed.createComponent(JSONInvalidComponent) as ComponentFixture<JSONInvalidComponent>
       fixture.detectChanges()
       const component = fixture.componentInstance
-      fixture.whenStable().then(() => {
-        expect(component.editor.getText().trim()).toEqual(JSON.stringify([{
-          insert: 'Hallo'
-        }]) + '{')
+      await fixture.whenStable()
+      expect(component.editor.getText().trim()).toEqual(JSON.stringify([{
+        insert: 'Hallo'
+      }]) + '{')
 
-        component.title = JSON.stringify([{
-          insert: 'Hallo 1234'
-        }]) + '{'
-        fixture.detectChanges()
-        return fixture.whenStable()
-      }).then(() => {
-        expect(component.editor.getText().trim()).toEqual(JSON.stringify([{
-          insert: 'Hallo 1234'
-        }]) + '{')
-      })
+      component.title = JSON.stringify([{
+        insert: 'Hallo 1234'
+      }]) + '{'
+      fixture.detectChanges()
+      await fixture.whenStable()
+      expect(component.editor.getText().trim()).toEqual(JSON.stringify([{
+        insert: 'Hallo 1234'
+      }]) + '{')
     }))
   })
 })
@@ -484,7 +473,8 @@ describe('Dynamic styles', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [StylingComponent],
-      imports: [FormsModule, QuillModule]
+      imports: [FormsModule, QuillModule],
+      providers: QuillModule.forRoot().providers
     })
 
     fixture = TestBed.createComponent(StylingComponent) as ComponentFixture<StylingComponent>
@@ -518,7 +508,8 @@ describe('Reactive forms integration', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [ReactiveFormTestComponent],
-      imports: [FormsModule, ReactiveFormsModule, QuillModule]
+      imports: [FormsModule, ReactiveFormsModule, QuillModule],
+      providers: QuillModule.forRoot().providers
     })
 
     fixture = TestBed.createComponent(ReactiveFormTestComponent) as ComponentFixture<ReactiveFormTestComponent>
@@ -586,7 +577,8 @@ describe('Advanced QuillEditorComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [TestComponent, TestToolbarComponent],
-      imports: [FormsModule, QuillModule]
+      imports: [FormsModule, QuillModule],
+      providers: QuillModule.forRoot().providers
     }).compileComponents()
 
     fixture = TestBed.createComponent(TestComponent) as ComponentFixture<TestComponent>
@@ -897,7 +889,8 @@ describe('QuillEditor - base config', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [TestComponent, TestToolbarComponent],
-      imports: [FormsModule, QuillModule.forRoot({
+      imports: [FormsModule, QuillModule],
+      providers: QuillModule.forRoot({
         bounds: 'body',
         debug: false,
         format: 'object',
@@ -912,7 +905,7 @@ describe('QuillEditor - base config', () => {
         scrollingContainer: null,
         theme: 'snow',
         trackChanges: 'all'
-      })]
+      }).providers
     }).compileComponents()
   })
 
@@ -931,7 +924,7 @@ describe('QuillEditor - base config', () => {
 
     expect(JSON.stringify(fixture.componentInstance.title)).toEqual(JSON.stringify({
         ops: [{ insert: `content
-`     }]
+`}]
     }))
     expect(editor.root.dataset.placeholder).toEqual('placeholder')
   }))
@@ -943,7 +936,8 @@ describe('QuillEditor - preserveWhitespace', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [PreserveWhitespaceTestComponent],
-      imports: [FormsModule, QuillModule.forRoot()]
+      imports: [FormsModule, QuillModule],
+      providers: QuillModule.forRoot().providers
     }).compileComponents()
   })
 

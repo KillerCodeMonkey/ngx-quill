@@ -14,7 +14,8 @@ describe('Basic QuillViewComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         QuillModule.forRoot()
-      ]
+      ],
+      providers: QuillModule.forRoot().providers
     })
 
     fixture = TestBed.createComponent(QuillViewComponent)
@@ -53,7 +54,8 @@ describe('Formats', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [ObjectComponent],
-        imports: [QuillModule]
+        imports: [QuillModule],
+        providers: QuillModule.forRoot().providers
       })
 
       fixture = TestBed.createComponent(ObjectComponent) as ComponentFixture<ObjectComponent>
@@ -98,7 +100,8 @@ describe('Formats', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [HTMLComponent],
-        imports: [QuillModule]
+        imports: [QuillModule],
+        providers: QuillModule.forRoot().providers
       })
 
       fixture = TestBed.createComponent(HTMLComponent) as ComponentFixture<HTMLComponent>
@@ -140,7 +143,8 @@ describe('Formats', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [TextComponent],
-        imports: [QuillModule]
+        imports: [QuillModule],
+        providers: QuillModule.forRoot().providers
       })
 
       fixture = TestBed.createComponent(TextComponent) as ComponentFixture<TextComponent>
@@ -183,7 +187,8 @@ describe('Formats', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [JSONComponent],
-        imports: [QuillModule]
+        imports: [QuillModule],
+        providers: QuillModule.forRoot().providers
       })
 
       fixture = TestBed.createComponent(JSONComponent) as ComponentFixture<JSONComponent>

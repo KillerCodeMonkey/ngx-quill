@@ -12,7 +12,8 @@ describe('Basic QuillViewHTMLComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         QuillModule.forRoot()
-      ]
+      ],
+      providers: QuillModule.forRoot().providers
     })
 
     fixture = TestBed.createComponent(QuillViewHTMLComponent)
@@ -48,7 +49,8 @@ describe('QuillViewHTMLComponent - content', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [HTMLComponent],
-      imports: [QuillModule]
+      imports: [QuillModule],
+      providers: QuillModule.forRoot().providers
     })
 
     fixture = TestBed.createComponent(HTMLComponent) as ComponentFixture<HTMLComponent>

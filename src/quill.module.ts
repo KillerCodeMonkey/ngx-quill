@@ -15,12 +15,7 @@ import { QuillViewComponent } from './quill-view.component'
   ],
   exports: [QuillEditorComponent, QuillViewComponent, QuillViewHTMLComponent],
   imports: [CommonModule],
-  providers: [
-    {
-      provide: QUILL_CONFIG_TOKEN,
-      useValue: { modules: defaultModules }
-    }
-  ]
+  providers: []
 })
 export class QuillModule {
   static forRoot(config?: QuillConfig): ModuleWithProviders {
