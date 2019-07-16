@@ -13,7 +13,7 @@ const Quill: any = QuillNamespace
 // tslint:disable:max-classes-per-file
 @Component({
   template: `
-<quill-editor (onBlur)="blured = true" (onFocus)="focused = true" [(ngModel)]="title" [customOptions]="[{import: 'attributors/style/size', whitelist: ['14']}]" [styles]="style" [required]="required" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event)" (onSelectionChanged)="handleSelection($event)"></quill-editor>
+<quill-editor (onBlur)="blured = true" (onFocus)="focused = true" [(ngModel)]="title" [customOptions]="[{import: 'attributors/style/size', whitelist: ['14']}]" [styles]="style" [required]="required" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onEditorChanged)="handleEditorChange($event)" (onContentChanged)="handleChange($event)" (onSelectionChanged)="handleSelection($event)"></quill-editor>
 `
 })
 class TestComponent {
@@ -32,6 +32,7 @@ class TestComponent {
   editor: any
 
   changed: any
+  changedEditor: any
   selected: any
 
   handleEditorCreated(event: any) {
@@ -40,6 +41,10 @@ class TestComponent {
 
   handleChange(event: any) {
     this.changed = event
+  }
+
+  handleEditorChange(event: any) {
+    this.changedEditor = event
   }
 
   handleSelection(event: any) {
@@ -126,7 +131,7 @@ describe('Basic QuillEditorComponent', () => {
 
     fixture.componentInstance.ngOnDestroy()
 
-    expect(spy).toHaveBeenCalledTimes(2)
+    expect(spy).toHaveBeenCalledTimes(3)
   })
 
   it('should render toolbar', async(async () => {
@@ -683,8 +688,9 @@ describe('Advanced QuillEditorComponent', () => {
     expect(fixture.componentInstance.handleEditorCreated).toHaveBeenCalledWith(editorComponent.quillEditor)
   }))
 
-  it('should emit onContentChanged when content of editor changed', async(() => {
+  it('should emit onContentChanged when content of editor changed + editor changed', async(() => {
     spyOn(fixture.componentInstance, 'handleChange').and.callThrough()
+    spyOn(fixture.componentInstance, 'handleEditorChange').and.callThrough()
     fixture.detectChanges()
     fixture.whenStable().then(() => {
       const editorFixture = fixture.debugElement.children[0]
@@ -693,11 +699,13 @@ describe('Advanced QuillEditorComponent', () => {
       return fixture.whenStable()
     }).then(() => {
       expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
+      expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
     })
   }))
 
-  it('should emit onSelectionChanged when selection changed', async(() => {
+  it('should emit onSelectionChanged when selection changed + editor changed', async(() => {
     spyOn(fixture.componentInstance, 'handleSelection').and.callThrough()
+    spyOn(fixture.componentInstance, 'handleEditorChange').and.callThrough()
     fixture.detectChanges()
 
     const editorFixture = fixture.debugElement.children[0]
@@ -705,8 +713,8 @@ describe('Advanced QuillEditorComponent', () => {
     editorFixture.componentInstance.quillEditor.focus()
     editorFixture.componentInstance.quillEditor.blur()
     fixture.detectChanges()
-
     expect(fixture.componentInstance.handleSelection).toHaveBeenCalledWith(fixture.componentInstance.selected)
+    expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
   }))
 
   it('should emit onFocus when focused', async(() => {

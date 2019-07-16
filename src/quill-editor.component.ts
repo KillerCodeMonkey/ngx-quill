@@ -4,7 +4,7 @@ import { DomSanitizer } from '@angular/platform-browser'
 import { QUILL_CONFIG_TOKEN, QuillConfig, QuillFormat, QuillModules } from './quill-editor.interfaces'
 
 import {
-  AfterContentInit,
+  AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
@@ -73,7 +73,7 @@ const getFormat = (format?: QuillFormat, configFormat?: QuillFormat): QuillForma
 `
 })
 export class QuillEditorComponent
-  implements AfterContentInit, ControlValueAccessor, OnChanges, OnDestroy, Validator {
+  implements AfterViewInit, ControlValueAccessor, OnChanges, OnDestroy, Validator {
 
   quillEditor: any
   editorElem: HTMLElement | undefined
@@ -100,6 +100,22 @@ export class QuillEditorComponent
   @Input() preserveWhitespace: boolean = false
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
+  @Output() onEditorChanged: EventEmitter<{
+    content: any
+    delta: any
+    editor: any
+    event: 'text-change'
+    html: string | null
+    oldDelta: any
+    source: string
+    text: string
+  } | {
+    editor: any
+    event: 'selection-change'
+    oldRange: Range | null
+    range: Range | null
+    source: string
+  }> = new EventEmitter()
   @Output() onContentChanged: EventEmitter<{
     content: any
     delta: any
@@ -185,7 +201,7 @@ export class QuillEditorComponent
     return value
   }
 
-  ngAfterContentInit() {
+  ngAfterViewInit() {
     if (isPlatformServer(this.platformId)) {
       return
     }
@@ -293,6 +309,12 @@ export class QuillEditorComponent
     // initialize disabled status based on this.disabled as default value
     this.setDisabledState()
 
+    // triggered if selection or text changed
+    this.quillEditor.on(
+      'editor-change',
+      this.editorChangeHandler
+    )
+
     // mark model as touched if editor lost focus
     this.quillEditor.on(
       'selection-change',
@@ -368,10 +390,53 @@ export class QuillEditorComponent
     })
   }
 
+  editorChangeHandler = (event: 'text-change' | 'selection-change', ...args: any): void => {
+    // only emit changes emitted by user interactions
+
+    if (event === 'text-change') {
+      const text = this.quillEditor.getText()
+      const content = this.quillEditor.getContents()
+      const source = args[2]
+      const oldDelta = args[1]
+      const delta = args[0]
+
+      let html: string | null = this.editorElem!.querySelector('.ql-editor')!.innerHTML
+      if (html === '<p><br></p>' || html === '<div><br><div>') {
+        html = null
+      }
+
+      this.zone.run(() => {
+        this.onEditorChanged.emit({
+          content,
+          delta,
+          editor: this.quillEditor,
+          event,
+          html,
+          oldDelta,
+          source,
+          text
+        })
+      })
+    } else {
+      const source = args[2]
+      const oldRange = args[1]
+      const range = args[0]
+
+      this.onEditorChanged.emit({
+        editor: this.quillEditor,
+        event,
+        oldRange,
+        range,
+        source
+      })
+    }
+  }
+
   ngOnDestroy() {
     if (this.quillEditor) {
       this.quillEditor.off('selection-change', this.selectionChangeHandler)
       this.quillEditor.off('text-change', this.textChangeHandler)
+      this.quillEditor.off('editor-change', this.editorChangeHandler)
     }
   }
 

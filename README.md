@@ -310,6 +310,32 @@ editor // Quill
   source: source // ('user', 'api', 'silent' , undefined)
 }
 ```
+- onEditorChanged - text or selection is updated - independent of the source
+```
+{
+  editor: editorInstance, // Quill
+  event: 'text-change' // event type
+  html: html, // html string
+  text: text, // plain text string
+  content: content, // Content - operatins representation
+  delta: delta, // Delta
+  oldDelta: oldDelta, // Delta
+  source: source // ('user', 'api', 'silent' , undefined)
+}
+```
+
+or
+
+```
+{
+  editor: editorInstance, // Quill
+  event: 'selection-change' // event type
+  range: range, // Range
+  oldRange: oldRange, // Range
+  source: source // ('user', 'api', 'silent' , undefined)
+}
+```
+
 - onFocus - editor is focused
 ```
 {
