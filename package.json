@@ -91,7 +91,7 @@
     "ts-helpers": "^1.1.2",
     "tslib": "^1.10.0",
     "ts-loader": "6.0.4",
-    "tsickle": "^0.35.0",
+    "tsickle": "^0.36.0",
     "tslint": "^5.18.0",
     "tslint-eslint-rules": "^5.4.0",
     "typescript": "^3.3",
