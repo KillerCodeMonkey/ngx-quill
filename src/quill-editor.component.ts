@@ -390,15 +390,12 @@ export class QuillEditorComponent
     })
   }
 
-  editorChangeHandler = (event: 'text-change' | 'selection-change', ...args: any): void => {
+  editorChangeHandler = (event: 'text-change' | 'selection-change', current: any | Range | null, old: any | Range | null, source: string): void => {
     // only emit changes emitted by user interactions
 
     if (event === 'text-change') {
       const text = this.quillEditor.getText()
       const content = this.quillEditor.getContents()
-      const source = args[2]
-      const oldDelta = args[1]
-      const delta = args[0]
 
       let html: string | null = this.editorElem!.querySelector('.ql-editor')!.innerHTML
       if (html === '<p><br></p>' || html === '<div><br><div>') {
@@ -408,25 +405,21 @@ export class QuillEditorComponent
       this.zone.run(() => {
         this.onEditorChanged.emit({
           content,
-          delta,
+          delta: current,
           editor: this.quillEditor,
           event,
           html,
-          oldDelta,
+          oldDelta: old,
           source,
           text
         })
       })
     } else {
-      const source = args[2]
-      const oldRange = args[1]
-      const range = args[0]
-
       this.onEditorChanged.emit({
         editor: this.quillEditor,
         event,
-        oldRange,
-        range,
+        oldRange: old,
+        range: current,
         source
       })
     }
