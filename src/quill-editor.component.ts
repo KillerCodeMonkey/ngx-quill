@@ -1,7 +1,7 @@
-import { DOCUMENT, isPlatformServer } from '@angular/common'
-import { DomSanitizer } from '@angular/platform-browser'
+import { DOCUMENT, isPlatformServer} from '@angular/common'
+import {DomSanitizer} from '@angular/platform-browser'
 
-import { QUILL_CONFIG_TOKEN, QuillConfig, QuillFormat, QuillModules } from './quill-editor.interfaces'
+import {QUILL_CONFIG_TOKEN, QuillConfig, QuillFormat, QuillModules} from './quill-editor.interfaces'
 
 import {
   AfterViewInit,
@@ -22,8 +22,8 @@ import {
   ViewEncapsulation
 } from '@angular/core'
 
-import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator } from '@angular/forms'
-import { defaultModules } from './quill-defaults'
+import {ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator} from '@angular/forms'
+import {defaultModules} from './quill-defaults'
 
 // Because quill uses `document` directly, we cannot `import` during SSR
 // instead, we load dynamically via `require('quill')` in `ngAfterViewInit()`
