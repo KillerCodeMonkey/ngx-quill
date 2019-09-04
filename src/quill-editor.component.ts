@@ -1,7 +1,7 @@
-import { isPlatformServer } from '@angular/common'
-import { DomSanitizer } from '@angular/platform-browser'
+import {DOCUMENT, isPlatformServer} from '@angular/common'
+import {DomSanitizer} from '@angular/platform-browser'
 
-import { QUILL_CONFIG_TOKEN, QuillConfig, QuillFormat, QuillModules } from './quill-editor.interfaces'
+import {QUILL_CONFIG_TOKEN, QuillConfig, QuillFormat, QuillModules} from './quill-editor.interfaces'
 
 import {
   AfterViewInit,
@@ -22,15 +22,8 @@ import {
   ViewEncapsulation
 } from '@angular/core'
 
-import {
-  ControlValueAccessor,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
-  Validator
-} from '@angular/forms'
-
-import { DOCUMENT } from '@angular/common'
-import { defaultModules } from './quill-defaults'
+import {ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator} from '@angular/forms'
+import {defaultModules} from './quill-defaults'
 
 // Because quill uses `document` directly, we cannot `import` during SSR
 // instead, we load dynamically via `require('quill')` in `ngAfterViewInit()`
@@ -98,6 +91,7 @@ export class QuillEditorComponent
   @Input() customOptions: CustomOption[] = []
   @Input() trackChanges?: 'user' | 'all'
   @Input() preserveWhitespace: boolean = false
+  @Input() classes?: string
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
   @Output() onEditorChanged: EventEmitter<{
@@ -238,6 +232,10 @@ export class QuillEditorComponent
       Object.keys(this.styles).forEach((key: string) => {
         this.renderer.setStyle(this.editorElem, key, this.styles[key])
       })
+    }
+
+    if (this.classes) {
+      this.addClasses(this.classes)
     }
 
     this.customOptions.forEach((customOption) => {
@@ -460,7 +458,33 @@ export class QuillEditorComponent
         })
       }
     }
+    if (changes['classes']) {
+      const currentClasses = changes['classes'].currentValue
+      const previousClasses = changes['classes'].previousValue
+
+      if (previousClasses) {
+        this.removeClasses(previousClasses)
+      }
+
+      if (currentClasses) {
+        this.addClasses(currentClasses)
+      }
+    }
     // tslint:enable:no-string-literal
+  }
+
+  addClasses(classList: string): void {
+    const classes = classList.split(' ')
+    classes.forEach((c: string) => {
+      this.renderer.addClass(this.editorElem, c)
+    })
+  }
+
+  removeClasses(classList: string): void {
+    const classes = classList.split(' ')
+    classes.forEach((c: string) => {
+      this.renderer.removeClass(this.editorElem, c)
+    })
   }
 
   writeValue(currentValue: any) {
