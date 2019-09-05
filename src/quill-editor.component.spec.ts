@@ -507,6 +507,57 @@ describe('Dynamic styles', () => {
   }))
 })
 
+describe('Dynamic classes', () => {
+  @Component({
+    template: `
+  <quill-editor [bounds]="'self'" [(ngModel)]="title" format="text" [classes]="classes" (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
+  `
+  })
+  class ClassesComponent {
+    title = 'Hallo'
+    classes = 'test-class1 test-class2'
+    editor: any
+
+    handleEditorCreated(event: any) {
+      this.editor = event
+    }
+  }
+
+  let fixture: ComponentFixture<ClassesComponent>
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [ClassesComponent],
+      imports: [FormsModule, QuillModule],
+      providers: QuillModule.forRoot().providers
+    })
+
+    fixture = TestBed.createComponent(ClassesComponent) as ComponentFixture<ClassesComponent>
+    fixture.detectChanges()
+  })
+
+  it('set inital classes', async(() => {
+    const component = fixture.componentInstance
+    fixture.whenStable().then(() => {
+      expect(component.editor.container.classList.contains('test-class1')).toBe(true)
+      expect(component.editor.container.classList.contains('test-class2')).toBe(true)
+    })
+  }))
+
+  it('set class', async(() => {
+    const component = fixture.componentInstance
+    fixture.whenStable().then(() => {
+      component.classes = 'test-class2 test-class3'
+      fixture.detectChanges()
+      return fixture.whenStable()
+    }).then(() => {
+      expect(component.editor.container.classList.contains('test-class1')).toBe(false)
+      expect(component.editor.container.classList.contains('test-class2')).toBe(true)
+      expect(component.editor.container.classList.contains('test-class3')).toBe(true)
+    })
+  }))
+})
+
 describe('Reactive forms integration', () => {
   let fixture: ComponentFixture<ReactiveFormTestComponent>
 
