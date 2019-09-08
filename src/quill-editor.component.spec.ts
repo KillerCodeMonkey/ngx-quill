@@ -1,12 +1,12 @@
-import { Component, ViewChild } from '@angular/core'
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import {Component, Renderer2, ViewChild} from '@angular/core'
+import {async, ComponentFixture, TestBed} from '@angular/core/testing'
 
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms'
+import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms'
 
-import { QuillEditorComponent } from '../src/quill-editor.component'
+import {QuillEditorComponent} from '../src/quill-editor.component'
 
 import * as QuillNamespace from 'quill'
-import { QuillModule } from './quill.module'
+import {QuillModule} from './quill.module'
 // tslint:disable-next-line:variable-name
 const Quill: any = QuillNamespace
 
@@ -518,6 +518,9 @@ describe('Dynamic classes', () => {
     classes = 'test-class1 test-class2'
     editor: any
 
+    constructor(public renderer2: Renderer2) {
+    }
+
     handleEditorCreated(event: any) {
       this.editor = event
     }
@@ -536,7 +539,7 @@ describe('Dynamic classes', () => {
     fixture.detectChanges()
   })
 
-  it('set inital classes', async(() => {
+  it('should set initial classes', async(() => {
     const component = fixture.componentInstance
     fixture.whenStable().then(() => {
       expect(component.editor.container.classList.contains('test-class1')).toBe(true)
@@ -544,7 +547,7 @@ describe('Dynamic classes', () => {
     })
   }))
 
-  it('set class', async(() => {
+  it('should set class', async(() => {
     const component = fixture.componentInstance
     fixture.whenStable().then(() => {
       component.classes = 'test-class2 test-class3'
@@ -607,6 +610,33 @@ describe('Dynamic classes', () => {
       expect(component.editor.container.classList.contains('test-class3')).toBe(true)
     })
   }))
+
+  it('should not call renderer addClass', async () => {
+
+    const component = fixture.componentInstance
+    const renderer = component.renderer2
+    const rendererSpy = spyOn(renderer, 'addClass')
+    fixture.whenStable().then(() => {
+      component.classes = '  '
+      return fixture.whenStable()
+    }).then(() => {
+      expect(rendererSpy).not.toHaveBeenCalled()
+    })
+  })
+})
+
+describe('class normalization function', () => {
+  it('should trim white space', () => {
+    const classList = QuillEditorComponent.normalizeClassNames('test-class  ')
+
+    expect(classList).toEqual(['test-class'])
+  })
+
+  it('should not return empty strings as class names', () => {
+    const classList = QuillEditorComponent.normalizeClassNames('test-class   test-class2')
+
+    expect(classList).toEqual(['test-class', 'test-class2'])
+  })
 })
 
 describe('Reactive forms integration', () => {
