@@ -517,10 +517,8 @@ describe('Dynamic classes', () => {
     title = 'Hallo'
     classes = 'test-class1 test-class2'
     editor: any
-
     constructor(public renderer2: Renderer2) {
     }
-
     handleEditorCreated(event: any) {
       this.editor = event
     }
