@@ -68,6 +68,18 @@ const getFormat = (format?: QuillFormat, configFormat?: QuillFormat): QuillForma
 export class QuillEditorComponent
   implements AfterViewInit, ControlValueAccessor, OnChanges, OnDestroy, Validator {
 
+  static normalizeClassNames(classes: string): string[] {
+    const classList = classes.trim().split(' ')
+    return classList.reduce((prev: string[], cur: string) => {
+      const trimmed = cur.trim()
+      if (trimmed) {
+        prev.push(trimmed)
+      }
+
+      return prev
+    }, [])
+  }
+
   quillEditor: any
   editorElem: HTMLElement | undefined
   content: any
@@ -474,15 +486,13 @@ export class QuillEditorComponent
   }
 
   addClasses(classList: string): void {
-    const classes = classList.split(' ')
-    classes.forEach((c: string) => {
+    QuillEditorComponent.normalizeClassNames(classList).forEach((c: string) => {
       this.renderer.addClass(this.editorElem, c)
     })
   }
 
   removeClasses(classList: string): void {
-    const classes = classList.split(' ')
-    classes.forEach((c: string) => {
+    QuillEditorComponent.normalizeClassNames(classList).forEach((c: string) => {
       this.renderer.removeClass(this.editorElem, c)
     })
   }
