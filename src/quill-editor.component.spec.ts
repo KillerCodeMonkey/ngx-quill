@@ -569,7 +569,6 @@ describe('Dynamic classes', () => {
     title = 'Hallo'
     classes = 'test-class1 test-class2'
     editor: any
-
     handleEditorCreated(event: any) {
       this.editor = event
     }
@@ -608,19 +607,6 @@ describe('Dynamic classes', () => {
       expect(component.editor.container.classList.contains('test-class3')).toBe(true)
     })
   }))
-
-  it('should not call renderer addClass', async () => {
-
-    const component = fixture.componentInstance
-    const renderer = component.renderer2
-    const rendererSpy = spyOn(renderer, 'addClass')
-    fixture.whenStable().then(() => {
-      component.classes = '  '
-      return fixture.whenStable()
-    }).then(() => {
-      expect(rendererSpy).not.toHaveBeenCalled()
-    })
-  })
 })
 
 describe('class normalization function', () => {
