@@ -1,4 +1,4 @@
-import { DOCUMENT, isPlatformServer} from '@angular/common'
+import {DOCUMENT, isPlatformServer} from '@angular/common'
 import {DomSanitizer} from '@angular/platform-browser'
 
 import {QUILL_CONFIG_TOKEN, QuillConfig, QuillFormat, QuillModules} from './quill-editor.interfaces'
