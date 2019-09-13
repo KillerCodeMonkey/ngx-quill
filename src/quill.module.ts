@@ -24,7 +24,6 @@ export class QuillModule {
       providers: [
         {
           provide: QUILL_CONFIG_TOKEN,
-          // tslint:disable-next-line:only-arrow-functions
           useValue: config || { modules: defaultModules }
         }
       ]

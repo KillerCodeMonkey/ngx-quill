@@ -7,10 +7,9 @@ import {QuillEditorComponent} from '../src/quill-editor.component'
 
 import * as QuillNamespace from 'quill'
 import {QuillModule} from './quill.module'
-// tslint:disable-next-line:variable-name
+
 const Quill: any = QuillNamespace
 
-// tslint:disable:max-classes-per-file
 @Component({
   template: `
 <quill-editor (onBlur)="blured = true" (onFocus)="focused = true" [(ngModel)]="title" [customOptions]="[{import: 'attributors/style/size', whitelist: ['14']}]" [styles]="style" [required]="required" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onEditorChanged)="handleEditorChange($event)" (onContentChanged)="handleChange($event)" (onSelectionChanged)="handleSelection($event)"></quill-editor>
@@ -25,8 +24,8 @@ class TestComponent {
   blured = false
   maxLength = 0
   style: {
-    backgroundColor?: string,
-    color?: string,
+    backgroundColor?: string
+    color?: string
     height?: string
   } | null = { height: '30px' }
   editor: any
@@ -84,10 +83,7 @@ class TestToolbarComponent {
   maxLength = 0
   toolbarPosition = 'top'
 
-  // tslint:disable-next-line:no-empty
   handleEditorCreated(event: any) {}
-
-  // tslint:disable-next-line:no-empty
   handleChange(event: any) {}
 }
 
@@ -1046,10 +1042,7 @@ describe('QuillEditor - base config', () => {
     editor.setText('content', 'api')
     fixture.detectChanges()
 
-    expect(JSON.stringify(fixture.componentInstance.title)).toEqual(JSON.stringify({
-        ops: [{ insert: `content
-`}]
-    }))
+    expect(JSON.stringify(fixture.componentInstance.title)).toEqual(JSON.stringify({ ops: [{ insert: `content\n`}] }))
     expect(editor.root.dataset.placeholder).toEqual('placeholder')
   }))
 })

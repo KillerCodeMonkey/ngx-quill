@@ -20,8 +20,7 @@ import { CustomOption } from './quill-editor.component'
 
 // Because quill uses `document` directly, we cannot `import` during SSR
 // instead, we load dynamically via `require('quill')` in `ngAfterViewInit()`
-declare var require: any
-// tslint:disable-next-line:variable-name
+declare const require: any
 let Quill: any = null
 
 const getFormat = (format?: QuillFormat, configFormat?: QuillFormat): QuillFormat => {
@@ -49,14 +48,13 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
   @Input() modules?: QuillModules
   @Input() debug?: 'warn' | 'log' | 'error' | false
   @Input() formats?: string[] | null
-  @Input() strict: boolean = true
+  @Input() strict = true
   @Input() content: any
   @Input() customOptions: CustomOption[] = []
-  @Input() preserveWhitespace: boolean = false
+  @Input() preserveWhitespace = false
 
   constructor(
-    // tslint:disable-next-line:ban-types
-    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(PLATFORM_ID) private platformId: any,
     @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig,
     private renderer: Renderer2,
     private elementRef: ElementRef

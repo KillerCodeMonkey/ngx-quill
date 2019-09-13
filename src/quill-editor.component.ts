@@ -27,8 +27,7 @@ import {defaultModules} from './quill-defaults'
 
 // Because quill uses `document` directly, we cannot `import` during SSR
 // instead, we load dynamically via `require('quill')` in `ngAfterViewInit()`
-declare var require: any
-// tslint:disable-next-line:variable-name
+declare const require: any
 let Quill: any = null
 
 export interface CustomOption {
@@ -52,11 +51,13 @@ const getFormat = (format?: QuillFormat, configFormat?: QuillFormat): QuillForma
     {
       multi: true,
       provide: NG_VALUE_ACCESSOR,
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       useExisting: forwardRef(() => QuillEditorComponent)
     },
     {
       multi: true,
       provide: NG_VALIDATORS,
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       useExisting: forwardRef(() => QuillEditorComponent)
     }
   ],
@@ -65,8 +66,7 @@ const getFormat = (format?: QuillFormat, configFormat?: QuillFormat): QuillForma
   <ng-content select="[quill-editor-toolbar]"></ng-content>
 `
 })
-export class QuillEditorComponent
-  implements AfterViewInit, ControlValueAccessor, OnChanges, OnDestroy, Validator {
+export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor, OnChanges, OnDestroy, Validator {
 
   static normalizeClassNames(classes: string): string[] {
     const classList = classes.trim().split(' ')
@@ -92,17 +92,17 @@ export class QuillEditorComponent
   @Input() placeholder?: string
   @Input() maxLength?: number
   @Input() minLength?: number
-  @Input() required: boolean = false
+  @Input() required = false
   @Input() formats?: string[] | null
   @Input() customToolbarPosition: 'top' | 'bottom' = 'top'
-  @Input() sanitize: boolean = false
+  @Input() sanitize = false
   @Input() styles: any = null
-  @Input() strict: boolean = true
+  @Input() strict = true
   @Input() scrollingContainer?: HTMLElement | string | null
   @Input() bounds?: HTMLElement | string
   @Input() customOptions: CustomOption[] = []
   @Input() trackChanges?: 'user' | 'all'
-  @Input() preserveWhitespace: boolean = false
+  @Input() preserveWhitespace = false
   @Input() classes?: string
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
@@ -152,16 +152,13 @@ export class QuillEditorComponent
     private elementRef: ElementRef,
     private domSanitizer: DomSanitizer,
     @Inject(DOCUMENT) private doc: any,
-    // tslint:disable-next-line:ban-types
-    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(PLATFORM_ID) private platformId: any,
     private renderer: Renderer2,
     private zone: NgZone,
     @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig
   ) {}
 
-  // tslint:disable-next-line:no-empty
   onModelChange(_modelValue?: any) {}
-  // tslint:disable-next-line:no-empty
   onModelTouched() {}
 
   @Input()

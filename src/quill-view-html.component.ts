@@ -28,9 +28,9 @@ import {
 })
 export class QuillViewHTMLComponent implements OnChanges {
   innerHTML: SafeHtml = ''
-  themeClass: string = 'ql-snow'
+  themeClass = 'ql-snow'
 
-  @Input() content: string = ''
+  @Input() content = ''
   @Input() theme?: string
 
   constructor(
