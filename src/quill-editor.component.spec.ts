@@ -83,8 +83,8 @@ class TestToolbarComponent {
   maxLength = 0
   toolbarPosition = 'top'
 
-  handleEditorCreated(event: any) {}
-  handleChange(event: any) {}
+  handleEditorCreated(_event: any) {}
+  handleChange(_event: any) {}
 }
 
 @Component({
