@@ -275,7 +275,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
     let formats = this.formats
     if (!formats && formats === undefined) {
-      formats = this.config.formats ? Object.assign({}, this.config.formats) : (this.config.formats === null ? null : undefined)
+      formats = this.config.formats ? [...this.config.formats] : (this.config.formats === null ? null : undefined)
     }
 
     this.quillEditor = new Quill(this.editorElem, {

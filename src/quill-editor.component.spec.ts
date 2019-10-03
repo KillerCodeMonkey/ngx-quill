@@ -1039,10 +1039,16 @@ describe('QuillEditor - base config', () => {
     expect(fixture.nativeElement.querySelector('.ql-toolbar').querySelectorAll('button').length).toBe(1)
     expect(fixture.nativeElement.querySelector('.ql-toolbar').querySelector('button.ql-bold')).toBeDefined()
 
-    editor.setText('content', 'api')
+    editor.updateContents([{
+      insert: 'content',
+      attributes: {
+        bold: true,
+        italic: true
+      }
+    }] as any, 'api')
     fixture.detectChanges()
 
-    expect(JSON.stringify(fixture.componentInstance.title)).toEqual(JSON.stringify({ ops: [{ insert: `content\n`}] }))
+    expect(JSON.stringify(fixture.componentInstance.title)).toEqual(JSON.stringify({ ops: [{ attributes: { bold: true }, insert: `content`}, {'insert':'\n'}] }))
     expect(editor.root.dataset.placeholder).toEqual('placeholder')
   }))
 })

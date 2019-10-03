@@ -43,7 +43,7 @@ export interface QuillConfig {
   bounds?: HTMLElement | string
   debug?: 'error' | 'warn' | 'log' | false
   format?: QuillFormat
-  formats?: any
+  formats?: string[]
   modules?: QuillModules
   placeholder?: string
   readOnly?: boolean
