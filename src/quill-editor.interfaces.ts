@@ -5,11 +5,11 @@ export type QuillToolbarConfig = Array<Array< string | {
   list?: string
   direction?: string
   header?: number | Array<boolean | number>
-  color?: string[]
-  background?: string[]
-  align?: string[]
+  color?: string[] | string
+  background?: string[] | string
+  align?: string[] | string
   script?: string
-  font?: string[]
+  font?: string[] | string
   size?: Array<boolean | string>
 }
 >>
