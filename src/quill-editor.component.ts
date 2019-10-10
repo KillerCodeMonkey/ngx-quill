@@ -149,7 +149,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   disabled = false // used to store initial value before ViewInit
 
   constructor(
-    private elementRef: ElementRef,
+    @Inject(ElementRef) private elementRef: ElementRef,
     private domSanitizer: DomSanitizer,
     @Inject(DOCUMENT) private doc: any,
     @Inject(PLATFORM_ID) private platformId: any,
