@@ -34,7 +34,7 @@ export class QuillViewHTMLComponent implements OnChanges {
   @Input() theme?: string
 
   constructor(
-    private sanitizer: DomSanitizer,
+    @Inject(DomSanitizer) private sanitizer: DomSanitizer,
     @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig
   ) {}
 

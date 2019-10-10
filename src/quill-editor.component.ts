@@ -150,11 +150,11 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
   constructor(
     @Inject(ElementRef) private elementRef: ElementRef,
-    private domSanitizer: DomSanitizer,
+    @Inject(DomSanitizer) private domSanitizer: DomSanitizer,
     @Inject(DOCUMENT) private doc: any,
     @Inject(PLATFORM_ID) private platformId: any,
-    private renderer: Renderer2,
-    private zone: NgZone,
+    @Inject(Renderer2) private renderer: Renderer2,
+    @Inject(NgZone) zone: NgZone,
     @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig
   ) {}
 

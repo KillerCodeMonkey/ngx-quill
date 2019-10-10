@@ -56,7 +56,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
   constructor(
     @Inject(PLATFORM_ID) private platformId: any,
     @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig,
-    private renderer: Renderer2,
+    @Inject(Renderer2) private renderer: Renderer2,
     @Inject(ElementRef) private elementRef: ElementRef
   ) {}
 
