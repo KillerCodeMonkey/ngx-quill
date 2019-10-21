@@ -244,7 +244,7 @@ If you are using the editor reference to directly manipulate the editor content 
 };
 ```
 - theme - bubble/snow, default is `snow`
-- sanitize - uses angulars DomSanitizer to santize html values - default: `true`, boolean (only for format="html")
+- sanitize - uses angulars DomSanitizer to santize html values - default: `false`, boolean (only for format="html")
 - styles - set a styles object, e.g. `[styles]="{height: '250px'}"`
 - placeholder - placeholder text, default is `Insert text here ...`
 - bounds - boundary of the editor, default `document.body`, pass 'self' to attach the editor element
