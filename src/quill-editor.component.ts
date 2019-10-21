@@ -405,7 +405,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
       const content = this.quillEditor.getContents()
 
       let html: string | null = this.editorElem!.querySelector('.ql-editor')!.innerHTML
-      if (html === '<p><br></p>' || html === '<div><br><div>') {
+      if (html === '<p><br></p>' || html === '<div><br></div>') {
         html = null
       }
 
