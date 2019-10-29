@@ -340,6 +340,16 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   }
 
   selectionChangeHandler = (range: Range | null, oldRange: Range | null, source: string) => {
+    const shouldTriggerOnModelTouched = !range && this.onModelTouched
+
+    // only emit changes when there's any listener
+    if (!this.onBlur.observers.length &&
+        !this.onFocus.observers.length &&
+        !this.onSelectionChanged.observers.length &&
+        !shouldTriggerOnModelTouched) {
+      return
+    }
+
     this.zone.run(() => {
       if (range === null) {
         this.onBlur.emit({
@@ -360,7 +370,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
         source
       })
 
-      if (!range && this.onModelTouched) {
+      if (shouldTriggerOnModelTouched) {
         this.onModelTouched()
       }
     })
@@ -368,7 +378,6 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
   textChangeHandler = (delta: any, oldDelta: any, source: string): void => {
     // only emit changes emitted by user interactions
-
     const text = this.quillEditor.getText()
     const content = this.quillEditor.getContents()
 
@@ -377,9 +386,16 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
       html = null
     }
 
+    const trackChanges = this.trackChanges || this.config.trackChanges
+    const shouldTriggerOnModelChange = (source === Quill.sources.USER || trackChanges && trackChanges === 'all') && this.onModelChange
+
+    // only emit changes when there's any listener
+    if (!this.onContentChanged.observers.length && !shouldTriggerOnModelChange) {
+      return
+    }
+
     this.zone.run(() => {
-      const trackChanges = this.trackChanges || this.config.trackChanges
-      if ((source === Quill.sources.USER || trackChanges && trackChanges === 'all') && this.onModelChange) {
+      if (shouldTriggerOnModelChange) {
         this.onModelChange(
           this.valueGetter(this.quillEditor, this.editorElem!)
         )
@@ -398,8 +414,12 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   }
 
   editorChangeHandler = (event: 'text-change' | 'selection-change', current: any | Range | null, old: any | Range | null, source: string): void => {
-    // only emit changes emitted by user interactions
+    // only emit changes when there's any listener
+    if (!this.onEditorChanged.observers.length) {
+      return
+    }
 
+    // only emit changes emitted by user interactions
     if (event === 'text-change') {
       const text = this.quillEditor.getText()
       const content = this.quillEditor.getContents()
