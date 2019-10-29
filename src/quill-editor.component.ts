@@ -209,7 +209,9 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
       return
     }
     if (!Quill) {
-      Quill = require('quill')
+      this.zone.runOutsideAngular(() => {
+        Quill = require('quill')
+      })
     }
 
     this.elementRef.nativeElement.insertAdjacentHTML(
@@ -278,16 +280,18 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
       formats = this.config.formats ? [...this.config.formats] : (this.config.formats === null ? null : undefined)
     }
 
-    this.quillEditor = new Quill(this.editorElem, {
-      bounds,
-      debug,
-      formats,
-      modules,
-      placeholder,
-      readOnly,
-      scrollingContainer,
-      strict: this.strict,
-      theme: this.theme || (this.config.theme ? this.config.theme : 'snow')
+    this.zone.runOutsideAngular(() => {
+      this.quillEditor = new Quill(this.editorElem, {
+        bounds,
+        debug,
+        formats,
+        modules,
+        placeholder,
+        readOnly,
+        scrollingContainer,
+        strict: this.strict,
+        theme: this.theme || (this.config.theme ? this.config.theme : 'snow')
+      })
     })
 
     if (this.content) {
