@@ -1,6 +1,6 @@
 import { isPlatformServer } from '@angular/common'
 
-import { QUILL_CONFIG_TOKEN, QuillConfig, QuillFormat, QuillModules } from './quill-editor.interfaces'
+import { QUILL_CONFIG_TOKEN, QuillConfig, QuillModules } from './quill-editor.interfaces'
 
 import {
   AfterViewInit,
@@ -17,16 +17,12 @@ import {
 
 import { defaultModules } from './quill-defaults'
 import { CustomOption } from './quill-editor.component'
+import {getFormat} from './helpers'
 
 // Because quill uses `document` directly, we cannot `import` during SSR
 // instead, we load dynamically via `require('quill')` in `ngAfterViewInit()`
 declare const require: any
 let Quill: any = null
-
-const getFormat = (format?: QuillFormat, configFormat?: QuillFormat): QuillFormat => {
-  const passedFormat = format || configFormat
-  return passedFormat || 'html'
-}
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -56,7 +52,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
   constructor(
     @Inject(PLATFORM_ID) private platformId: any,
     @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig,
-    private renderer: Renderer2,
+    @Inject(Renderer2) private renderer: Renderer2,
     @Inject(ElementRef) private elementRef: ElementRef
   ) {}
 
