@@ -90,7 +90,7 @@ XLM Wallet Address:
         >= 3.0.0
       </td>
       <td>
-        until Nov 3, 2019
+        no
       </td>
     </tr>
     <tr>
