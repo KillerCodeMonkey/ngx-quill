@@ -1,7 +1,7 @@
 import {DOCUMENT, isPlatformServer} from '@angular/common'
 import {DomSanitizer} from '@angular/platform-browser'
 
-import {QUILL_CONFIG_TOKEN, QuillConfig, QuillFormat, QuillModules} from './quill-editor.interfaces'
+import {QUILL_CONFIG_TOKEN, QuillConfig, QuillModules} from './quill-editor.interfaces'
 
 import {
   AfterViewInit,
@@ -25,6 +25,8 @@ import {
 import {ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator} from '@angular/forms'
 import {defaultModules} from './quill-defaults'
 
+import {getFormat} from './helpers'
+
 // Because quill uses `document` directly, we cannot `import` during SSR
 // instead, we load dynamically via `require('quill')` in `ngAfterViewInit()`
 declare const require: any
@@ -38,11 +40,6 @@ export interface CustomOption {
 export interface Range {
   index: number
   length: number
-}
-
-const getFormat = (format?: QuillFormat, configFormat?: QuillFormat): QuillFormat => {
-  const passedFormat = format || configFormat
-  return passedFormat || 'html'
 }
 
 @Component({
@@ -150,11 +147,11 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
   constructor(
     @Inject(ElementRef) private elementRef: ElementRef,
-    private domSanitizer: DomSanitizer,
+    @Inject(DomSanitizer) private domSanitizer: DomSanitizer,
     @Inject(DOCUMENT) private doc: any,
     @Inject(PLATFORM_ID) private platformId: any,
-    private renderer: Renderer2,
-    private zone: NgZone,
+    @Inject(Renderer2) private renderer: Renderer2,
+    @Inject(NgZone) private zone: NgZone,
     @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig
   ) {}
 
