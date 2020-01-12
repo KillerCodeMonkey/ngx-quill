@@ -42,6 +42,36 @@ export interface Range {
   length: number
 }
 
+export interface ContentChange {
+  content: any
+  delta: any
+  editor: any
+  html: string | null
+  oldDelta: any
+  source: string
+  text: string
+}
+
+export interface SelectionChange {
+  editor: any
+  oldRange: Range | null
+  range: Range | null
+  source: string
+}
+
+export interface Blur {
+  editor: any
+  source: string
+}
+
+export interface Focus {
+  editor: any
+  source: string
+}
+
+export type EditorChangeContent = ContentChange & {event: 'text-change'}
+export type EditorChangeSelection = SelectionChange & {event: 'selection-change'}
+
 @Component({
   encapsulation: ViewEncapsulation.None,
   providers: [
@@ -103,45 +133,11 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   @Input() classes?: string
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
-  @Output() onEditorChanged: EventEmitter<{
-    content: any
-    delta: any
-    editor: any
-    event: 'text-change'
-    html: string | null
-    oldDelta: any
-    source: string
-    text: string
-  } | {
-    editor: any
-    event: 'selection-change'
-    oldRange: Range | null
-    range: Range | null
-    source: string
-  }> = new EventEmitter()
-  @Output() onContentChanged: EventEmitter<{
-    content: any
-    delta: any
-    editor: any
-    html: string | null
-    oldDelta: any
-    source: string
-    text: string
-  }> = new EventEmitter()
-  @Output() onSelectionChanged: EventEmitter<{
-    editor: any
-    oldRange: Range | null
-    range: Range | null
-    source: string
-  }> = new EventEmitter()
-  @Output() onFocus: EventEmitter<{
-    editor: any
-    source: string
-  }> = new EventEmitter()
-  @Output() onBlur: EventEmitter<{
-    editor: any
-    source: string
-  }> = new EventEmitter()
+  @Output() onEditorChanged: EventEmitter<EditorChangeContent | EditorChangeSelection> = new EventEmitter()
+  @Output() onContentChanged: EventEmitter<ContentChange> = new EventEmitter()
+  @Output() onSelectionChanged: EventEmitter<SelectionChange> = new EventEmitter()
+  @Output() onFocus: EventEmitter<Focus> = new EventEmitter()
+  @Output() onBlur: EventEmitter<Blur> = new EventEmitter()
 
   disabled = false // used to store initial value before ViewInit
 
