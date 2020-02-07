@@ -62,6 +62,17 @@ XLM Wallet Address:
   <tbody>
     <tr>
       <td>
+        v9
+      </td>
+      <td>
+        >= 8.0.0
+      </td>
+      <td>
+        until October/November 2019
+      </td>
+    </tr>
+    <tr>
+      <td>
         v8
       </td>
       <td>
@@ -76,7 +87,7 @@ XLM Wallet Address:
         v7
       </td>
       <td>
-        >= 4.0.0
+        >= 4.0.0, < 8.0.0
       </td>
       <td>
         until Apr 18, 2020
