@@ -12,7 +12,8 @@ import {
   PLATFORM_ID,
   Renderer2,
   SimpleChanges,
-  ViewEncapsulation
+  ViewEncapsulation,
+  NgZone
 } from '@angular/core'
 
 import { defaultModules } from './quill-defaults'
@@ -53,7 +54,8 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
     @Inject(PLATFORM_ID) private platformId: any,
     @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig,
     @Inject(Renderer2) private renderer: Renderer2,
-    @Inject(ElementRef) private elementRef: ElementRef
+    @Inject(ElementRef) private elementRef: ElementRef,
+    @Inject(NgZone) private zone: NgZone
   ) {}
 
   valueSetter = (quillEditor: any, value: any): any => {
@@ -85,7 +87,9 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
       return
     }
     if (!Quill) {
-      Quill = require('quill')
+      this.zone.runOutsideAngular(() => {
+        Quill = require('quill')
+      })
     }
 
     const modules = Object.assign({}, this.modules || (this.config.modules || defaultModules))
@@ -117,13 +121,15 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
       '[quill-view-element]'
     )
 
-    this.quillEditor = new Quill(this.editorElem, {
-      debug,
-      formats,
-      modules,
-      readOnly: true,
-      strict: this.strict,
-      theme
+    this.zone.runOutsideAngular(() => {
+      this.quillEditor = new Quill(this.editorElem, {
+        debug,
+        formats,
+        modules,
+        readOnly: true,
+        strict: this.strict,
+        theme
+      })
     })
 
     this.renderer.addClass(this.editorElem, 'ngx-quill-view')
