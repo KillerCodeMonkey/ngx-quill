@@ -46,7 +46,7 @@ XLM Wallet Address:
   - bubble toolbar
   - activate formats after editor initialisation, e.g. rtl direction
   - present quilljs content with the `quill-view` and `quill-view-html` component
-- [Ionic v4 Demo](https://github.com/KillerCodeMonkey/ngx-quill-ionic-v4)
+- [Ionic Demo](https://github.com/KillerCodeMonkey/ngx-quill-ionic)
 
 ## Compatibility to Angular Versions
 
