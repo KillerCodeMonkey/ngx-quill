@@ -131,6 +131,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   @Input() trackChanges?: 'user' | 'all'
   @Input() preserveWhitespace = false
   @Input() classes?: string
+  @Input() trimOnValidation = false
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
   @Output() onEditorChanged: EventEmitter<EditorChangeContent | EditorChangeSelection> = new EventEmitter()
@@ -572,7 +573,9 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     } = {}
     let valid = true
 
-    const textLength = this.quillEditor.getText().trim().length
+    const text = this.quillEditor.getText()
+    // trim text if wanted + handle special case that an empty editor contains a new line
+    const textLength = this.trimOnValidation ? text.trim().length : (text.length === 1 && text.trim().length === 0 ? 0 : text.length)
 
     if (this.minLength && textLength && textLength < this.minLength) {
       err.minLengthError = {

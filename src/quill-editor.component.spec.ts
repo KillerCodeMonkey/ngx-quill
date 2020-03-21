@@ -16,6 +16,7 @@ const Quill: any = QuillNamespace
 `
 })
 class TestComponent {
+  @ViewChild(QuillEditorComponent, { static: true }) editorComponent!: QuillEditorComponent
   title: any = 'Hallo'
   isReadOnly = false
   required = false
@@ -196,17 +197,15 @@ describe('Formats', () => {
       expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: '1234\n'}]}))
     }))
 
-    it('should update model if editor text changes', async(() => {
+    it('should update model if editor text changes', async(async () => {
       const component = fixture.componentInstance
 
-      fixture.whenStable().then(() => {
-        component.editor.setContents([{ insert: '123' }], 'user')
-        fixture.detectChanges()
+      await fixture.whenStable()
+      component.editor.setContents([{ insert: '123' }], 'user')
+      fixture.detectChanges()
 
-        return fixture.whenStable()
-      }).then(() => {
-        expect(JSON.stringify(component.title)).toEqual(JSON.stringify({ops: [{insert: '123\n'}]}))
-      })
+      await fixture.whenStable()
+      expect(JSON.stringify(component.title)).toEqual(JSON.stringify({ops: [{insert: '123\n'}]}))
     }))
   })
 
@@ -482,24 +481,21 @@ describe('Dynamic styles', () => {
     fixture.detectChanges()
   })
 
-  it('set inital styles', async(() => {
+  it('set inital styles', async(async () => {
     const component = fixture.componentInstance
-    fixture.whenStable().then(() => {
-      expect(component.editor.container.style.backgroundColor).toEqual('red')
-    })
+    await fixture.whenStable()
+    expect(component.editor.container.style.backgroundColor).toEqual('red')
   }))
 
-  it('set style', async(() => {
+  it('set style', async(async () => {
     const component = fixture.componentInstance
-    fixture.whenStable().then(() => {
-      component.style = {
-        backgroundColor: 'gray'
-      }
-      fixture.detectChanges()
-      return fixture.whenStable()
-    }).then(() => {
-      expect(component.editor.container.style.backgroundColor).toEqual('gray')
-    })
+    await fixture.whenStable()
+    component.style = {
+      backgroundColor: 'gray'
+    }
+    fixture.detectChanges()
+    await fixture.whenStable()
+    expect(component.editor.container.style.backgroundColor).toEqual('gray')
   }))
 })
 
@@ -533,25 +529,24 @@ describe('Dynamic classes', () => {
     fixture.detectChanges()
   })
 
-  it('should set initial classes', async(() => {
+  it('should set initial classes', async(async () => {
     const component = fixture.componentInstance
-    fixture.whenStable().then(() => {
-      expect(component.editor.container.classList.contains('test-class1')).toBe(true)
-      expect(component.editor.container.classList.contains('test-class2')).toBe(true)
-    })
+    await fixture.whenStable()
+    expect(component.editor.container.classList.contains('test-class1')).toBe(true)
+    expect(component.editor.container.classList.contains('test-class2')).toBe(true)
   }))
 
-  it('should set class', async(() => {
+  it('should set class', async(async () => {
     const component = fixture.componentInstance
-    fixture.whenStable().then(() => {
-      component.classes = 'test-class2 test-class3'
-      fixture.detectChanges()
-      return fixture.whenStable()
-    }).then(() => {
-      expect(component.editor.container.classList.contains('test-class1')).toBe(false)
-      expect(component.editor.container.classList.contains('test-class2')).toBe(true)
-      expect(component.editor.container.classList.contains('test-class3')).toBe(true)
-    })
+    await fixture.whenStable()
+
+    component.classes = 'test-class2 test-class3'
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    expect(component.editor.container.classList.contains('test-class1')).toBe(false)
+    expect(component.editor.container.classList.contains('test-class2')).toBe(true)
+    expect(component.editor.container.classList.contains('test-class3')).toBe(true)
   }))
 })
 
@@ -583,25 +578,22 @@ describe('Dynamic classes', () => {
     fixture.detectChanges()
   })
 
-  it('set inital classes', async(() => {
+  it('set inital classes', async(async () => {
     const component = fixture.componentInstance
-    fixture.whenStable().then(() => {
-      expect(component.editor.container.classList.contains('test-class1')).toBe(true)
-      expect(component.editor.container.classList.contains('test-class2')).toBe(true)
-    })
+    await fixture.whenStable()
+    expect(component.editor.container.classList.contains('test-class1')).toBe(true)
+    expect(component.editor.container.classList.contains('test-class2')).toBe(true)
   }))
 
-  it('set class', async(() => {
+  it('set class', async(async () => {
     const component = fixture.componentInstance
-    fixture.whenStable().then(() => {
-      component.classes = 'test-class2 test-class3'
-      fixture.detectChanges()
-      return fixture.whenStable()
-    }).then(() => {
-      expect(component.editor.container.classList.contains('test-class1')).toBe(false)
-      expect(component.editor.container.classList.contains('test-class2')).toBe(true)
-      expect(component.editor.container.classList.contains('test-class3')).toBe(true)
-    })
+    await fixture.whenStable()
+    component.classes = 'test-class2 test-class3'
+    fixture.detectChanges()
+    await fixture.whenStable()
+    expect(component.editor.container.classList.contains('test-class1')).toBe(false)
+    expect(component.editor.container.classList.contains('test-class2')).toBe(true)
+    expect(component.editor.container.classList.contains('test-class3')).toBe(true)
   }))
 })
 
@@ -655,36 +647,32 @@ describe('Reactive forms integration', () => {
     expect(fixture.nativeElement.children[0].attributes.disabled).not.toBeDefined()
   })
 
-  it('should leave form pristine when content of editor changed programmatically', async(() => {
+  it('should leave form pristine when content of editor changed programmatically', async(async () => {
     const values: string[] = []
     fixture.componentInstance.formControl.valueChanges.subscribe((value: string) => values.push(value))
 
     fixture.detectChanges()
 
-    fixture.whenStable().then(() => {
-      fixture.componentInstance.formControl.patchValue('1234')
-      fixture.detectChanges()
+    await fixture.whenStable()
+    fixture.componentInstance.formControl.patchValue('1234')
+    fixture.detectChanges()
 
-      return fixture.whenStable()
-    }).then(() => {
-      expect(fixture.nativeElement.querySelector('div.ql-editor').textContent).toEqual('1234')
-      expect(fixture.componentInstance.formControl.value).toEqual('1234')
-      expect(fixture.componentInstance.formControl.pristine).toBeTruthy()
-      expect(values).toEqual(['1234'])
-    })
+    await fixture.whenStable()
+    expect(fixture.nativeElement.querySelector('div.ql-editor').textContent).toEqual('1234')
+    expect(fixture.componentInstance.formControl.value).toEqual('1234')
+    expect(fixture.componentInstance.formControl.pristine).toBeTruthy()
+    expect(values).toEqual(['1234'])
   }))
 
-  it('should mark form dirty when content of editor changed by user', async(() => {
+  it('should mark form dirty when content of editor changed by user', async(async () => {
     fixture.detectChanges()
-    fixture.whenStable().then(() => {
-      fixture.componentInstance.editor.quillEditor.setText('1234', 'user')
-      fixture.detectChanges()
-      return fixture.whenStable()
-    }).then(() => {
-      expect(fixture.nativeElement.querySelector('div.ql-editor').textContent).toEqual('1234')
-      expect(fixture.componentInstance.formControl.dirty).toBeTruthy()
-      expect(fixture.componentInstance.formControl.value).toEqual('<p>1234</p>')
-    })
+    await fixture.whenStable()
+    fixture.componentInstance.editor.quillEditor.setText('1234', 'user')
+    fixture.detectChanges()
+    await fixture.whenStable()
+    expect(fixture.nativeElement.querySelector('div.ql-editor').textContent).toEqual('1234')
+    expect(fixture.componentInstance.formControl.dirty).toBeTruthy()
+    expect(fixture.componentInstance.formControl.value).toEqual('<p>1234</p>')
   }))
 })
 
@@ -701,7 +689,7 @@ describe('Advanced QuillEditorComponent', () => {
     fixture = TestBed.createComponent(TestComponent) as ComponentFixture<TestComponent>
   })
 
-  it('should set editor settings', async(() => {
+  it('should set editor settings', async(async () => {
     spyOn(Quill, 'import').and.callThrough()
     spyOn(Quill, 'register').and.callThrough()
     fixture.detectChanges()
@@ -717,46 +705,45 @@ describe('Advanced QuillEditorComponent', () => {
     expect(Quill.import).toHaveBeenCalledWith('attributors/style/size')
     expect(Quill.register).toHaveBeenCalled()
 
-    fixture.whenStable().then(() => {
-      expect(editorCmp.readOnly).toBe(true)
-      expect(editorElem.nativeElement.querySelectorAll('div.ql-container.ql-disabled').length).toBe(1)
-      expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.height).toBe('30px')
-    })
+    await fixture.whenStable()
+
+    expect(editorCmp.readOnly).toBe(true)
+    expect(editorElem.nativeElement.querySelectorAll('div.ql-container.ql-disabled').length).toBe(1)
+    expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.height).toBe('30px')
   }))
 
-  it('should update editor style', async(() => {
+  it('should update editor style', async(async () => {
     fixture.detectChanges()
 
     const editorElem = fixture.debugElement.children[0]
 
     fixture.componentInstance.style = { backgroundColor: 'red' }
     fixture.detectChanges()
+    await fixture.whenStable()
 
-    fixture.whenStable().then(() => {
-      expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.backgroundColor).toBe('red')
-      expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.height).toEqual('')
-    })
+    expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.backgroundColor).toBe('red')
+    expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.height).toEqual('')
   }))
 
-  it('should update editor style to null and readd styling', async(() => {
+  it('should update editor style to null and readd styling', async(async () => {
     fixture.detectChanges()
 
     const editorElem = fixture.debugElement.children[0]
 
     fixture.componentInstance.style = null
     fixture.detectChanges()
+    await fixture.whenStable()
 
-    fixture.whenStable().then(() => {
-      fixture.componentInstance.style = { color: 'red' }
-      expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.height).toEqual('')
-      fixture.detectChanges()
-      return fixture.whenStable()
-    }).then(() => {
-      expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.color).toBe('red')
-    })
+    fixture.componentInstance.style = { color: 'red' }
+    expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.height).toEqual('')
+
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.color).toBe('red')
   }))
 
-  it('should not update editor style if nothing changed', async(() => {
+  it('should not update editor style if nothing changed', async(async () => {
     fixture.detectChanges()
 
     const editorElem = fixture.debugElement.children[0]
@@ -764,9 +751,8 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.componentInstance.isReadOnly = true
     fixture.detectChanges()
 
-    fixture.whenStable().then(() => {
-      expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.height).toEqual('30px')
-    })
+    await fixture.whenStable
+    expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.height).toEqual('30px')
   }))
 
   it('should set touched state correctly', async(() => {
@@ -781,38 +767,38 @@ describe('Advanced QuillEditorComponent', () => {
     expect(editorFixture.nativeElement.className).toMatch('ng-touched')
   }))
 
-  it('should set required state correctly', async(() => {
+  it('should set required state correctly', async(async () => {
     // get editor component
     const editorElement = fixture.debugElement.children[0].nativeElement
 
     fixture.componentInstance.title = ''
     fixture.detectChanges()
-    fixture.whenStable().then(() => {
-      expect(editorElement.className).toMatch('ng-valid')
-    })
+    await fixture.whenStable()
+    expect(editorElement.className).toMatch('ng-valid')
   }))
 
   it('should emit onEditorCreated with editor instance', async( async () => {
     spyOn(fixture.componentInstance, 'handleEditorCreated')
     fixture.detectChanges()
     await fixture.whenStable()
+
     const editorComponent = fixture.debugElement.children[0].componentInstance
     expect(fixture.componentInstance.handleEditorCreated).toHaveBeenCalledWith(editorComponent.quillEditor)
   }))
 
-  it('should emit onContentChanged when content of editor changed + editor changed', async(() => {
+  it('should emit onContentChanged when content of editor changed + editor changed', async(async () => {
     spyOn(fixture.componentInstance, 'handleChange').and.callThrough()
     spyOn(fixture.componentInstance, 'handleEditorChange').and.callThrough()
     fixture.detectChanges()
-    fixture.whenStable().then(() => {
-      const editorFixture = fixture.debugElement.children[0]
-      editorFixture.componentInstance.quillEditor.setText('1234', 'user')
-      fixture.detectChanges()
-      return fixture.whenStable()
-    }).then(() => {
-      expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
-      expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
-    })
+    await fixture.whenStable()
+
+    const editorFixture = fixture.debugElement.children[0]
+    editorFixture.componentInstance.quillEditor.setText('1234', 'user')
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
+    expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
   }))
 
   it('should emit onSelectionChanged when selection changed + editor changed', async(() => {
@@ -825,6 +811,7 @@ describe('Advanced QuillEditorComponent', () => {
     editorFixture.componentInstance.quillEditor.focus()
     editorFixture.componentInstance.quillEditor.blur()
     fixture.detectChanges()
+
     expect(fixture.componentInstance.handleSelection).toHaveBeenCalledWith(fixture.componentInstance.selected)
     expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
   }))
@@ -852,128 +839,149 @@ describe('Advanced QuillEditorComponent', () => {
     expect(fixture.componentInstance.blured).toBe(true)
   }))
 
-  it('should validate minlength', async(() => {
+  it('should validate minlength', async(async () => {
     // get editor component
     const editorComponent = fixture.debugElement.children[0].componentInstance
     const editorElement = fixture.debugElement.children[0].nativeElement
 
     fixture.detectChanges()
-    fixture.whenStable().then(() => {
-      expect(editorElement.className).toMatch('ng-valid')
+    await fixture.whenStable()
+    expect(editorElement.className).toMatch('ng-valid')
 
-      // set minlength
-      fixture.componentInstance.minLength = 8
-      fixture.componentInstance.title = 'Hallo1'
+    // set minlength
+    fixture.componentInstance.minLength = 8
+    fixture.detectChanges()
+    await fixture.whenStable()
+    expect(editorComponent.minLength).toBe(8)
 
-      fixture.detectChanges()
-
-      return fixture.whenStable()
-    }).then(() => {
-      fixture.detectChanges()
-      expect(editorComponent.minLength).toBe(8)
-      expect(editorElement.className).toMatch('ng-invalid')
-    })
+    fixture.componentInstance.title = 'Hallo1'
+    fixture.detectChanges()
+    await fixture.whenStable()
+    fixture.detectChanges()
+    await fixture.whenStable()
+    expect(editorElement.className).toMatch('ng-invalid')
   }))
 
-  it('should set valid minlength if model is empty', async(() => {
+  it('should set valid minlength if model is empty', async(async () => {
     // get editor component
     const editorComponent = fixture.debugElement.children[0].componentInstance
     const editorElement = fixture.debugElement.children[0].nativeElement
 
     fixture.detectChanges()
-    fixture.whenStable().then(() => {
-      // set min length
-      editorComponent.minLength = 2
-      // change text
-      editorComponent.quillEditor.setText('', 'user')
+    await fixture.whenStable()
+    // set min length
+    editorComponent.minLength = 2
+    // change text
+    editorComponent.quillEditor.setText('', 'user')
 
-      fixture.detectChanges()
-      return fixture.whenStable()
-    }).then(() => {
-      fixture.detectChanges()
-      expect(editorElement.className).toMatch('ng-valid')
-    })
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    fixture.detectChanges()
+    expect(editorElement.className).toMatch('ng-valid')
   }))
 
-  it('should validate maxlength', async(() => {
+  it('should validate maxlength', async(async () => {
     // get editor component
     const editorComponent = fixture.debugElement.children[0].componentInstance
     const editorElement = fixture.debugElement.children[0].nativeElement
 
     fixture.detectChanges()
-    fixture.whenStable().then(() => {
-      expect(fixture.debugElement.children[0].nativeElement.className).toMatch('ng-valid')
+    await fixture.whenStable()
+    expect(fixture.debugElement.children[0].nativeElement.className).toMatch('ng-valid')
 
-      fixture.componentInstance.maxLength = 3
-      fixture.componentInstance.title = '1234'
-      fixture.detectChanges()
+    fixture.componentInstance.maxLength = 3
+    fixture.componentInstance.title = '1234'
+    fixture.detectChanges()
 
-      return fixture.whenStable()
-    }).then(() => {
-      fixture.detectChanges()
+    await fixture.whenStable()
+    fixture.detectChanges()
 
-      expect(editorComponent.maxLength).toBe(3)
-      expect(editorElement.className).toMatch('ng-invalid')
-    })
+    expect(editorComponent.maxLength).toBe(3)
+    expect(editorElement.className).toMatch('ng-invalid')
   }))
 
-  it('should validate maxlength and minlength', async(() => {
+  it('should validate maxlength and minlength', async(async () => {
     // get editor component
     const editorElement = fixture.debugElement.children[0].nativeElement
 
     fixture.detectChanges()
-    fixture.whenStable().then(() => {
-      expect(fixture.debugElement.children[0].nativeElement.className).toMatch('ng-valid')
+    await fixture.whenStable()
+    expect(fixture.debugElement.children[0].nativeElement.className).toMatch('ng-valid')
 
-      fixture.componentInstance.minLength = 3
-      fixture.componentInstance.maxLength = 5
-      fixture.componentInstance.title = '123456'
+    fixture.componentInstance.minLength = 3
+    fixture.componentInstance.maxLength = 5
+    fixture.componentInstance.title = '123456'
 
-      fixture.detectChanges()
-      return fixture.whenStable()
-    }).then(() => {
-      fixture.detectChanges()
-      expect(editorElement.className).toMatch('ng-invalid')
+    fixture.detectChanges()
+    await fixture.whenStable()
 
-      fixture.componentInstance.title = '1234'
+    fixture.detectChanges()
+    expect(editorElement.className).toMatch('ng-invalid')
 
-      fixture.detectChanges()
-      return fixture.whenStable()
-    }).then(() => {
-      fixture.detectChanges()
-      expect(editorElement.className).toMatch('ng-valid')
-    })
+    fixture.componentInstance.title = '1234'
+
+    fixture.detectChanges()
+    await fixture.whenStable()
+    fixture.detectChanges()
+    expect(editorElement.className).toMatch('ng-valid')
   }))
 
-  it('should validate required', async(() => {
+  it('should validate maxlength and minlength with trimming white spaces', async(async () => {
+    // get editor component
+    const editorElement = fixture.debugElement.children[0].nativeElement
+    fixture.componentInstance.editorComponent.trimOnValidation = true
+
+    fixture.detectChanges()
+    await fixture.whenStable()
+    expect(fixture.debugElement.children[0].nativeElement.className).toMatch('ng-valid')
+
+    fixture.componentInstance.minLength = 3
+    fixture.componentInstance.maxLength = 5
+    fixture.componentInstance.title = '  1234567  '
+
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    fixture.detectChanges()
+    expect(editorElement.className).toMatch('ng-invalid')
+
+    fixture.componentInstance.title = '  1234  '
+
+    fixture.detectChanges()
+    await fixture.whenStable()
+    fixture.detectChanges()
+
+    expect(editorElement.className).toMatch('ng-valid')
+  }))
+
+  it('should validate required', async(async () => {
     // get editor component
     const editorElement = fixture.debugElement.children[0].nativeElement
     const editorComponent = fixture.debugElement.children[0].componentInstance
 
     fixture.detectChanges()
-    fixture.whenStable().then(() => {
-      expect(fixture.debugElement.children[0].nativeElement.className).toMatch('ng-valid')
-      expect(editorComponent.required).toBeFalsy()
+    await fixture.whenStable()
+    expect(fixture.debugElement.children[0].nativeElement.className).toMatch('ng-valid')
+    expect(editorComponent.required).toBeFalsy()
 
-      fixture.componentInstance.required = true
-      fixture.componentInstance.title = ''
+    fixture.componentInstance.required = true
+    fixture.componentInstance.title = ''
 
-      fixture.detectChanges()
-      return fixture.whenStable()
-    }).then(() => {
-      fixture.detectChanges()
+    fixture.detectChanges()
+    await fixture.whenStable()
+    fixture.detectChanges()
 
-      expect(editorComponent.required).toBeTruthy()
-      expect(editorElement.className).toMatch('ng-invalid')
+    expect(editorComponent.required).toBeTruthy()
+    expect(editorElement.className).toMatch('ng-invalid')
 
-      fixture.componentInstance.title = '1'
+    fixture.componentInstance.title = '1'
 
-      fixture.detectChanges()
-      return fixture.whenStable()
-    }).then(() => {
-      fixture.detectChanges()
-      expect(editorElement.className).toMatch('ng-valid')
-    })
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    fixture.detectChanges()
+    expect(editorElement.className).toMatch('ng-valid')
   }))
 
   it('should add custom toolbar', async(() => {

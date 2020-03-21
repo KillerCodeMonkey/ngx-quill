@@ -46,7 +46,6 @@ XLM Wallet Address:
   - bubble toolbar
   - activate formats after editor initialisation, e.g. rtl direction
   - present quilljs content with the `quill-view` and `quill-view-html` component
-- [Ionic v3 Demo](https://github.com/KillerCodeMonkey/ngx-quill-ionic-v3)
 - [Ionic v4 Demo](https://github.com/KillerCodeMonkey/ngx-quill-ionic-v4)
 
 ## Compatibility to Angular Versions
@@ -261,6 +260,7 @@ If you are using the editor reference to directly manipulate the editor content 
 - bounds - boundary of the editor, default `document.body`, pass 'self' to attach the editor element
 - maxLength - add validation for maxlength - set model state to `invalid` and add `ng-invalid` class
 - minLength - add validation for minlength - set model state to `invalid` and add `ng-invalid` class, only set invalid if editor text not empty --> if you want to check if text is required --> use the required attribute
+- trimOnValidation - trim trailing|leading newlines on validation run for required, min- and maxLength, default `false`
 - required - add validation as a required field - `[required]="true"` - default: false, boolean expected (no strings!)
 - strict - default: true, sets editor in strict mode
 - scrollingContainer - default '.ql-editor', allows to set scrolling container
