@@ -577,7 +577,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
     const text = this.quillEditor.getText()
     // trim text if wanted + handle special case that an empty editor contains a new line
-    const textLength = this.trimOnValidation ? text.trim().length : (text.length === 1 && text.trim().length === 0 ? 0 : text.length)
+    const textLength = this.trimOnValidation ? text.trim().length : (text.length === 1 && text.trim().length === 0 ? 0 : text.length - 1)
 
     if (this.minLength && textLength && textLength < this.minLength) {
       err.minLengthError = {
