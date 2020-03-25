@@ -156,6 +156,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
   onModelChange(_modelValue?: any) {}
   onModelTouched() {}
+  onValidatorChanged() {}
 
   @Input()
   valueGetter = (quillEditor: any, editorElement: HTMLElement): string | any  => {
@@ -336,7 +337,10 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
     // trigger created in a timeout to avoid changed models after checked
     // if you are using the editor api in created output to change the editor content
-    setTimeout(() => this.onEditorCreated.emit(this.quillEditor))
+    setTimeout(() => {
+      this.onValidatorChanged()
+      this.onEditorCreated.emit(this.quillEditor)
+    })
   }
 
   selectionChangeHandler = (range: Range | null, oldRange: Range | null, source: string) => {
@@ -555,6 +559,10 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
   registerOnTouched(fn: () => void): void {
     this.onModelTouched = fn
+  }
+
+  registerOnValidatorChange(fn: () => void) {
+    this.onValidatorChanged = fn
   }
 
   validate() {

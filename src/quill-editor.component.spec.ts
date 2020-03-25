@@ -90,11 +90,12 @@ class TestToolbarComponent {
 
 @Component({
   template: `
-    <quill-editor [formControl]='formControl'></quill-editor>
+    <quill-editor [formControl]='formControl' [minLength]='minLength'></quill-editor>
 `
 })
 class ReactiveFormTestComponent {
-  formControl: FormControl = new FormControl(null)
+  formControl: FormControl = new FormControl('a')
+  minLength = 3
   @ViewChild(QuillEditorComponent, { static: true }) editor!: QuillEditorComponent
 }
 
@@ -550,53 +551,6 @@ describe('Dynamic classes', () => {
   }))
 })
 
-describe('Dynamic classes', () => {
-  @Component({
-    template: `
-  <quill-editor [bounds]="'self'" [(ngModel)]="title" format="text" [classes]="classes" (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
-  `
-  })
-  class ClassesComponent {
-    title = 'Hallo'
-    classes = 'test-class1 test-class2'
-    editor: any
-    handleEditorCreated(event: any) {
-      this.editor = event
-    }
-  }
-
-  let fixture: ComponentFixture<ClassesComponent>
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [ClassesComponent],
-      imports: [FormsModule, QuillModule],
-      providers: QuillModule.forRoot().providers
-    })
-
-    fixture = TestBed.createComponent(ClassesComponent) as ComponentFixture<ClassesComponent>
-    fixture.detectChanges()
-  })
-
-  it('set inital classes', async(async () => {
-    const component = fixture.componentInstance
-    await fixture.whenStable()
-    expect(component.editor.container.classList.contains('test-class1')).toBe(true)
-    expect(component.editor.container.classList.contains('test-class2')).toBe(true)
-  }))
-
-  it('set class', async(async () => {
-    const component = fixture.componentInstance
-    await fixture.whenStable()
-    component.classes = 'test-class2 test-class3'
-    fixture.detectChanges()
-    await fixture.whenStable()
-    expect(component.editor.container.classList.contains('test-class1')).toBe(false)
-    expect(component.editor.container.classList.contains('test-class2')).toBe(true)
-    expect(component.editor.container.classList.contains('test-class3')).toBe(true)
-  }))
-})
-
 describe('class normalization function', () => {
   it('should trim white space', () => {
     const classList = QuillEditorComponent.normalizeClassNames('test-class  ')
@@ -648,16 +602,17 @@ describe('Reactive forms integration', () => {
   })
 
   it('should leave form pristine when content of editor changed programmatically', async(async () => {
-    const values: string[] = []
+    const values: Array<string | null> = []
+
+    fixture.detectChanges()
+    await fixture.whenStable()
+
     fixture.componentInstance.formControl.valueChanges.subscribe((value: string) => values.push(value))
-
-    fixture.detectChanges()
-
-    await fixture.whenStable()
     fixture.componentInstance.formControl.patchValue('1234')
-    fixture.detectChanges()
 
+    fixture.detectChanges()
     await fixture.whenStable()
+
     expect(fixture.nativeElement.querySelector('div.ql-editor').textContent).toEqual('1234')
     expect(fixture.componentInstance.formControl.value).toEqual('1234')
     expect(fixture.componentInstance.formControl.pristine).toBeTruthy()
@@ -673,6 +628,16 @@ describe('Reactive forms integration', () => {
     expect(fixture.nativeElement.querySelector('div.ql-editor').textContent).toEqual('1234')
     expect(fixture.componentInstance.formControl.dirty).toBeTruthy()
     expect(fixture.componentInstance.formControl.value).toEqual('<p>1234</p>')
+  }))
+
+  it('should validate initial content and do not mark it as invalid', async(async () => {
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    expect(fixture.nativeElement.querySelector('div.ql-editor').textContent).toEqual('a')
+    expect(fixture.componentInstance.formControl.pristine).toBeTruthy()
+    expect(fixture.componentInstance.formControl.value).toEqual('a')
+    expect(fixture.componentInstance.formControl.invalid).toBeTruthy()
   }))
 })
 
@@ -778,12 +743,14 @@ describe('Advanced QuillEditorComponent', () => {
   }))
 
   it('should emit onEditorCreated with editor instance', async( async () => {
-    spyOn(fixture.componentInstance, 'handleEditorCreated')
     fixture.detectChanges()
+    spyOn(fixture.componentInstance, 'handleEditorCreated')
+    spyOn(fixture.componentInstance.editorComponent, 'onValidatorChanged')
     await fixture.whenStable()
 
     const editorComponent = fixture.debugElement.children[0].componentInstance
     expect(fixture.componentInstance.handleEditorCreated).toHaveBeenCalledWith(editorComponent.quillEditor)
+    expect(fixture.componentInstance.editorComponent.onValidatorChanged).toHaveBeenCalled()
   }))
 
   it('should emit onContentChanged when content of editor changed + editor changed', async(async () => {
