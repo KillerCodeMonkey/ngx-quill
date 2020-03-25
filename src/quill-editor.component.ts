@@ -19,7 +19,8 @@ import {
   Renderer2,
   SecurityContext,
   SimpleChanges,
-  ViewEncapsulation
+  ViewEncapsulation,
+  ChangeDetectionStrategy
 } from '@angular/core'
 
 import {ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator} from '@angular/forms'
@@ -73,6 +74,7 @@ export type EditorChangeContent = ContentChange & {event: 'text-change'}
 export type EditorChangeSelection = SelectionChange & {event: 'selection-change'}
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   providers: [
     {
