@@ -130,6 +130,8 @@ describe('Basic QuillEditorComponent', () => {
     fixture.componentInstance.ngOnDestroy()
 
     expect(spy).toHaveBeenCalledTimes(3)
+
+    expect(fixture).toMatchSnapshot()
   })
 
   it('should render toolbar', async(async () => {
@@ -139,6 +141,8 @@ describe('Basic QuillEditorComponent', () => {
 
     expect(element.querySelectorAll('div.ql-toolbar.ql-snow').length).toBe(1)
     expect(fixture.componentInstance.quillEditor).toBeDefined()
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should render text div', async(async () => {
@@ -148,6 +152,8 @@ describe('Basic QuillEditorComponent', () => {
 
     expect(element.querySelectorAll('div.ql-container.ql-snow').length).toBe(1)
     expect(fixture.componentInstance.quillEditor).toBeDefined()
+
+    expect(fixture).toMatchSnapshot()
   }))
 })
 
@@ -186,6 +192,8 @@ describe('Formats', () => {
 
       await fixture.whenStable()
       expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hello\n'}]}))
+
+      expect(fixture).toMatchSnapshot()
     }))
 
     it('should update text', async(async () => {
@@ -196,6 +204,8 @@ describe('Formats', () => {
 
       await fixture.whenStable()
       expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: '1234\n'}]}))
+
+      expect(fixture).toMatchSnapshot()
     }))
 
     it('should update model if editor text changes', async(async () => {
@@ -207,6 +217,8 @@ describe('Formats', () => {
 
       await fixture.whenStable()
       expect(JSON.stringify(component.title)).toEqual(JSON.stringify({ops: [{insert: '123\n'}]}))
+
+      expect(fixture).toMatchSnapshot()
     }))
   })
 
@@ -256,6 +268,8 @@ describe('Formats', () => {
 
       await fixture.whenStable()
       expect(component.editor.getText().trim()).toEqual('Hallo')
+
+      expect(fixture).toMatchSnapshot()
     }))
 
     it('should update html', async(async () => {
@@ -265,6 +279,8 @@ describe('Formats', () => {
 
       await fixture.whenStable()
       expect(component.editor.getText().trim()).toEqual('test')
+
+      expect(fixture).toMatchSnapshot()
     }))
 
     it('should update model if editor html changes', async(async () => {
@@ -275,6 +291,8 @@ describe('Formats', () => {
       fixture.detectChanges()
       await fixture.whenStable()
       expect(component.title.trim()).toEqual('<p>1234</p>')
+
+      expect(fixture).toMatchSnapshot()
     }))
 
     it('should sanitize html', async(async () => {
@@ -290,6 +308,8 @@ describe('Formats', () => {
 
       await fixture.whenStable()
       expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: {image: 'xxxx'}}, {insert: '\n'}]}))
+
+      expect(fixture).toMatchSnapshot()
     }))
   })
 
@@ -324,6 +344,8 @@ describe('Formats', () => {
       const component = fixture.componentInstance
       await fixture.whenStable()
       expect(component.editor.getText().trim()).toEqual('Hallo')
+
+      expect(fixture).toMatchSnapshot()
     }))
 
     it('should update text', async(async () => {
@@ -333,6 +355,8 @@ describe('Formats', () => {
 
       await fixture.whenStable()
       expect(component.editor.getText().trim()).toEqual('test')
+
+      expect(fixture).toMatchSnapshot()
     }))
 
     it('should update model if editor text changes', async(async () => {
@@ -342,6 +366,8 @@ describe('Formats', () => {
       fixture.detectChanges()
       await fixture.whenStable()
       expect(component.title.trim()).toEqual('123')
+
+      expect(fixture).toMatchSnapshot()
     }))
 
     it('should not update model if editor content changed by api', async(async () => {
@@ -351,6 +377,8 @@ describe('Formats', () => {
       fixture.detectChanges()
       await fixture.whenStable()
       expect(component.title.trim()).toEqual('Hallo')
+
+      expect(fixture).toMatchSnapshot()
     }))
   })
 
@@ -404,6 +432,8 @@ describe('Formats', () => {
       const component = fixture.componentInstance
       await fixture.whenStable()
       expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hallo\n'}]}))
+
+      expect(fixture).toMatchSnapshot()
     }))
 
     it('should update json string', async(async () => {
@@ -414,6 +444,8 @@ describe('Formats', () => {
       fixture.detectChanges()
       await fixture.whenStable()
       expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hallo 123\n'}]}))
+
+      expect(fixture).toMatchSnapshot()
     }))
 
     it('should update model if editor changes', async(async () => {
@@ -428,6 +460,8 @@ describe('Formats', () => {
       await fixture.whenStable()
 
       expect(component.title).toEqual(JSON.stringify({ops: [{insert: 'Hallo 123\n'}]}))
+
+      expect(fixture).toMatchSnapshot()
     }))
 
     it('should set as text if invalid JSON', async(async () => {
@@ -447,6 +481,8 @@ describe('Formats', () => {
       expect(component.editor.getText().trim()).toEqual(JSON.stringify([{
         insert: 'Hallo 1234'
       }]) + '{')
+
+      expect(fixture).toMatchSnapshot()
     }))
   })
 })
@@ -486,6 +522,8 @@ describe('Dynamic styles', () => {
     const component = fixture.componentInstance
     await fixture.whenStable()
     expect(component.editor.container.style.backgroundColor).toEqual('red')
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('set style', async(async () => {
@@ -497,6 +535,8 @@ describe('Dynamic styles', () => {
     fixture.detectChanges()
     await fixture.whenStable()
     expect(component.editor.container.style.backgroundColor).toEqual('gray')
+
+    expect(fixture).toMatchSnapshot()
   }))
 })
 
@@ -535,6 +575,8 @@ describe('Dynamic classes', () => {
     await fixture.whenStable()
     expect(component.editor.container.classList.contains('test-class1')).toBe(true)
     expect(component.editor.container.classList.contains('test-class2')).toBe(true)
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should set class', async(async () => {
@@ -548,6 +590,8 @@ describe('Dynamic classes', () => {
     expect(component.editor.container.classList.contains('test-class1')).toBe(false)
     expect(component.editor.container.classList.contains('test-class2')).toBe(true)
     expect(component.editor.container.classList.contains('test-class3')).toBe(true)
+
+    expect(fixture).toMatchSnapshot()
   }))
 })
 
@@ -583,12 +627,16 @@ describe('Reactive forms integration', () => {
     const component = fixture.componentInstance
     component.formControl.disable()
     expect(component.editor.quillEditor.container.classList.contains('ql-disabled')).toBeTruthy()
+
+    expect(fixture).toMatchSnapshot()
   })
 
   it('has "disabled" attribute', () => {
     const component = fixture.componentInstance
     component.formControl.disable()
     expect(fixture.nativeElement.children[0].attributes.disabled).toBeDefined()
+
+    expect(fixture).toMatchSnapshot()
   })
 
   it('should re-enable', () => {
@@ -599,6 +647,8 @@ describe('Reactive forms integration', () => {
 
     expect(component.editor.quillEditor.container.classList.contains('ql-disabled')).toBeFalsy()
     expect(fixture.nativeElement.children[0].attributes.disabled).not.toBeDefined()
+
+    expect(fixture).toMatchSnapshot()
   })
 
   it('should leave form pristine when content of editor changed programmatically', async(async () => {
@@ -617,6 +667,8 @@ describe('Reactive forms integration', () => {
     expect(fixture.componentInstance.formControl.value).toEqual('1234')
     expect(fixture.componentInstance.formControl.pristine).toBeTruthy()
     expect(values).toEqual(['1234'])
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should mark form dirty when content of editor changed by user', async(async () => {
@@ -628,6 +680,8 @@ describe('Reactive forms integration', () => {
     expect(fixture.nativeElement.querySelector('div.ql-editor').textContent).toEqual('1234')
     expect(fixture.componentInstance.formControl.dirty).toBeTruthy()
     expect(fixture.componentInstance.formControl.value).toEqual('<p>1234</p>')
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should validate initial content and do not mark it as invalid', async(async () => {
@@ -638,6 +692,8 @@ describe('Reactive forms integration', () => {
     expect(fixture.componentInstance.formControl.pristine).toBeTruthy()
     expect(fixture.componentInstance.formControl.value).toEqual('a')
     expect(fixture.componentInstance.formControl.invalid).toBeTruthy()
+
+    expect(fixture).toMatchSnapshot()
   }))
 })
 
@@ -675,6 +731,8 @@ describe('Advanced QuillEditorComponent', () => {
     expect(editorCmp.readOnly).toBe(true)
     expect(editorElem.nativeElement.querySelectorAll('div.ql-container.ql-disabled').length).toBe(1)
     expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.height).toBe('30px')
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should update editor style', async(async () => {
@@ -688,6 +746,8 @@ describe('Advanced QuillEditorComponent', () => {
 
     expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.backgroundColor).toBe('red')
     expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.height).toEqual('')
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should update editor style to null and readd styling', async(async () => {
@@ -706,6 +766,8 @@ describe('Advanced QuillEditorComponent', () => {
     await fixture.whenStable()
 
     expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.color).toBe('red')
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should not update editor style if nothing changed', async(async () => {
@@ -718,6 +780,8 @@ describe('Advanced QuillEditorComponent', () => {
 
     await fixture.whenStable
     expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.height).toEqual('30px')
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should set touched state correctly', async(() => {
@@ -730,6 +794,8 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.detectChanges()
 
     expect(editorFixture.nativeElement.className).toMatch('ng-touched')
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should set required state correctly', async(async () => {
@@ -740,6 +806,8 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.detectChanges()
     await fixture.whenStable()
     expect(editorElement.className).toMatch('ng-valid')
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should emit onEditorCreated with editor instance', async( async () => {
@@ -766,6 +834,8 @@ describe('Advanced QuillEditorComponent', () => {
 
     expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
     expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should emit onSelectionChanged when selection changed + editor changed', async(() => {
@@ -781,6 +851,8 @@ describe('Advanced QuillEditorComponent', () => {
 
     expect(fixture.componentInstance.handleSelection).toHaveBeenCalledWith(fixture.componentInstance.selected)
     expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should emit onFocus when focused', async(() => {
@@ -792,6 +864,8 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.detectChanges()
 
     expect(fixture.componentInstance.focused).toBe(true)
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should emit onBlur when blured', async(() => {
@@ -804,6 +878,8 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.detectChanges()
 
     expect(fixture.componentInstance.blured).toBe(true)
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should validate minlength', async(async () => {
@@ -827,6 +903,8 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.detectChanges()
     await fixture.whenStable()
     expect(editorElement.className).toMatch('ng-invalid')
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should set valid minlength if model is empty', async(async () => {
@@ -846,6 +924,8 @@ describe('Advanced QuillEditorComponent', () => {
 
     fixture.detectChanges()
     expect(editorElement.className).toMatch('ng-valid')
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should validate maxlength', async(async () => {
@@ -866,6 +946,8 @@ describe('Advanced QuillEditorComponent', () => {
 
     expect(editorComponent.maxLength).toBe(3)
     expect(editorElement.className).toMatch('ng-invalid')
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should validate maxlength and minlength', async(async () => {
@@ -892,6 +974,8 @@ describe('Advanced QuillEditorComponent', () => {
     await fixture.whenStable()
     fixture.detectChanges()
     expect(editorElement.className).toMatch('ng-valid')
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should validate maxlength and minlength with trimming white spaces', async(async () => {
@@ -920,6 +1004,8 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.detectChanges()
 
     expect(editorElement.className).toMatch('ng-valid')
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should validate required', async(async () => {
@@ -949,6 +1035,8 @@ describe('Advanced QuillEditorComponent', () => {
 
     fixture.detectChanges()
     expect(editorElement.className).toMatch('ng-valid')
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should add custom toolbar', async(() => {
@@ -962,6 +1050,8 @@ describe('Advanced QuillEditorComponent', () => {
     const editorComponent = toolbarFixture.debugElement.children[0].componentInstance
     expect(editorComponent.required).toBe(true)
     expect(editorComponent.customToolbarPosition).toEqual('top')
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should add custom toolbar at the end', async(() => {
@@ -975,6 +1065,8 @@ describe('Advanced QuillEditorComponent', () => {
 
     const editorComponent = toolbarFixture.debugElement.children[0].componentInstance
     expect(editorComponent.customToolbarPosition).toEqual('bottom')
+
+    expect(fixture).toMatchSnapshot()
   }))
 })
 
@@ -1025,6 +1117,8 @@ describe('QuillEditor - base config', () => {
 
     expect(JSON.stringify(fixture.componentInstance.title)).toEqual(JSON.stringify({ ops: [{ attributes: { bold: true }, insert: `content`}, {'insert':'\n'}] }))
     expect(editor.root.dataset.placeholder).toEqual('placeholder')
+
+    expect(fixture).toMatchSnapshot()
   }))
 })
 
@@ -1045,5 +1139,7 @@ describe('QuillEditor - preserveWhitespace', () => {
     const editor = fixture.componentInstance.editor
 
     expect(editor.editorElem!.tagName).toEqual('PRE')
+
+    expect(fixture).toMatchSnapshot()
   }))
 })

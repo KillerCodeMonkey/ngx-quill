@@ -28,6 +28,8 @@ describe('Basic QuillViewHTMLComponent', () => {
     expect(fixture.componentInstance.themeClass).toBe('ql-snow')
     const viewElement = element.querySelector('.ql-container.ql-snow.ngx-quill-view-html > .ql-editor')
     expect(viewElement).toBeDefined()
+
+    expect(fixture).toMatchSnapshot()
   }))
 })
 
@@ -62,6 +64,8 @@ describe('QuillViewHTMLComponent - content', () => {
     await fixture.whenStable()
     const viewElement = element.querySelector('.ql-container.ql-snow.ngx-quill-view-html > .ql-editor')
     expect(viewElement.innerHTML).toEqual('<p>Hallo</p>')
+
+    expect(fixture).toMatchSnapshot()
   }))
 
   it('should update html', async(async () => {
@@ -74,5 +78,7 @@ describe('QuillViewHTMLComponent - content', () => {
     const element = fixture.nativeElement
     const viewElement = element.querySelector('.ql-container.ql-snow.ngx-quill-view-html > .ql-editor')
     expect(viewElement.innerHTML).toEqual('<p>test</p>')
+
+    expect(fixture).toMatchSnapshot()
   }))
 })
