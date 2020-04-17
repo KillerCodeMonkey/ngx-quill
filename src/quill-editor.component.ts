@@ -1,7 +1,7 @@
 import {DOCUMENT, isPlatformServer} from '@angular/common'
 import {DomSanitizer} from '@angular/platform-browser'
 
-import {QUILL_CONFIG_TOKEN, QuillConfig, QuillModules, Quill } from './quill-editor.interfaces'
+import {QUILL_CONFIG_TOKEN, QuillConfig, QuillModules} from './quill-editor.interfaces'
 
 import {
   AfterViewInit,
@@ -26,7 +26,7 @@ import {ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator} from 
 import {defaultModules} from './quill-defaults'
 
 import {getFormat} from './helpers'
-import Delta = require('quill-delta')
+import {Quill, QuillDelta} from './quill'
 
 // Because quill uses `document` directly, we cannot `import` during SSR
 // instead, we load dynamically via `require('quill')` in `ngAfterViewInit()`
@@ -45,10 +45,10 @@ export interface Range {
 
 export interface ContentChange {
   content: any
-  delta: Delta
+  delta: QuillDelta
   editor: Quill
   html: string | null
-  oldDelta: Delta
+  oldDelta: QuillDelta
   source: string
   text: string
 }
@@ -163,7 +163,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     if (html === '<p><br></p>' || html === '<div><br></div>') {
       html = null
     }
-    let modelValue: string | Delta | null = html
+    let modelValue: string | QuillDelta | null = html
     const format = getFormat(this.format, this.config.format)
 
     if (format === 'text') {
@@ -379,7 +379,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     })
   }
 
-  textChangeHandler = (delta: Delta, oldDelta: Delta, source: string): void => {
+  textChangeHandler = (delta: QuillDelta, oldDelta: QuillDelta, source: string): void => {
     // only emit changes emitted by user interactions
     const text = this.quillEditor.getText()
     const content = this.quillEditor.getContents()

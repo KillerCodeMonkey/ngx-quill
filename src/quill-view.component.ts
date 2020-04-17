@@ -1,6 +1,6 @@
 import { isPlatformServer } from '@angular/common'
 
-import { QUILL_CONFIG_TOKEN, QuillConfig, QuillModules, Quill } from './quill-editor.interfaces'
+import { QUILL_CONFIG_TOKEN, QuillConfig, QuillModules } from './quill-editor.interfaces'
 
 import {
   AfterViewInit,
@@ -19,6 +19,7 @@ import {
 import { defaultModules } from './quill-defaults'
 import { CustomOption } from './quill-editor.component'
 import {getFormat} from './helpers'
+import { Quill } from './quill'
 
 // Because quill uses `document` directly, we cannot `import` during SSR
 // instead, we load dynamically via `require('quill')` in `ngAfterViewInit()`
