@@ -1,6 +1,6 @@
 import { isPlatformServer } from '@angular/common'
 
-import { QUILL_CONFIG_TOKEN, QuillConfig, QuillModules } from './quill-editor.interfaces'
+import { QUILL_CONFIG_TOKEN, QuillConfig, QuillModules, Quill } from './quill-editor.interfaces'
 
 import {
   AfterViewInit,
@@ -37,7 +37,7 @@ let Quill: any = null
 `
 })
 export class QuillViewComponent implements AfterViewInit, OnChanges {
-  quillEditor: any
+  quillEditor!: Quill
   editorElem: HTMLElement | undefined
 
   @Input() format?: 'object' | 'html' | 'text' | 'json'
@@ -58,7 +58,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
     @Inject(NgZone) private zone: NgZone
   ) {}
 
-  valueSetter = (quillEditor: any, value: any): any => {
+  valueSetter = (quillEditor: Quill, value: any): any => {
     const format = getFormat(this.format, this.config.format)
     let content = value
     if (format === 'html' || format === 'text') {

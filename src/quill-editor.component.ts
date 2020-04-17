@@ -1,7 +1,7 @@
 import {DOCUMENT, isPlatformServer} from '@angular/common'
 import {DomSanitizer} from '@angular/platform-browser'
 
-import {QUILL_CONFIG_TOKEN, QuillConfig, QuillModules} from './quill-editor.interfaces'
+import {QUILL_CONFIG_TOKEN, QuillConfig, QuillModules, Quill } from './quill-editor.interfaces'
 
 import {
   AfterViewInit,
@@ -26,6 +26,7 @@ import {ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator} from 
 import {defaultModules} from './quill-defaults'
 
 import {getFormat} from './helpers'
+import Delta = require('quill-delta')
 
 // Because quill uses `document` directly, we cannot `import` during SSR
 // instead, we load dynamically via `require('quill')` in `ngAfterViewInit()`
@@ -44,28 +45,28 @@ export interface Range {
 
 export interface ContentChange {
   content: any
-  delta: any
-  editor: any
+  delta: Delta
+  editor: Quill
   html: string | null
-  oldDelta: any
+  oldDelta: Delta
   source: string
   text: string
 }
 
 export interface SelectionChange {
-  editor: any
+  editor: Quill
   oldRange: Range | null
   range: Range | null
   source: string
 }
 
 export interface Blur {
-  editor: any
+  editor: Quill
   source: string
 }
 
 export interface Focus {
-  editor: any
+  editor: Quill
   source: string
 }
 
@@ -107,7 +108,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     }, [])
   }
 
-  quillEditor: any
+  quillEditor!: Quill
   editorElem: HTMLElement | undefined
   content: any
 
@@ -157,12 +158,12 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   onValidatorChanged() {}
 
   @Input()
-  valueGetter = (quillEditor: any, editorElement: HTMLElement): string | any  => {
+  valueGetter = (quillEditor: Quill, editorElement: HTMLElement): string | any  => {
     let html: string | null = editorElement.querySelector('.ql-editor')!.innerHTML
     if (html === '<p><br></p>' || html === '<div><br></div>') {
       html = null
     }
-    let modelValue = html
+    let modelValue: string | Delta | null = html
     const format = getFormat(this.format, this.config.format)
 
     if (format === 'text') {
@@ -181,7 +182,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   }
 
   @Input()
-  valueSetter = (quillEditor: any, value: any): any => {
+  valueSetter = (quillEditor: Quill, value: any): any => {
     const format = getFormat(this.format, this.config.format)
     if (format === 'html') {
       if (this.sanitize) {
@@ -378,7 +379,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     })
   }
 
-  textChangeHandler = (delta: any, oldDelta: any, source: string): void => {
+  textChangeHandler = (delta: Delta, oldDelta: Delta, source: string): void => {
     // only emit changes emitted by user interactions
     const text = this.quillEditor.getText()
     const content = this.quillEditor.getContents()
