@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core'
+import { Quill as QuillEditor, QuillDelta } from './quill'
 
 export type QuillToolbarConfig = Array<Array< string | {
   indent?: string
@@ -52,5 +53,8 @@ export interface QuillConfig {
   // Custom Config to track all changes or only changes by 'user'
   trackChanges?: 'user' | 'all'
 }
+
+export type Quill = QuillEditor
+export type Delta = QuillDelta
 
 export const QUILL_CONFIG_TOKEN = new InjectionToken<QuillConfig>('config')
