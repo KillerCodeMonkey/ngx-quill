@@ -1,7 +1,7 @@
 import {DOCUMENT, isPlatformServer} from '@angular/common'
 import {DomSanitizer} from '@angular/platform-browser'
 
-import {QUILL_CONFIG_TOKEN, QuillConfig, QuillModules, Quill, Delta} from './quill-editor.interfaces'
+import {QUILL_CONFIG_TOKEN, QuillConfig, QuillModules} from './quill-editor.interfaces'
 
 import {
   AfterViewInit,
@@ -26,6 +26,7 @@ import {ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator} from 
 import {defaultModules} from './quill-defaults'
 
 import {getFormat} from './helpers'
+import { QuillDelta, QuillEditor } from './quill.interfaces'
 
 // Because quill uses `document` directly, we cannot `import` during SSR
 // instead, we load dynamically via `require('quill')` in `ngAfterViewInit()`
@@ -44,28 +45,28 @@ export interface Range {
 
 export interface ContentChange {
   content: any
-  delta: Delta
-  editor: Quill
+  delta: QuillDelta
+  editor: QuillEditor
   html: string | null
-  oldDelta: Delta
+  oldDelta: QuillDelta
   source: string
   text: string
 }
 
 export interface SelectionChange {
-  editor: Quill
+  editor: QuillEditor
   oldRange: Range | null
   range: Range | null
   source: string
 }
 
 export interface Blur {
-  editor: Quill
+  editor: QuillEditor
   source: string
 }
 
 export interface Focus {
-  editor: Quill
+  editor: QuillEditor
   source: string
 }
 
@@ -107,7 +108,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     }, [])
   }
 
-  quillEditor!: Quill
+  quillEditor!: QuillEditor
   editorElem: HTMLElement | undefined
   content: any
 
@@ -133,7 +134,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   @Input() classes?: string
   @Input() trimOnValidation = false
 
-  @Output() onEditorCreated: EventEmitter<Quill> = new EventEmitter()
+  @Output() onEditorCreated: EventEmitter<QuillEditor> = new EventEmitter()
   @Output() onEditorChanged: EventEmitter<EditorChangeContent | EditorChangeSelection> = new EventEmitter()
   @Output() onContentChanged: EventEmitter<ContentChange> = new EventEmitter()
   @Output() onSelectionChanged: EventEmitter<SelectionChange> = new EventEmitter()
@@ -157,12 +158,12 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   onValidatorChanged() {}
 
   @Input()
-  valueGetter = (quillEditor: Quill, editorElement: HTMLElement): string | any  => {
+  valueGetter = (quillEditor: QuillEditor, editorElement: HTMLElement): string | any  => {
     let html: string | null = editorElement.querySelector('.ql-editor')!.innerHTML
     if (html === '<p><br></p>' || html === '<div><br></div>') {
       html = null
     }
-    let modelValue: string | Delta | null = html
+    let modelValue: string | QuillDelta | null = html
     const format = getFormat(this.format, this.config.format)
 
     if (format === 'text') {
@@ -181,7 +182,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   }
 
   @Input()
-  valueSetter = (quillEditor: Quill, value: any): any => {
+  valueSetter = (quillEditor: QuillEditor, value: any): any => {
     const format = getFormat(this.format, this.config.format)
     if (format === 'html') {
       if (this.sanitize) {
@@ -378,7 +379,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     })
   }
 
-  textChangeHandler = (delta: Delta, oldDelta: Delta, source: string): void => {
+  textChangeHandler = (delta: QuillDelta, oldDelta: QuillDelta, source: string): void => {
     // only emit changes emitted by user interactions
     const text = this.quillEditor.getText()
     const content = this.quillEditor.getContents()

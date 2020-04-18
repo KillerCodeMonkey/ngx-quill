@@ -130,7 +130,6 @@ XLM Wallet Address:
 - `npm install ngx-quill`
 - for projects using Angular < v5.0.0 install `npm install ngx-quill@1.6.0`
 - install `@angular/core`, `@angular/common`, `@angular/forms`, `@angular/platform-browser`, `quill`, and `rxjs` - peer dependencies of ngx-quill
-- install `parchment` and `quill-delta` as peer dependencies for custom typings of `Quill` instances, `Range` and `Delta`
 - include theme stylings: bubble.css, snow.css of quilljs in your index.html, or add them in your css/scss files with `@import` statements, or add them external stylings in your build process.
 
 ### For standard webpack, angular-cli and tsc builds
