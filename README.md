@@ -66,7 +66,7 @@ XLM Wallet Address:
         >= 8.0.0
       </td>
       <td>
-        until October/November 2019
+        until Aug 06, 2021
       </td>
     </tr>
     <tr>
@@ -77,7 +77,7 @@ XLM Wallet Address:
         >= 5.2.0
       </td>
       <td>
-        until Nov 22, 2020
+        until Nov 28, 2020
       </td>
     </tr>
     <tr>
@@ -88,7 +88,7 @@ XLM Wallet Address:
         >= 4.0.0, < 8.0.0
       </td>
       <td>
-        until Apr 18, 2020
+        no
       </td>
     </tr>
     <tr>
