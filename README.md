@@ -46,6 +46,7 @@ XLM Wallet Address:
   - activate formats after editor initialisation, e.g. rtl direction
   - present quilljs content with the `quill-view` and `quill-view-html` component
 - [Ionic Demo](https://github.com/KillerCodeMonkey/ngx-quill-ionic)
+- [Angular Universal](https://github.com/KillerCodeMonkey/ngx-quill-universal-example)
 
 ## Compatibility to Angular Versions
 
@@ -193,7 +194,6 @@ The `quill-editor` and `quill-view` component of ngx-quill are doing the rest fo
 On server-side both components will not render or do anything, because they depend on QuillJS and so on the real browser environment.
 
 If you want to render your html content of the editor for seo purposes check out the `quill-view-html` component, that simply renders the html content :).
-
 
 ## Global Config
 
