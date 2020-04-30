@@ -156,31 +156,44 @@ class YourModule { ... }
 
 **HINT:** *If you are using lazy loading modules, you have to add `QuillModule.forRoot()` to your imports in your root module to make sure the `Config` services is registered.*
 
-### For SystemJS builds (Config)
+## Angular Universal
 
-- add quill and ngx-quill to your `paths`:
-```
-paths: {
-  ...
-  'ngx-quill': 'node_modules/ngx-quill/bundles/ngx-quill.umd.js',
-  'quill': 'node_modules/quill/dist/quill.js'
+QuillJS (1.x) is directly using the `document`, `window`, `Node` and `navigator` context of the browser, when you require or import it.
+To get things working in ssr you need to mock them on server side.
+
+Change your `main.server.ts` to something like 
+
+```TS
+import { enableProdMode } from '@angular/core';
+import { environment } from './environments/environment';
+
+if (environment.production) {
+  enableProdMode();
 }
-```
-- set format and dependencies in `packages`:
-```
-packages: {
-  'ngx-quill': {
-    format: 'cjs',
-    meta: {
-      deps: ['quill']
+
+// Mock all used objects and functions used by Quill
+global['window'] = {}
+global['document'] = {
+  createElement: () => ({
+    classList: {
+      toggle: () => {},
+      contains: () => {}
     }
-  },
-  'quill': {
-    format: 'cjs'
-  }
+  }),
+  addEventListener: () => {}
 }
+global['Node'] = {}
+global['navigator'] = {}
+
+export { AppServerModule } from './app/app.server.module';
+export { renderModule, renderModuleFactory } from '@angular/platform-server';
 ```
-- follow the steps of **For standard webpack and tsc builds**
+
+The `quill-editor` and `quill-view` component of ngx-quill are doing the rest for you to check, if it is running on server- or browser side.
+On server-side both components will not render or do anything, because they depend on QuillJS and so on the real browser environment.
+
+If you want to render your html content of the editor for seo purposes check out the `quill-view-html` component, that simply renders the html content :).
+
 
 ## Global Config
 
