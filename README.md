@@ -136,11 +136,11 @@ XLM Wallet Address:
 ### For standard webpack, angular-cli and tsc builds
 
 - import `QuillModule` from `ngx-quill`:
-```
+```TS
 import { QuillModule } from 'ngx-quill'
 ```
 - add `QuillModule` to the imports of your NgModule:
-```
+```TS
 @NgModule({
   imports: [
     ...,
@@ -199,7 +199,7 @@ If you want to render your html content of the editor for seo purposes check out
 
 It is possible to set custom default modules and Quill config options with the import of the `QuillModule.forRoot()`.
 
-```
+```TS
 @NgModule({
   imports: [
     ...,
@@ -240,8 +240,8 @@ If you are using the editor reference to directly manipulate the editor content 
 - formats - array of allowed formats/groupings
 - format - model format - default: `html`, values: `html | object | text | json`, sets the model value type - html = html string, object = quill operation object, json = quill operation json, text = plain text
 - modules - configure/disable quill modules, e.g toolbar or add custom toolbar via html element default is
-```
-{
+```TS
+const modules = {
   toolbar: [
     ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
     ['blockquote', 'code-block'],
@@ -278,7 +278,7 @@ If you are using the editor reference to directly manipulate the editor content 
 - scrollingContainer - default '.ql-editor', allows to set scrolling container
 - use custom-options for adding for example custom font sizes --> this overwrites this options **globally** !!!
 - possbility to create a custom toolbar via projection slot `[quill-editor-toolbar]`:
-```
+```HTML
 <quill-editor>
   <div quill-editor-toolbar>
     <span class="ql-formats">
@@ -317,7 +317,7 @@ If you are using the editor reference to directly manipulate the editor content 
 editor // Quill
 ```
 - onContentChanged - text is updated
-```
+```TS
 {
   editor: editorInstance, // Quill
   html: html, // html string
@@ -329,7 +329,7 @@ editor // Quill
 }
 ```
 - onSelectionChanged - selection is updated, also triggered for onBlur and onFocus, because the selection changed
-```
+```TS
 {
   editor: editorInstance, // Quill
   range: range, // Range
@@ -338,7 +338,7 @@ editor // Quill
 }
 ```
 - onEditorChanged - text or selection is updated - independent of the source
-```
+```TS
 {
   editor: editorInstance, // Quill
   event: 'text-change' // event type
@@ -353,7 +353,7 @@ editor // Quill
 
 or
 
-```
+```TS
 {
   editor: editorInstance, // Quill
   event: 'selection-change' // event type
@@ -364,14 +364,14 @@ or
 ```
 
 - onFocus - editor is focused
-```
+```TS
 {
   editor: editorInstance, // Quill
   source: source // ('user', 'api', 'silent' , undefined)
 }
 ```
 - onBlur - editor is blured
-```
+```TS
 {
   editor: editorInstance, // Quill
   source: source // ('user', 'api', 'silent' , undefined)
