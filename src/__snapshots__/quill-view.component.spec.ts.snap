@@ -3,6 +3,7 @@
 exports[`Basic QuillViewComponent should render and set default snow theme class 1`] = `
 <quill-view
   config={[Function Object]}
+  customModules={[Function Array]}
   customOptions={[Function Array]}
   editorElem={[Function HTMLDivElement]}
   elementRef={[Function ElementRef]}
@@ -163,6 +164,7 @@ exports[`Formats json should update json string 1`] = `
 exports[`Formats object should be set object 1`] = `
 <ng-component
   content={[Function Array]}
+  impl={[Function Function]}
   view={[Function QuillViewComponent]}
 >
   <quill-view
@@ -194,6 +196,7 @@ exports[`Formats object should be set object 1`] = `
 exports[`Formats object should update object content 1`] = `
 <ng-component
   content={[Function Array]}
+  impl={[Function Function]}
   view={[Function QuillViewComponent]}
 >
   <quill-view

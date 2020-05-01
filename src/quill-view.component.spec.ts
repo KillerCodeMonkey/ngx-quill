@@ -1,11 +1,22 @@
 import { Component, ViewChild } from '@angular/core'
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed } from '@angular/core/testing'
 
 import { QuillViewComponent } from '../src/quill-view.component'
 
 import { QuillModule } from './quill.module'
+import Quill from 'quill'
 
 // tslint:disable:max-classes-per-file
+
+class CustomModule {
+  quill: Quill
+  options: any
+
+  constructor(quill: Quill, options: any) {
+    this.quill = quill
+    this.options = options
+  }
+}
 
 describe('Basic QuillViewComponent', () => {
   let fixture: ComponentFixture<QuillViewComponent>
@@ -21,7 +32,7 @@ describe('Basic QuillViewComponent', () => {
     fixture = TestBed.createComponent(QuillViewComponent)
   })
 
-  it('should render and set default snow theme class', async(async () => {
+  it('should render and set default snow theme class', async () => {
     const element = fixture.nativeElement
     fixture.detectChanges()
     await fixture.whenStable()
@@ -32,14 +43,14 @@ describe('Basic QuillViewComponent', () => {
     expect(viewElement).toBeDefined()
 
     expect(fixture).toMatchSnapshot()
-  }))
+  })
 })
 
 describe('Formats', () => {
   describe('object', () => {
     @Component({
       template: `
-    <quill-view [content]="content" format="object"></quill-view>
+    <quill-view [content]="content" [customModules]="[{path: 'modules/test', implementation: impl}]" format="object"></quill-view>
     `
     })
     class ObjectComponent {
@@ -49,6 +60,8 @@ describe('Formats', () => {
       content = [{
         insert: 'Hello'
       }]
+
+      impl = CustomModule
     }
 
     let fixture: ComponentFixture<ObjectComponent>
@@ -63,29 +76,27 @@ describe('Formats', () => {
       fixture = TestBed.createComponent(ObjectComponent) as ComponentFixture<ObjectComponent>
       fixture.detectChanges()
     })
-    it('should be set object', async(() => {
+
+    it('should be set object', async () => {
       const component = fixture.componentInstance
 
-      fixture.whenStable().then(() => {
-        expect(JSON.stringify(component.view!.quillEditor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hello\n'}]}))
+      await fixture.whenStable()
+      expect(JSON.stringify(component.view!.quillEditor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hello\n'}]}))
 
-        expect(fixture).toMatchSnapshot()
-      })
-    }))
+      expect(fixture).toMatchSnapshot()
+    })
 
-    it('should update object content', async(() => {
+    it('should update object content', async () => {
       const component = fixture.componentInstance
-      fixture.whenStable().then(() => {
-        component.content = [{ insert: '1234' }]
-        fixture.detectChanges()
+      await fixture.whenStable()
+      component.content = [{ insert: '1234' }]
+      fixture.detectChanges()
 
-        return fixture.whenStable()
-      }).then(() => {
-        expect(JSON.stringify(component.view!.quillEditor.getContents())).toEqual(JSON.stringify({ops: [{insert: '1234\n'}]}))
+      await fixture.whenStable()
+      expect(JSON.stringify(component.view!.quillEditor.getContents())).toEqual(JSON.stringify({ops: [{insert: '1234\n'}]}))
 
-        expect(fixture).toMatchSnapshot()
-      })
-    }))
+      expect(fixture).toMatchSnapshot()
+    })
   })
 
   describe('html', () => {
@@ -113,16 +124,16 @@ describe('Formats', () => {
       fixture = TestBed.createComponent(HTMLComponent) as ComponentFixture<HTMLComponent>
       fixture.detectChanges()
     })
-    it('should be set html', async(async () => {
+    it('should be set html', async () => {
       const component = fixture.componentInstance
 
       await fixture.whenStable()
       expect(component.view!.quillEditor.getText().trim()).toEqual('Hallo')
 
       expect(fixture).toMatchSnapshot()
-    }))
+    })
 
-    it('should update html', async(async () => {
+    it('should update html', async () => {
       const component = fixture.componentInstance
       await fixture.whenStable()
       component.content = '<p>test</p>'
@@ -132,7 +143,7 @@ describe('Formats', () => {
       expect(component.view!.quillEditor.getText().trim()).toEqual('test')
 
       expect(fixture).toMatchSnapshot()
-    }))
+    })
   })
 
   describe('text', () => {
@@ -160,15 +171,15 @@ describe('Formats', () => {
       fixture = TestBed.createComponent(TextComponent) as ComponentFixture<TextComponent>
       fixture.detectChanges()
     })
-    it('should be set text', async(async () => {
+    it('should be set text', async () => {
       const component = fixture.componentInstance
       await fixture.whenStable()
       expect(component.view!.quillEditor.getText().trim()).toEqual('Hallo')
 
       expect(fixture).toMatchSnapshot()
-    }))
+    })
 
-    it('should update text', async(async () => {
+    it('should update text', async () => {
       const component = fixture.componentInstance
       await fixture.whenStable()
       component.content = 'test'
@@ -178,7 +189,7 @@ describe('Formats', () => {
       expect(component.view!.quillEditor.getText().trim()).toEqual('test')
 
       expect(fixture).toMatchSnapshot()
-    }))
+    })
   })
 
   describe('json', () => {
@@ -209,7 +220,7 @@ describe('Formats', () => {
       fixture.detectChanges()
     })
 
-    it('should set json string', async(async () => {
+    it('should set json string', async () => {
       const component = fixture.componentInstance
       await fixture.whenStable()
       await fixture.whenStable()
@@ -217,9 +228,9 @@ describe('Formats', () => {
       expect(JSON.stringify(component.view!.quillEditor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hallo\n'}]}))
 
       expect(fixture).toMatchSnapshot()
-    }))
+    })
 
-    it('should update json string', async(async () => {
+    it('should update json string', async () => {
       const component = fixture.componentInstance
       await fixture.whenStable()
 
@@ -232,6 +243,6 @@ describe('Formats', () => {
       expect(JSON.stringify(component.view!.quillEditor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hallo 123\n'}]}))
 
       expect(fixture).toMatchSnapshot()
-    }))
+    })
   })
 })

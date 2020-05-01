@@ -3,6 +3,10 @@ import {DomSanitizer} from '@angular/platform-browser'
 
 import {QUILL_CONFIG_TOKEN, QuillConfig, QuillModules} from './quill-editor.interfaces'
 
+import Quill, { Delta } from 'quill'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const QuillNamespace = require('quill')
+
 import {
   AfterViewInit,
   Component,
@@ -26,16 +30,15 @@ import {ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator} from 
 import {defaultModules} from './quill-defaults'
 
 import {getFormat} from './helpers'
-import { QuillDelta, QuillEditor } from './quill.interfaces'
-
-// Because quill uses `document` directly, we cannot `import` during SSR
-// instead, we load dynamically via `require('quill')` in `ngAfterViewInit()`
-declare const require: any
-let Quill: any = null
 
 export interface CustomOption {
   import: string
   whitelist: any[]
+}
+
+export interface CustomModule {
+  path: string
+  implementation: any
 }
 
 export interface Range {
@@ -45,28 +48,28 @@ export interface Range {
 
 export interface ContentChange {
   content: any
-  delta: QuillDelta
-  editor: QuillEditor
+  delta: Delta
+  editor: Quill
   html: string | null
-  oldDelta: QuillDelta
+  oldDelta: Delta
   source: string
   text: string
 }
 
 export interface SelectionChange {
-  editor: QuillEditor
+  editor: Quill
   oldRange: Range | null
   range: Range | null
   source: string
 }
 
 export interface Blur {
-  editor: QuillEditor
+  editor: Quill
   source: string
 }
 
 export interface Focus {
-  editor: QuillEditor
+  editor: Quill
   source: string
 }
 
@@ -108,8 +111,8 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     }, [])
   }
 
-  quillEditor!: QuillEditor
-  editorElem: HTMLElement | undefined
+  quillEditor!: Quill
+  editorElem!: HTMLElement
   content: any
 
   @Input() format?: 'object' | 'html' | 'text' | 'json'
@@ -129,12 +132,13 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   @Input() scrollingContainer?: HTMLElement | string | null
   @Input() bounds?: HTMLElement | string
   @Input() customOptions: CustomOption[] = []
+  @Input() customModules: CustomModule[] = []
   @Input() trackChanges?: 'user' | 'all'
   @Input() preserveWhitespace = false
   @Input() classes?: string
   @Input() trimOnValidation = false
 
-  @Output() onEditorCreated: EventEmitter<QuillEditor> = new EventEmitter()
+  @Output() onEditorCreated: EventEmitter<Quill> = new EventEmitter()
   @Output() onEditorChanged: EventEmitter<EditorChangeContent | EditorChangeSelection> = new EventEmitter()
   @Output() onContentChanged: EventEmitter<ContentChange> = new EventEmitter()
   @Output() onSelectionChanged: EventEmitter<SelectionChange> = new EventEmitter()
@@ -158,12 +162,12 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   onValidatorChanged() {}
 
   @Input()
-  valueGetter = (quillEditor: QuillEditor, editorElement: HTMLElement): string | any  => {
+  valueGetter = (quillEditor: Quill, editorElement: HTMLElement): string | any  => {
     let html: string | null = editorElement.querySelector('.ql-editor')!.innerHTML
     if (html === '<p><br></p>' || html === '<div><br></div>') {
       html = null
     }
-    let modelValue: string | QuillDelta | null = html
+    let modelValue: string | Delta | null = html
     const format = getFormat(this.format, this.config.format)
 
     if (format === 'text') {
@@ -182,7 +186,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   }
 
   @Input()
-  valueSetter = (quillEditor: QuillEditor, value: any): any => {
+  valueSetter = (quillEditor: Quill, value: any): any => {
     const format = getFormat(this.format, this.config.format)
     if (format === 'html') {
       if (this.sanitize) {
@@ -203,11 +207,6 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   ngAfterViewInit() {
     if (isPlatformServer(this.platformId)) {
       return
-    }
-    if (!Quill) {
-      this.zone.runOutsideAngular(() => {
-        Quill = require('quill')
-      })
     }
 
     this.elementRef.nativeElement.insertAdjacentHTML(
@@ -246,9 +245,13 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     }
 
     this.customOptions.forEach((customOption) => {
-      const newCustomOption = Quill.import(customOption.import)
+      const newCustomOption = QuillNamespace.import(customOption.import)
       newCustomOption.whitelist = customOption.whitelist
-      Quill.register(newCustomOption, true)
+      QuillNamespace.register(newCustomOption, true)
+    })
+
+    this.customModules.forEach(({implementation, path}) => {
+      QuillNamespace.register(path, implementation)
     })
 
     let bounds = this.bounds && this.bounds === 'self' ? this.editorElem : this.bounds
@@ -277,14 +280,14 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     }
 
     this.zone.runOutsideAngular(() => {
-      this.quillEditor = new Quill(this.editorElem, {
+      this.quillEditor = new QuillNamespace(this.editorElem, {
         bounds,
-        debug,
-        formats,
+        debug: debug as any,
+        formats: formats as any,
         modules,
         placeholder,
         readOnly,
-        scrollingContainer,
+        scrollingContainer: scrollingContainer as any,
         strict: this.strict,
         theme: this.theme || (this.config.theme ? this.config.theme : 'snow')
       })
@@ -310,7 +313,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
         this.quillEditor.setContents(contents, 'silent')
       }
 
-      this.quillEditor.history.clear()
+      this.quillEditor.getModule('history').clear()
     }
 
     // initialize disabled status based on this.disabled as default value
@@ -379,7 +382,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     })
   }
 
-  textChangeHandler = (delta: QuillDelta, oldDelta: QuillDelta, source: string): void => {
+  textChangeHandler = (delta: Delta, oldDelta: Delta, source: string): void => {
     // only emit changes emitted by user interactions
     const text = this.quillEditor.getText()
     const content = this.quillEditor.getContents()
@@ -390,7 +393,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     }
 
     const trackChanges = this.trackChanges || this.config.trackChanges
-    const shouldTriggerOnModelChange = (source === Quill.sources.USER || trackChanges && trackChanges === 'all') && this.onModelChange
+    const shouldTriggerOnModelChange = (source === QuillNamespace['sources'].USER || trackChanges && trackChanges === 'all') && this.onModelChange
 
     // only emit changes when there's any listener
     if (!this.onContentChanged.observers.length && !shouldTriggerOnModelChange) {

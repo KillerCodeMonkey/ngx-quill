@@ -162,7 +162,7 @@ class YourModule { ... }
 QuillJS (1.x) is directly using the `document`, `window`, `Node` and `navigator` context of the browser, when you require or import it.
 To get things working in ssr you need to mock them on server side.
 
-Change your `main.server.ts` to something like 
+Change your `main.server.ts` to something like
 
 ```TS
 import { enableProdMode } from '@angular/core';
@@ -276,7 +276,8 @@ const modules = {
 - required - add validation as a required field - `[required]="true"` - default: false, boolean expected (no strings!)
 - strict - default: true, sets editor in strict mode
 - scrollingContainer - default '.ql-editor', allows to set scrolling container
-- use custom-options for adding for example custom font sizes --> this overwrites this options **globally** !!!
+- use customOptions for adding for example custom font sizes --> this overwrites this options **globally** !!!
+- use customModules for adding and overwriting modules --> this overwrites this modules **globally** !!!
 - possbility to create a custom toolbar via projection slot `[quill-editor-toolbar]`:
 ```HTML
 <quill-editor>
@@ -403,7 +404,8 @@ As a helper `ngx-quill` provides a component where you can pass many options of 
 - modules - configure/disable quill modules
 - theme - bubble/snow, default is `snow`
 - debug - set log level `warn`, `error`, `log` or `false` to deactivate logging, default: `warn`
-- use custom-options for adding for example custom font sizes --> this overwrites this options **globally** !!!
+- use customOptions for adding for example custom font sizes --> this overwrites this options **globally** !!!
+- use customModules for adding and overwriting modules --> this overwrites this modules **globally** !!!
 - strict - default: true, sets editor in strict mode
 - preserveWhitespace - default: false - possbility to use a pre-tag instead of a div-tag for the contenteditable area to preserve duplicated whitespaces | caution if used with syntax plugin [Related issue](https://github.com/quilljs/quill/issues/1751)
 
