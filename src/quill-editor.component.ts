@@ -1,7 +1,7 @@
 import {DOCUMENT, isPlatformServer} from '@angular/common'
 import {DomSanitizer} from '@angular/platform-browser'
 
-import {QUILL_CONFIG_TOKEN, QuillConfig, QuillModules} from './quill-editor.interfaces'
+import {QUILL_CONFIG_TOKEN, QuillConfig, QuillModules, CustomOption, CustomModule} from './quill-editor.interfaces'
 
 import Quill, { Delta } from 'quill'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -30,16 +30,6 @@ import {ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator} from 
 import {defaultModules} from './quill-defaults'
 
 import {getFormat} from './helpers'
-
-export interface CustomOption {
-  import: string
-  whitelist: any[]
-}
-
-export interface CustomModule {
-  path: string
-  implementation: any
-}
 
 export interface Range {
   index: number
@@ -244,13 +234,15 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
       this.addClasses(this.classes)
     }
 
-    this.customOptions.forEach((customOption) => {
+    const customOptions = [...(this.config.customOptions || []), ...this.customOptions]
+    customOptions.forEach((customOption) => {
       const newCustomOption = QuillNamespace.import(customOption.import)
       newCustomOption.whitelist = customOption.whitelist
       QuillNamespace.register(newCustomOption, true)
     })
 
-    this.customModules.forEach(({implementation, path}) => {
+    const customModules = [...(this.config.customModules || []), ...this.customModules]
+    customModules.forEach(({implementation, path}) => {
       QuillNamespace.register(path, implementation)
     })
 

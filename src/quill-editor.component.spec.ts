@@ -1102,6 +1102,14 @@ describe('QuillEditor - base config', () => {
       declarations: [TestComponent, TestToolbarComponent],
       imports: [FormsModule, QuillModule],
       providers: QuillModule.forRoot({
+        customModules: [{
+          path: 'modules/custom',
+          implementation: CustomModule
+        }],
+        customOptions: [{
+          import: 'attributors/style/size',
+          whitelist: ['14']
+        }],
         bounds: 'body',
         debug: false,
         format: 'object',
@@ -1122,6 +1130,8 @@ describe('QuillEditor - base config', () => {
 
   it('renders editor with config',  async () => {
     fixture = TestBed.createComponent(TestComponent)
+    const spy = spyOn(QuillNamespace, 'register').and.callThrough()
+    const spy2 = spyOn(QuillNamespace, 'import').and.callThrough()
     fixture.detectChanges()
     await fixture.whenStable()
 
@@ -1141,6 +1151,10 @@ describe('QuillEditor - base config', () => {
 
     expect(JSON.stringify(fixture.componentInstance.title)).toEqual(JSON.stringify({ ops: [{ attributes: { bold: true }, insert: `content`}, {'insert':'\n'}] }))
     expect(editor.root.dataset.placeholder).toEqual('placeholder')
+    expect(spy2).toHaveBeenCalledWith('attributors/style/size')
+    expect(spy).toHaveBeenCalledWith({'attrName': 'size', 'keyName': 'font-size', 'scope': 5, 'whitelist': ['14']}, true)
+    expect(spy).toHaveBeenCalledWith('formats/size', {'attrName': 'size', 'keyName': 'font-size', 'scope': 5, 'whitelist': ['14']}, true)
+    expect(spy).toHaveBeenCalledWith('modules/custom', CustomModule)
 
     expect(fixture).toMatchSnapshot()
   })

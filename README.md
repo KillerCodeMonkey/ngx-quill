@@ -223,6 +223,11 @@ See [Quill Configuration](https://quilljs.com/docs/configuration/) for a full li
 
 The `QuillModule` exports the `defaultModules` if you want to extend them :).
 
+### Custom Modules and options/formats
+
+- use customOptions for adding for example custom font sizes or other options/formats
+- use customModules for adding and overwriting modules, e.g. image-resize or your own modules
+
 ## QuillEditorComponent
 
 ### Hint

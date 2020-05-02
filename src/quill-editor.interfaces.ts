@@ -1,5 +1,15 @@
 import { InjectionToken } from '@angular/core'
 
+export interface CustomOption {
+  import: string
+  whitelist: any[]
+}
+
+export interface CustomModule {
+  implementation: any
+  path: string
+}
+
 export type QuillToolbarConfig = Array<Array< string | {
   indent?: string
   list?: string
@@ -41,6 +51,8 @@ export type QuillFormat = 'object' | 'json' | 'html' | 'text'
 
 export interface QuillConfig {
   bounds?: HTMLElement | string
+  customModules?: CustomModule[]
+  customOptions?: CustomOption[]
   debug?: 'error' | 'warn' | 'log' | false
   format?: QuillFormat
   formats?: string[]

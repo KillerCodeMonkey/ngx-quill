@@ -19,7 +19,7 @@ import {
 } from '@angular/core'
 
 import { defaultModules } from './quill-defaults'
-import { CustomOption, CustomModule } from './quill-editor.component'
+import { CustomOption, CustomModule } from './quill-editor.interfaces'
 import {getFormat} from './helpers'
 
 @Component({
@@ -88,13 +88,15 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
     const modules = Object.assign({}, this.modules || (this.config.modules || defaultModules))
     modules.toolbar = false
 
-    this.customOptions.forEach((customOption) => {
+    const customOptions = [...(this.config.customOptions || []), ...this.customOptions]
+    customOptions.forEach((customOption) => {
       const newCustomOption = QuillNamespace.import(customOption.import)
       newCustomOption.whitelist = customOption.whitelist
       QuillNamespace.register(newCustomOption, true)
     })
 
-    this.customModules.forEach(({implementation, path}) => {
+    const customModules = [...(this.config.customModules || []), ...this.customModules]
+    customModules.forEach(({implementation, path}) => {
       QuillNamespace.register(path, implementation)
     })
 

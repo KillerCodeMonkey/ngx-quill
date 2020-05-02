@@ -24,7 +24,16 @@ describe('Basic QuillViewComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        QuillModule.forRoot()
+        QuillModule.forRoot({
+          customModules: [{
+            path: 'modules/custom',
+            implementation: CustomModule
+          }],
+          customOptions: [{
+            import: 'attributors/style/size',
+            whitelist: ['14']
+          }],
+        })
       ],
       providers: QuillModule.forRoot().providers
     })
