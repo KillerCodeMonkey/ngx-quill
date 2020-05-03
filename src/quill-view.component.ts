@@ -88,15 +88,13 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
     const modules = Object.assign({}, this.modules || (this.config.modules || defaultModules))
     modules.toolbar = false
 
-    const customOptions = [...(this.config.customOptions || []), ...this.customOptions]
-    customOptions.forEach((customOption) => {
+    this.customOptions.forEach((customOption) => {
       const newCustomOption = QuillNamespace.import(customOption.import)
       newCustomOption.whitelist = customOption.whitelist
       QuillNamespace.register(newCustomOption, true)
     })
 
-    const customModules = [...(this.config.customModules || []), ...this.customModules]
-    customModules.forEach(({implementation, path}) => {
+    this.customModules.forEach(({implementation, path}) => {
       QuillNamespace.register(path, implementation)
     })
 

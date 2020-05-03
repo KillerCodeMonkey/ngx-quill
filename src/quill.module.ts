@@ -22,6 +22,7 @@ import { QuillViewComponent } from './quill-view.component'
 export class QuillModule {
   static forRoot(config?: QuillConfig): ModuleWithProviders {
     if (config) {
+      // Only register custom options and modules once
       config.customOptions?.forEach((customOption) => {
         const newCustomOption = Quill.import(customOption.import)
         newCustomOption.whitelist = customOption.whitelist
@@ -31,7 +32,13 @@ export class QuillModule {
       config.customModules?.forEach(({implementation, path}) => {
         Quill.register(path, implementation)
       })
+
+      // set default modules as modules if not modules key passed on custom config
+      if (!config.modules) {
+        config.modules = defaultModules
+      }
     }
+
     return {
       ngModule: QuillModule,
       providers: [

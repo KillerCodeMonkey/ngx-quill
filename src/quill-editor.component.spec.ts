@@ -1096,8 +1096,14 @@ describe('Advanced QuillEditorComponent', () => {
 
 describe('QuillEditor - base config', () => {
   let fixture: ComponentFixture<TestComponent>
+  let registerSpy: jasmine.Spy
+
+  beforeAll(() => {
+    registerSpy = spyOn(QuillNamespace, 'register').and.callThrough()
+  })
 
   beforeEach(() => {
+
     TestBed.configureTestingModule({
       declarations: [TestComponent, TestToolbarComponent],
       imports: [FormsModule, QuillModule],
@@ -1126,11 +1132,12 @@ describe('QuillEditor - base config', () => {
         trackChanges: 'all'
       }).providers
     }).compileComponents()
+
+    expect(registerSpy).toHaveBeenCalledWith('modules/custom', CustomModule)
   })
 
   it('renders editor with config',  async () => {
     fixture = TestBed.createComponent(TestComponent)
-    const spy = spyOn(QuillNamespace, 'register').and.callThrough()
     const spy2 = spyOn(QuillNamespace, 'import').and.callThrough()
     fixture.detectChanges()
     await fixture.whenStable()
@@ -1152,9 +1159,8 @@ describe('QuillEditor - base config', () => {
     expect(JSON.stringify(fixture.componentInstance.title)).toEqual(JSON.stringify({ ops: [{ attributes: { bold: true }, insert: `content`}, {'insert':'\n'}] }))
     expect(editor.root.dataset.placeholder).toEqual('placeholder')
     expect(spy2).toHaveBeenCalledWith('attributors/style/size')
-    expect(spy).toHaveBeenCalledWith({'attrName': 'size', 'keyName': 'font-size', 'scope': 5, 'whitelist': ['14']}, true)
-    expect(spy).toHaveBeenCalledWith('formats/size', {'attrName': 'size', 'keyName': 'font-size', 'scope': 5, 'whitelist': ['14']}, true)
-    expect(spy).toHaveBeenCalledWith('modules/custom', CustomModule)
+    expect(registerSpy).toHaveBeenCalledWith({'attrName': 'size', 'keyName': 'font-size', 'scope': 5, 'whitelist': ['14']}, true)
+    expect(registerSpy).toHaveBeenCalledWith('formats/size', {'attrName': 'size', 'keyName': 'font-size', 'scope': 5, 'whitelist': ['14']}, true)
 
     expect(fixture).toMatchSnapshot()
   })
