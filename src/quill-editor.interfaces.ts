@@ -53,6 +53,7 @@ export interface QuillConfig {
   bounds?: HTMLElement | string
   customModules?: CustomModule[]
   customOptions?: CustomOption[]
+  suppressGlobalRegisterWarning?: boolean
   debug?: 'error' | 'warn' | 'log' | false
   format?: QuillFormat
   formats?: string[]

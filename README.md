@@ -193,6 +193,8 @@ export { renderModule, renderModuleFactory } from '@angular/platform-server';
 The `quill-editor` and `quill-view` component of ngx-quill are doing the rest for you to check, if it is running on server- or browser side.
 On server-side both components will not render or do anything, because they depend on QuillJS and so on the real browser environment.
 
+**Hint:** Set `suppressGlobalRegisterWarning: true` in the global config to suppress quilljs warnings.
+
 If you want to render your html content of the editor for seo purposes check out the `quill-view-html` component, that simply renders the html content :).
 
 ## Global Config
@@ -227,6 +229,14 @@ The `QuillModule` exports the `defaultModules` if you want to extend them :).
 
 - use customOptions for adding for example custom font sizes or other options/formats
 - use customModules for adding and overwriting modules, e.g. image-resize or your own modules
+
+### Suppress global register warnings
+
+Per default when `Quill.register` is called and you are overwriting an already existing module, QuillJS logs a warning. If you pass `customOptions` or `customModules` ngx-quill is registering those modules/options/formats for you.
+
+In e.g. an angular univeral project your `AppModule` and so `QuillModule.forRoot()` is executed twice (1x server side, 1x browser). QuillJS is running in a mocked env on server side, so it is intendet that every register runs twice.
+
+To subpress those expected warnings you can turn them off by passing `suppressGlobalRegisterWarning: true`.
 
 ## QuillEditorComponent
 

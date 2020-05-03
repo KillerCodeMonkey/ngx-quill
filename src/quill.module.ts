@@ -26,11 +26,11 @@ export class QuillModule {
       config.customOptions?.forEach((customOption) => {
         const newCustomOption = Quill.import(customOption.import)
         newCustomOption.whitelist = customOption.whitelist
-        Quill.register(newCustomOption, true)
+        Quill.register(newCustomOption, true, config.suppressGlobalRegisterWarning)
       })
 
       config.customModules?.forEach(({implementation, path}) => {
-        Quill.register(path, implementation)
+        Quill.register(path, implementation, config.suppressGlobalRegisterWarning)
       })
 
       // set default modules as modules if not modules key passed on custom config

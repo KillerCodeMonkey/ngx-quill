@@ -1133,7 +1133,7 @@ describe('QuillEditor - base config', () => {
       }).providers
     }).compileComponents()
 
-    expect(registerSpy).toHaveBeenCalledWith('modules/custom', CustomModule)
+    expect(registerSpy).toHaveBeenCalledWith('modules/custom', CustomModule, undefined)
   })
 
   it('renders editor with config',  async () => {
