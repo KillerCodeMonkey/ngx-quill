@@ -1,11 +1,14 @@
-import {DOCUMENT, isPlatformServer} from '@angular/common'
-import {DomSanitizer} from '@angular/platform-browser'
+import { DOCUMENT, isPlatformServer } from "@angular/common";
+import { DomSanitizer } from "@angular/platform-browser";
 
-import {QUILL_CONFIG_TOKEN, QuillConfig, QuillModules, CustomOption, CustomModule} from './quill-editor.interfaces'
+import {
+  QuillConfig,
+  QuillModules,
+  CustomOption,
+  CustomModule
+} from "./quill-editor.interfaces";
 
-import Quill, { Delta } from 'quill'
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const QuillNamespace = require('quill')
+import { getFormat, dynamicImportCommonJs } from "./helpers";
 
 import {
   AfterViewInit,
@@ -24,47 +27,60 @@ import {
   SecurityContext,
   SimpleChanges,
   ViewEncapsulation
-} from '@angular/core'
+} from "@angular/core";
 
-import {ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator} from '@angular/forms'
-import {defaultModules} from './quill-defaults'
+import {
+  ControlValueAccessor,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  Validator
+} from "@angular/forms";
+import { defaultModules } from "./quill-defaults";
 
-import {getFormat} from './helpers'
+import { Quill, DeltaStatic as Delta } from "quill";
+import { QUILL_CONFIG_TOKEN, QuillEditorService } from "./quill-editor.service";
+
+let QuillNamespace: any;
+const QuillPromise = dynamicImportCommonJs<typeof Quill>(() =>
+  import(/* webpackChunkName: "quill" */ "quill").then(m => m.Quill)
+);
 
 export interface Range {
-  index: number
-  length: number
+  index: number;
+  length: number;
 }
 
 export interface ContentChange {
-  content: any
-  delta: Delta
-  editor: Quill
-  html: string | null
-  oldDelta: Delta
-  source: string
-  text: string
+  content: any;
+  delta: Delta;
+  editor: Quill;
+  html: string | null;
+  oldDelta: Delta;
+  source: string;
+  text: string;
 }
 
 export interface SelectionChange {
-  editor: Quill
-  oldRange: Range | null
-  range: Range | null
-  source: string
+  editor: Quill;
+  oldRange: Range | null;
+  range: Range | null;
+  source: string;
 }
 
 export interface Blur {
-  editor: Quill
-  source: string
+  editor: Quill;
+  source: string;
 }
 
 export interface Focus {
-  editor: Quill
-  source: string
+  editor: Quill;
+  source: string;
 }
 
-export type EditorChangeContent = ContentChange & {event: 'text-change'}
-export type EditorChangeSelection = SelectionChange & {event: 'selection-change'}
+export type EditorChangeContent = ContentChange & { event: "text-change" };
+export type EditorChangeSelection = SelectionChange & {
+  event: "selection-change";
+};
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -82,61 +98,18 @@ export type EditorChangeSelection = SelectionChange & {event: 'selection-change'
       useExisting: forwardRef(() => QuillEditorComponent)
     }
   ],
-  selector: 'quill-editor',
+  selector: "comp-quill-editor",
   template: `
-  <ng-content select="[quill-editor-toolbar]"></ng-content>
-`
+    <ng-content select="[quill-editor-toolbar]"></ng-content>
+  `
 })
-export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor, OnChanges, OnDestroy, Validator {
-
-  static normalizeClassNames(classes: string): string[] {
-    const classList = classes.trim().split(' ')
-    return classList.reduce((prev: string[], cur: string) => {
-      const trimmed = cur.trim()
-      if (trimmed) {
-        prev.push(trimmed)
-      }
-
-      return prev
-    }, [])
-  }
-
-  quillEditor!: Quill
-  editorElem!: HTMLElement
-  content: any
-
-  @Input() format?: 'object' | 'html' | 'text' | 'json'
-  @Input() theme?: string
-  @Input() modules?: QuillModules
-  @Input() debug?: 'warn' | 'log' | 'error' | false
-  @Input() readOnly?: boolean
-  @Input() placeholder?: string
-  @Input() maxLength?: number
-  @Input() minLength?: number
-  @Input() required = false
-  @Input() formats?: string[] | null
-  @Input() customToolbarPosition: 'top' | 'bottom' = 'top'
-  @Input() sanitize = false
-  @Input() styles: any = null
-  @Input() strict = true
-  @Input() scrollingContainer?: HTMLElement | string | null
-  @Input() bounds?: HTMLElement | string
-  @Input() customOptions: CustomOption[] = []
-  @Input() customModules: CustomModule[] = []
-  @Input() trackChanges?: 'user' | 'all'
-  @Input() preserveWhitespace = false
-  @Input() classes?: string
-  @Input() trimOnValidation = false
-
-  @Output() onEditorCreated: EventEmitter<Quill> = new EventEmitter()
-  @Output() onEditorChanged: EventEmitter<EditorChangeContent | EditorChangeSelection> = new EventEmitter()
-  @Output() onContentChanged: EventEmitter<ContentChange> = new EventEmitter()
-  @Output() onSelectionChanged: EventEmitter<SelectionChange> = new EventEmitter()
-  @Output() onFocus: EventEmitter<Focus> = new EventEmitter()
-  @Output() onBlur: EventEmitter<Blur> = new EventEmitter()
-
-  disabled = false // used to store initial value before ViewInit
-
+export class QuillEditorComponent
+  implements
+    AfterViewInit,
+    ControlValueAccessor,
+    OnChanges,
+    OnDestroy,
+    Validator {
   constructor(
     @Inject(ElementRef) private elementRef: ElementRef,
     @Inject(DomSanitizer) private domSanitizer: DomSanitizer,
@@ -144,129 +117,212 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     @Inject(PLATFORM_ID) private platformId: any,
     @Inject(Renderer2) private renderer: Renderer2,
     @Inject(NgZone) private zone: NgZone,
-    @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig
+    @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig,
+    private readonly service: QuillEditorService
   ) {}
+
+  quillEditor!: Quill;
+  editorElem!: HTMLElement;
+  content: any;
+
+  @Input() format?: "object" | "html" | "text" | "json";
+  @Input() theme?: string;
+  @Input() modules?: QuillModules;
+  @Input() debug?: "warn" | "log" | "error" | false;
+  @Input() readOnly?: boolean;
+  @Input() placeholder?: string;
+  @Input() maxLength?: number;
+  @Input() minLength?: number;
+  @Input() required = false;
+  @Input() formats?: string[] | null;
+  @Input() customToolbarPosition: "top" | "bottom" = "top";
+  @Input() sanitize = false;
+  @Input() styles: any = null;
+  @Input() strict = true;
+  @Input() scrollingContainer?: HTMLElement | string | null;
+  @Input() bounds?: HTMLElement | string;
+  @Input() customOptions: CustomOption[] = [];
+  @Input() customModules: CustomModule[] = [];
+  @Input() trackChanges?: "user" | "all";
+  @Input() preserveWhitespace = false;
+  @Input() classes?: string;
+  @Input() trimOnValidation = false;
+
+  /* tslint:disable */
+  @Output() onEditorCreated: EventEmitter<Quill> = new EventEmitter();
+  @Output() onEditorChanged: EventEmitter<
+    EditorChangeContent | EditorChangeSelection
+  > = new EventEmitter();
+  @Output() onContentChanged: EventEmitter<ContentChange> = new EventEmitter();
+  @Output() onSelectionChanged: EventEmitter<
+    SelectionChange
+  > = new EventEmitter();
+  @Output() onFocus: EventEmitter<Focus> = new EventEmitter();
+  @Output() onBlur: EventEmitter<Blur> = new EventEmitter();
+
+  /* ts-lint:enable */
+
+  disabled = false; // used to store initial value before ViewInit
+  static normalizeClassNames(classes: string): string[] {
+    const classList = classes.trim().split(" ");
+    return classList.reduce((prev: string[], cur: string) => {
+      const trimmed = cur.trim();
+      if (trimmed) {
+        prev.push(trimmed);
+      }
+
+      return prev;
+    }, []);
+  }
 
   onModelChange(_modelValue?: any) {}
   onModelTouched() {}
   onValidatorChanged() {}
 
   @Input()
-  valueGetter = (quillEditor: Quill, editorElement: HTMLElement): string | any  => {
-    let html: string | null = editorElement.querySelector('.ql-editor')!.innerHTML
-    if (html === '<p><br></p>' || html === '<div><br></div>') {
-      html = null
+  valueGetter = (
+    quillEditor: Quill,
+    editorElement: HTMLElement
+  ): string | any => {
+    let html: string | null = editorElement.querySelector(".ql-editor")!
+      .innerHTML;
+    if (html === "<p><br></p>" || html === "<div><br></div>") {
+      html = null;
     }
-    let modelValue: string | Delta | null = html
-    const format = getFormat(this.format, this.config.format)
+    let modelValue: string | Delta | null = html;
+    const format = getFormat(this.format, this.config.format);
 
-    if (format === 'text') {
-      modelValue = quillEditor.getText()
-    } else if (format === 'object') {
-      modelValue = quillEditor.getContents()
-    } else if (format === 'json') {
+    if (format === "text") {
+      modelValue = quillEditor.getText();
+    } else if (format === "object") {
+      modelValue = quillEditor.getContents();
+    } else if (format === "json") {
       try {
-        modelValue = JSON.stringify(quillEditor.getContents())
+        modelValue = JSON.stringify(quillEditor.getContents());
       } catch (e) {
-        modelValue = quillEditor.getText()
+        modelValue = quillEditor.getText();
       }
     }
 
-    return modelValue
-  }
+    return modelValue;
+  };
 
   @Input()
   valueSetter = (quillEditor: Quill, value: any): any => {
-    const format = getFormat(this.format, this.config.format)
-    if (format === 'html') {
+    const format = getFormat(this.format, this.config.format);
+    if (format === "html") {
       if (this.sanitize) {
-        value = this.domSanitizer.sanitize(SecurityContext.HTML, value)
+        value = this.domSanitizer.sanitize(SecurityContext.HTML, value);
       }
-      return quillEditor.clipboard.convert(value)
-    } else if (format === 'json') {
+      return quillEditor.clipboard.convert(value);
+    } else if (format === "json") {
       try {
-        return JSON.parse(value)
+        return JSON.parse(value);
       } catch (e) {
-        return [{ insert: value }]
+        return [{ insert: value }];
       }
     }
 
-    return value
-  }
+    return value;
+  };
 
   ngAfterViewInit() {
     if (isPlatformServer(this.platformId)) {
-      return
+      return;
     }
+
+    this.initEditor().then(() => console.log("Editor Initialized"));
+  }
+
+  async initEditor() {
+    QuillNamespace = await QuillPromise();
 
     this.elementRef.nativeElement.insertAdjacentHTML(
-      this.customToolbarPosition === 'top' ? 'beforeend' : 'afterbegin',
-      this.preserveWhitespace ? '<pre quill-editor-element></pre>' : '<div quill-editor-element></div>'
-    )
+      this.customToolbarPosition === "top" ? "beforeend" : "afterbegin",
+      this.preserveWhitespace
+        ? "<pre quill-editor-element></pre>"
+        : "<div quill-editor-element></div>"
+    );
 
     this.editorElem = this.elementRef.nativeElement.querySelector(
-      '[quill-editor-element]'
-    )
+      "[quill-editor-element]"
+    );
 
     const toolbarElem = this.elementRef.nativeElement.querySelector(
-      '[quill-editor-toolbar]'
-    )
-    const modules = Object.assign({}, this.modules || (this.config.modules || defaultModules))
+      "[quill-editor-toolbar]"
+    );
+    const modules = Object.assign(
+      {},
+      this.modules || this.config.modules || defaultModules
+    );
 
     if (toolbarElem) {
-      modules.toolbar = toolbarElem
+      modules.toolbar = toolbarElem;
     } else if (modules.toolbar === undefined) {
-      modules.toolbar = defaultModules.toolbar
+      modules.toolbar = defaultModules.toolbar;
     }
 
-    let placeholder = this.placeholder !== undefined ? this.placeholder : this.config.placeholder
+    let placeholder =
+      this.placeholder !== undefined
+        ? this.placeholder
+        : this.config.placeholder;
     if (placeholder === undefined) {
-      placeholder = 'Insert text here ...'
+      placeholder = "Insert text here ...";
     }
 
     if (this.styles) {
       Object.keys(this.styles).forEach((key: string) => {
-        this.renderer.setStyle(this.editorElem, key, this.styles[key])
-      })
+        this.renderer.setStyle(this.editorElem, key, this.styles[key]);
+      });
     }
 
     if (this.classes) {
-      this.addClasses(this.classes)
+      this.addClasses(this.classes);
     }
 
-    this.customOptions.forEach((customOption) => {
-      const newCustomOption = QuillNamespace.import(customOption.import)
-      newCustomOption.whitelist = customOption.whitelist
-      QuillNamespace.register(newCustomOption, true)
-    })
+    this.customOptions.forEach(customOption => {
+      const newCustomOption = QuillNamespace.import(customOption.import);
+      newCustomOption.whitelist = customOption.whitelist;
+      QuillNamespace.register(newCustomOption, true);
+    });
 
-    this.customModules.forEach(({implementation, path}) => {
-      QuillNamespace.register(path, implementation)
-    })
+    this.customModules.forEach(({ implementation, path }) => {
+      QuillNamespace.register(path, implementation);
+    });
 
-    let bounds = this.bounds && this.bounds === 'self' ? this.editorElem : this.bounds
+    let bounds =
+      this.bounds && this.bounds === "self" ? this.editorElem : this.bounds;
     if (!bounds) {
-      bounds = this.config.bounds ? this.config.bounds : this.doc.body
+      bounds = this.config.bounds ? this.config.bounds : this.doc.body;
     }
 
-    let debug = this.debug
+    let debug = this.debug;
     if (!debug && debug !== false && this.config.debug) {
-      debug = this.config.debug
+      debug = this.config.debug;
     }
 
-    let readOnly = this.readOnly
+    let readOnly = this.readOnly;
     if (!readOnly && this.readOnly !== false) {
-      readOnly = this.config.readOnly !== undefined ? this.config.readOnly : false
+      readOnly =
+        this.config.readOnly !== undefined ? this.config.readOnly : false;
     }
 
-    let scrollingContainer = this.scrollingContainer
+    let scrollingContainer = this.scrollingContainer;
     if (!scrollingContainer && this.scrollingContainer !== null) {
-      scrollingContainer = this.config.scrollingContainer === null || this.config.scrollingContainer ? this.config.scrollingContainer : null
+      scrollingContainer =
+        this.config.scrollingContainer === null ||
+        this.config.scrollingContainer
+          ? this.config.scrollingContainer
+          : null;
     }
 
-    let formats = this.formats
+    let formats = this.formats;
     if (!formats && formats === undefined) {
-      formats = this.config.formats ? [...this.config.formats] : (this.config.formats === null ? null : undefined)
+      formats = this.config.formats
+        ? [...this.config.formats]
+        : this.config.formats === null
+        ? null
+        : undefined;
     }
 
     this.zone.runOutsideAngular(() => {
@@ -279,71 +335,71 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
         readOnly,
         scrollingContainer: scrollingContainer as any,
         strict: this.strict,
-        theme: this.theme || (this.config.theme ? this.config.theme : 'snow')
-      })
-    })
+        theme: this.theme || (this.config.theme ? this.config.theme : "snow")
+      });
+    });
 
     if (this.content) {
-      const format = getFormat(this.format, this.config.format)
-      if (format === 'object') {
-        this.quillEditor.setContents(this.content, 'silent')
-      } else if (format === 'text') {
-        this.quillEditor.setText(this.content, 'silent')
-      } else if (format === 'json') {
+      const format = getFormat(this.format, this.config.format);
+      if (format === "object") {
+        this.quillEditor.setContents(this.content, "silent");
+      } else if (format === "text") {
+        this.quillEditor.setText(this.content, "silent");
+      } else if (format === "json") {
         try {
-          this.quillEditor.setContents(JSON.parse(this.content), 'silent')
+          this.quillEditor.setContents(JSON.parse(this.content), "silent");
         } catch (e) {
-          this.quillEditor.setText(this.content, 'silent')
+          this.quillEditor.setText(this.content, "silent");
         }
       } else {
         if (this.sanitize) {
-          this.content = this.domSanitizer.sanitize(SecurityContext.HTML, this.content)
+          this.content = this.domSanitizer.sanitize(
+            SecurityContext.HTML,
+            this.content
+          );
         }
-        const contents = this.quillEditor.clipboard.convert(this.content)
-        this.quillEditor.setContents(contents, 'silent')
+        const contents = this.quillEditor.clipboard.convert(this.content);
+        this.quillEditor.setContents(contents, "silent");
       }
 
-      this.quillEditor.getModule('history').clear()
+      this.quillEditor.getModule("history").clear();
     }
 
     // initialize disabled status based on this.disabled as default value
-    this.setDisabledState()
+    this.setDisabledState();
 
     // triggered if selection or text changed
-    this.quillEditor.on(
-      'editor-change',
-      this.editorChangeHandler
-    )
+    this.quillEditor.on("editor-change", this.editorChangeHandler);
 
     // mark model as touched if editor lost focus
-    this.quillEditor.on(
-      'selection-change',
-      this.selectionChangeHandler
-    )
+    this.quillEditor.on("selection-change", this.selectionChangeHandler);
 
     // update model if text changes
-    this.quillEditor.on(
-      'text-change',
-      this.textChangeHandler
-    )
+    this.quillEditor.on("text-change", this.textChangeHandler);
 
     // trigger created in a timeout to avoid changed models after checked
     // if you are using the editor api in created output to change the editor content
     setTimeout(() => {
-      this.onValidatorChanged()
-      this.onEditorCreated.emit(this.quillEditor)
-    })
+      this.onValidatorChanged();
+      this.onEditorCreated.emit(this.quillEditor);
+    });
   }
 
-  selectionChangeHandler = (range: Range | null, oldRange: Range | null, source: string) => {
-    const shouldTriggerOnModelTouched = !range && this.onModelTouched
+  selectionChangeHandler = (
+    range: Range | null,
+    oldRange: Range | null,
+    source: string
+  ) => {
+    const shouldTriggerOnModelTouched = !range && this.onModelTouched;
 
     // only emit changes when there's any listener
-    if (!this.onBlur.observers.length &&
-        !this.onFocus.observers.length &&
-        !this.onSelectionChanged.observers.length &&
-        !shouldTriggerOnModelTouched) {
-      return
+    if (
+      !this.onBlur.observers.length &&
+      !this.onFocus.observers.length &&
+      !this.onSelectionChanged.observers.length &&
+      !shouldTriggerOnModelTouched
+    ) {
+      return;
     }
 
     this.zone.run(() => {
@@ -351,12 +407,12 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
         this.onBlur.emit({
           editor: this.quillEditor,
           source
-        })
+        });
       } else if (oldRange === null) {
         this.onFocus.emit({
           editor: this.quillEditor,
           source
-        })
+        });
       }
 
       this.onSelectionChanged.emit({
@@ -364,37 +420,44 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
         oldRange,
         range,
         source
-      })
+      });
 
       if (shouldTriggerOnModelTouched) {
-        this.onModelTouched()
+        this.onModelTouched();
       }
-    })
-  }
+    });
+  };
 
   textChangeHandler = (delta: Delta, oldDelta: Delta, source: string): void => {
     // only emit changes emitted by user interactions
-    const text = this.quillEditor.getText()
-    const content = this.quillEditor.getContents()
+    const text = this.quillEditor.getText();
+    const content = this.quillEditor.getContents();
 
-    let html: string | null = this.editorElem!.querySelector('.ql-editor')!.innerHTML
-    if (html === '<p><br></p>' || html === '<div><br></div>') {
-      html = null
+    let html: string | null = this.editorElem!.querySelector(".ql-editor")!
+      .innerHTML;
+    if (html === "<p><br></p>" || html === "<div><br></div>") {
+      html = null;
     }
 
-    const trackChanges = this.trackChanges || this.config.trackChanges
-    const shouldTriggerOnModelChange = (source === QuillNamespace['sources'].USER || trackChanges && trackChanges === 'all') && this.onModelChange
+    const trackChanges = this.trackChanges || this.config.trackChanges;
+    const shouldTriggerOnModelChange =
+      (source === QuillNamespace["sources"].USER ||
+        (trackChanges && trackChanges === "all")) &&
+      this.onModelChange;
 
     // only emit changes when there's any listener
-    if (!this.onContentChanged.observers.length && !shouldTriggerOnModelChange) {
-      return
+    if (
+      !this.onContentChanged.observers.length &&
+      !shouldTriggerOnModelChange
+    ) {
+      return;
     }
 
     this.zone.run(() => {
       if (shouldTriggerOnModelChange) {
         this.onModelChange(
           this.valueGetter(this.quillEditor, this.editorElem!)
-        )
+        );
       }
 
       this.onContentChanged.emit({
@@ -405,24 +468,30 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
         oldDelta,
         source,
         text
-      })
-    })
-  }
+      });
+    });
+  };
 
-  editorChangeHandler = (event: 'text-change' | 'selection-change', current: any | Range | null, old: any | Range | null, source: string): void => {
+  editorChangeHandler = (
+    event: "text-change" | "selection-change",
+    current: any | Range | null,
+    old: any | Range | null,
+    source: string
+  ): void => {
     // only emit changes when there's any listener
     if (!this.onEditorChanged.observers.length) {
-      return
+      return;
     }
 
     // only emit changes emitted by user interactions
-    if (event === 'text-change') {
-      const text = this.quillEditor.getText()
-      const content = this.quillEditor.getContents()
+    if (event === "text-change") {
+      const text = this.quillEditor.getText();
+      const content = this.quillEditor.getContents();
 
-      let html: string | null = this.editorElem!.querySelector('.ql-editor')!.innerHTML
-      if (html === '<p><br></p>' || html === '<div><br></div>') {
-        html = null
+      let html: string | null = this.editorElem!.querySelector(".ql-editor")!
+        .innerHTML;
+      if (html === "<p><br></p>" || html === "<div><br></div>") {
+        html = null;
       }
 
       this.zone.run(() => {
@@ -435,8 +504,8 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
           oldDelta: old,
           source,
           text
-        })
-      })
+        });
+      });
     } else {
       this.onEditorChanged.emit({
         editor: this.quillEditor,
@@ -444,55 +513,55 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
         oldRange: old,
         range: current,
         source
-      })
+      });
     }
-  }
+  };
 
   ngOnDestroy() {
     if (this.quillEditor) {
-      this.quillEditor.off('selection-change', this.selectionChangeHandler)
-      this.quillEditor.off('text-change', this.textChangeHandler)
-      this.quillEditor.off('editor-change', this.editorChangeHandler)
+      this.quillEditor.off("selection-change", this.selectionChangeHandler);
+      this.quillEditor.off("text-change", this.textChangeHandler);
+      this.quillEditor.off("editor-change", this.editorChangeHandler);
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.quillEditor) {
-      return
+      return;
     }
     // tslint:disable:no-string-literal
-    if (changes['readOnly']) {
-      this.quillEditor.enable(!changes['readOnly'].currentValue)
+    if (changes["readOnly"]) {
+      this.quillEditor.enable(!changes["readOnly"].currentValue);
     }
-    if (changes['placeholder']) {
+    if (changes["placeholder"]) {
       this.quillEditor.root.dataset.placeholder =
-        changes['placeholder'].currentValue
+        changes["placeholder"].currentValue;
     }
-    if (changes['styles']) {
-      const currentStyling = changes['styles'].currentValue
-      const previousStyling = changes['styles'].previousValue
+    if (changes["styles"]) {
+      const currentStyling = changes["styles"].currentValue;
+      const previousStyling = changes["styles"].previousValue;
 
       if (previousStyling) {
         Object.keys(previousStyling).forEach((key: string) => {
-          this.renderer.removeStyle(this.editorElem, key)
-        })
+          this.renderer.removeStyle(this.editorElem, key);
+        });
       }
       if (currentStyling) {
         Object.keys(currentStyling).forEach((key: string) => {
-          this.renderer.setStyle(this.editorElem, key, this.styles[key])
-        })
+          this.renderer.setStyle(this.editorElem, key, this.styles[key]);
+        });
       }
     }
-    if (changes['classes']) {
-      const currentClasses = changes['classes'].currentValue
-      const previousClasses = changes['classes'].previousValue
+    if (changes["classes"]) {
+      const currentClasses = changes["classes"].currentValue;
+      const previousClasses = changes["classes"].previousValue;
 
       if (previousClasses) {
-        this.removeClasses(previousClasses)
+        this.removeClasses(previousClasses);
       }
 
       if (currentClasses) {
-        this.addClasses(currentClasses)
+        this.addClasses(currentClasses);
       }
     }
     // tslint:enable:no-string-literal
@@ -500,111 +569,122 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
   addClasses(classList: string): void {
     QuillEditorComponent.normalizeClassNames(classList).forEach((c: string) => {
-      this.renderer.addClass(this.editorElem, c)
-    })
+      this.renderer.addClass(this.editorElem, c);
+    });
   }
 
   removeClasses(classList: string): void {
     QuillEditorComponent.normalizeClassNames(classList).forEach((c: string) => {
-      this.renderer.removeClass(this.editorElem, c)
-    })
+      this.renderer.removeClass(this.editorElem, c);
+    });
   }
 
   writeValue(currentValue: any) {
-    this.content = currentValue
-    const format = getFormat(this.format, this.config.format)
+    this.content = currentValue;
+    const format = getFormat(this.format, this.config.format);
 
     if (this.quillEditor) {
       if (currentValue) {
-        if (format === 'text') {
-          this.quillEditor.setText(currentValue)
+        if (format === "text") {
+          this.quillEditor.setText(currentValue);
         } else {
           this.quillEditor.setContents(
             this.valueSetter(this.quillEditor, this.content)
-          )
+          );
         }
-        return
+        return;
       }
-      this.quillEditor.setText('')
+      this.quillEditor.setText("");
     }
   }
 
   setDisabledState(isDisabled: boolean = this.disabled): void {
     // store initial value to set appropriate disabled status after ViewInit
-    this.disabled = isDisabled
+    this.disabled = isDisabled;
     if (this.quillEditor) {
       if (isDisabled) {
-        this.quillEditor.disable()
-        this.renderer.setAttribute(this.elementRef.nativeElement, 'disabled', 'disabled')
+        this.quillEditor.disable();
+        this.renderer.setAttribute(
+          this.elementRef.nativeElement,
+          "disabled",
+          "disabled"
+        );
       } else {
         if (!this.readOnly) {
-          this.quillEditor.enable()
+          this.quillEditor.enable();
         }
-        this.renderer.removeAttribute(this.elementRef.nativeElement, 'disabled')
+        this.renderer.removeAttribute(
+          this.elementRef.nativeElement,
+          "disabled"
+        );
       }
     }
   }
 
   registerOnChange(fn: (modelValue: any) => void): void {
-    this.onModelChange = fn
+    this.onModelChange = fn;
   }
 
   registerOnTouched(fn: () => void): void {
-    this.onModelTouched = fn
+    this.onModelTouched = fn;
   }
 
   registerOnValidatorChange(fn: () => void) {
-    this.onValidatorChanged = fn
+    this.onValidatorChanged = fn;
   }
 
   validate() {
     if (!this.quillEditor) {
-      return null
+      return null;
     }
 
     const err: {
       minLengthError?: {
-        given: number
-        minLength: number
-      }
+        given: number;
+        minLength: number;
+      };
       maxLengthError?: {
-        given: number
-        maxLength: number
-      }
-      requiredError?: { empty: boolean }
-    } = {}
-    let valid = true
+        given: number;
+        maxLength: number;
+      };
+      requiredError?: { empty: boolean };
+    } = {};
+    let valid = true;
 
-    const text = this.quillEditor.getText()
+    const text = this.quillEditor.getText();
     // trim text if wanted + handle special case that an empty editor contains a new line
-    const textLength = this.trimOnValidation ? text.trim().length : (text.length === 1 && text.trim().length === 0 ? 0 : text.length - 1)
+    const textLength = this.trimOnValidation
+      ? text.trim().length
+      : text.length === 1 && text.trim().length === 0
+      ? 0
+      : text.length - 1;
 
     if (this.minLength && textLength && textLength < this.minLength) {
       err.minLengthError = {
         given: textLength,
         minLength: this.minLength
-      }
+      };
 
-      valid = false
+      valid = false;
     }
 
     if (this.maxLength && textLength > this.maxLength) {
       err.maxLengthError = {
         given: textLength,
         maxLength: this.maxLength
-      }
+      };
 
-      valid = false
+      valid = false;
     }
 
     if (this.required && !textLength) {
       err.requiredError = {
         empty: true
-      }
+      };
 
-      valid = false
+      valid = false;
     }
 
-    return valid ? null : err
+    return valid ? null : err;
   }
 }

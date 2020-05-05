@@ -1,8 +1,11 @@
-import { isPlatformServer } from '@angular/common'
-import { QUILL_CONFIG_TOKEN, QuillConfig, QuillModules } from './quill-editor.interfaces'
-import Quill from 'quill'
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const QuillNamespace = require('quill')
+import { isPlatformServer } from "@angular/common";
+import { QuillConfig, QuillModules } from "./quill-editor.interfaces";
+
+import { Quill } from "quill";
+let QuillNamespace: any;
+const QuillPromise = dynamicImportCommonJs<Quill | typeof Quill>(() =>
+  import(/* webpackChunkName: "quill" */ "quill").then(m => m.Quill)
+);
 
 import {
   AfterViewInit,
@@ -16,107 +19,116 @@ import {
   SimpleChanges,
   ViewEncapsulation,
   NgZone
-} from '@angular/core'
+} from "@angular/core";
 
-import { defaultModules } from './quill-defaults'
-import { CustomOption, CustomModule } from './quill-editor.interfaces'
-import {getFormat} from './helpers'
+import { defaultModules } from "./quill-defaults";
+import { CustomOption, CustomModule } from "./quill-editor.interfaces";
+import { getFormat, dynamicImportCommonJs } from "./helpers";
+import { QUILL_CONFIG_TOKEN, QuillEditorService } from "./quill-editor.service";
 
 @Component({
   encapsulation: ViewEncapsulation.None,
-  selector: 'quill-view',
-  styles: [`
-.ql-container.ngx-quill-view {
-  border: 0;
-}
-`],
-  template: `
-`
+  selector: "quill-view",
+  styles: [
+    `
+      .ql-container.ngx-quill-view {
+        border: 0;
+      }
+    `
+  ],
+  template: ``
 })
 export class QuillViewComponent implements AfterViewInit, OnChanges {
-  quillEditor!: Quill
-  editorElem!: HTMLElement
+  quillEditor!: Quill;
+  editorElem!: HTMLElement;
 
-  @Input() format?: 'object' | 'html' | 'text' | 'json'
-  @Input() theme?: string
-  @Input() modules?: QuillModules
-  @Input() debug?: 'warn' | 'log' | 'error' | false
-  @Input() formats?: string[] | null
-  @Input() strict = true
-  @Input() content: any
-  @Input() customModules: CustomModule[] = []
-  @Input() customOptions: CustomOption[] = []
-  @Input() preserveWhitespace = false
+  @Input() format?: "object" | "html" | "text" | "json";
+  @Input() theme?: string;
+  @Input() modules?: QuillModules;
+  @Input() debug?: "warn" | "log" | "error" | false;
+  @Input() formats?: string[] | null;
+  @Input() strict = true;
+  @Input() content: any;
+  @Input() customModules: CustomModule[] = [];
+  @Input() customOptions: CustomOption[] = [];
+  @Input() preserveWhitespace = false;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: any,
     @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig,
     @Inject(Renderer2) private renderer: Renderer2,
     @Inject(ElementRef) private elementRef: ElementRef,
-    @Inject(NgZone) private zone: NgZone
+    @Inject(NgZone) private zone: NgZone,
+    private readonly service: QuillEditorService
   ) {}
 
   valueSetter = (quillEditor: Quill, value: any): any => {
-    const format = getFormat(this.format, this.config.format)
-    let content = value
-    if (format === 'html' || format === 'text') {
-      content = quillEditor.clipboard.convert(value)
-    } else if (format === 'json') {
+    const format = getFormat(this.format, this.config.format);
+    let content = value;
+    if (format === "html" || format === "text") {
+      content = quillEditor.clipboard.convert(value);
+    } else if (format === "json") {
       try {
-        content = JSON.parse(value)
+        content = JSON.parse(value);
       } catch (e) {
-        content = [{ insert: value }]
+        content = [{ insert: value }];
       }
     }
-    quillEditor.setContents(content)
-  }
+    quillEditor.setContents(content);
+  };
 
   ngOnChanges(changes: SimpleChanges) {
     if (!this.quillEditor) {
-      return
+      return;
     }
     if (changes.content) {
-      this.valueSetter(this.quillEditor, changes.content.currentValue)
+      this.valueSetter(this.quillEditor, changes.content.currentValue);
     }
   }
+  async init() {
+    QuillNamespace = await QuillPromise();
+    const modules = Object.assign(
+      {},
+      this.modules || this.config.modules || defaultModules
+    );
+    modules.toolbar = false;
 
-  ngAfterViewInit() {
-    if (isPlatformServer(this.platformId)) {
-      return
-    }
+    this.customOptions.forEach(customOption => {
+      const newCustomOption = QuillNamespace.import(customOption.import);
+      newCustomOption.whitelist = customOption.whitelist;
+      QuillNamespace.register(newCustomOption, true);
+    });
 
-    const modules = Object.assign({}, this.modules || (this.config.modules || defaultModules))
-    modules.toolbar = false
+    this.customModules.forEach(({ implementation, path }) => {
+      QuillNamespace.register(path, implementation);
+    });
 
-    this.customOptions.forEach((customOption) => {
-      const newCustomOption = QuillNamespace.import(customOption.import)
-      newCustomOption.whitelist = customOption.whitelist
-      QuillNamespace.register(newCustomOption, true)
-    })
-
-    this.customModules.forEach(({implementation, path}) => {
-      QuillNamespace.register(path, implementation)
-    })
-
-    let debug = this.debug
+    let debug = this.debug;
     if (!debug && debug !== false && this.config.debug) {
-      debug = this.config.debug
+      debug = this.config.debug;
     }
 
-    let formats = this.formats
+    let formats = this.formats;
     if (!formats && formats === undefined) {
-      formats = this.config.formats ? Object.assign({}, this.config.formats) : (this.config.formats === null ? null : undefined)
+      formats = this.config.formats
+        ? Object.assign({}, this.config.formats)
+        : this.config.formats === null
+        ? null
+        : undefined;
     }
-    const theme = this.theme || (this.config.theme ? this.config.theme : 'snow')
+    const theme =
+      this.theme || (this.config.theme ? this.config.theme : "snow");
 
     this.elementRef.nativeElement.insertAdjacentHTML(
-      'afterbegin',
-      this.preserveWhitespace ? '<pre quill-view-element></pre>' : '<div quill-view-element></div>'
-    )
+      "afterbegin",
+      this.preserveWhitespace
+        ? "<pre quill-view-element></pre>"
+        : "<div quill-view-element></div>"
+    );
 
     this.editorElem = this.elementRef.nativeElement.querySelector(
-      '[quill-view-element]'
-    ) as HTMLElement
+      "[quill-view-element]"
+    ) as HTMLElement;
 
     this.zone.runOutsideAngular(() => {
       this.quillEditor = new QuillNamespace(this.editorElem, {
@@ -126,13 +138,20 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
         readOnly: true,
         strict: this.strict,
         theme
-      })
-    })
+      });
+    });
 
-    this.renderer.addClass(this.editorElem, 'ngx-quill-view')
+    this.renderer.addClass(this.editorElem, "ngx-quill-view");
 
     if (this.content) {
-      this.valueSetter(this.quillEditor, this.content)
+      this.valueSetter(this.quillEditor, this.content);
     }
+  }
+  ngAfterViewInit() {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
+
+    this.init();
   }
 }

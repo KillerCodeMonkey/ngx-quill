@@ -1,6 +1,6 @@
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
-import { QUILL_CONFIG_TOKEN, QuillConfig } from './quill-editor.interfaces'
+import { QuillConfig } from "./quill-editor.interfaces";
 
 import {
   Component,
@@ -9,29 +9,31 @@ import {
   OnChanges,
   SimpleChanges,
   ViewEncapsulation
-} from '@angular/core'
+} from "@angular/core";
+import { QUILL_CONFIG_TOKEN } from "./quill-editor.service";
 
 @Component({
   encapsulation: ViewEncapsulation.None,
-  selector: 'quill-view-html',
-  styles: [`
-.ql-container.ngx-quill-view-html {
-  border: 0;
-}
-`],
+  selector: "quill-view-html",
+  styles: [
+    `
+      .ql-container.ngx-quill-view-html {
+        border: 0;
+      }
+    `
+  ],
   template: `
-  <div class="ql-container" [ngClass]="themeClass">
-    <div class="ql-editor" [innerHTML]="innerHTML">
+    <div class="ql-container" [ngClass]="themeClass">
+      <div class="ql-editor" [innerHTML]="innerHTML"></div>
     </div>
-  </div>
-`
+  `
 })
 export class QuillViewHTMLComponent implements OnChanges {
-  innerHTML: SafeHtml = ''
-  themeClass = 'ql-snow'
+  innerHTML: SafeHtml = "";
+  themeClass = "ql-snow";
 
-  @Input() content = ''
-  @Input() theme?: string
+  @Input() content = "";
+  @Input() theme?: string;
 
   constructor(
     @Inject(DomSanitizer) private sanitizer: DomSanitizer,
@@ -40,14 +42,18 @@ export class QuillViewHTMLComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.theme) {
-      const theme = changes.theme.currentValue || (this.config.theme ? this.config.theme : 'snow')
-      this.themeClass = `ql-${theme} ngx-quill-view-html`
+      const theme =
+        changes.theme.currentValue ||
+        (this.config.theme ? this.config.theme : "snow");
+      this.themeClass = `ql-${theme} ngx-quill-view-html`;
     } else if (!this.theme) {
-      const theme = this.config.theme ? this.config.theme : 'snow'
-      this.themeClass = `ql-${theme} ngx-quill-view-html`
+      const theme = this.config.theme ? this.config.theme : "snow";
+      this.themeClass = `ql-${theme} ngx-quill-view-html`;
     }
     if (changes.content) {
-      this.innerHTML = this.sanitizer.bypassSecurityTrustHtml(changes.content.currentValue)
+      this.innerHTML = this.sanitizer.bypassSecurityTrustHtml(
+        changes.content.currentValue
+      );
     }
   }
 }

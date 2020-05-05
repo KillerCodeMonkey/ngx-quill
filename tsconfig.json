@@ -16,18 +16,8 @@
     "lib": ["es2016", "dom"],
     "suppressImplicitAnyIndexErrors": true
   },
-  "type": [
-    "quill",
-    "jasmine",
-    "node",
-    "core-js"
-  ],
-  "exclude": [
-    "node_modules",
-    "bundles",
-    "aot",
-    "dist"
-  ],
+  "type": ["quill", "jasmine", "node", "core-js"],
+  "exclude": ["node_modules", "bundles", "aot", "dist"],
   "angularCompilerOptions": {
     "strictMetadataEmit": true,
     "skipTemplateCodegen": true,
