@@ -9584,8 +9584,7 @@ exports[`Advanced QuillEditorComponent should emit onSelectionChanged when selec
 exports[`Advanced QuillEditorComponent should not update editor style if nothing changed 1`] = `
 <ng-component
   blured="false"
-  changed={[Function Object]}
-  changedEditor={[Function Object]}
+  editor={[Function Quill]}
   editorComponent={[Function QuillEditorComponent]}
   focused="false"
   isReadOnly={[Function Boolean]}
@@ -11970,8 +11969,6 @@ exports[`Advanced QuillEditorComponent should not update editor style if nothing
 exports[`Advanced QuillEditorComponent should set editor settings 1`] = `
 <ng-component
   blured="false"
-  changed={[Function Object]}
-  changedEditor={[Function Object]}
   editor={[Function Quill]}
   editorComponent={[Function QuillEditorComponent]}
   focused="false"
@@ -14357,6 +14354,8 @@ exports[`Advanced QuillEditorComponent should set editor settings 1`] = `
 exports[`Advanced QuillEditorComponent should set required state correctly 1`] = `
 <ng-component
   blured="false"
+  changed={[Function Object]}
+  changedEditor={[Function Object]}
   editor={[Function Quill]}
   editorComponent={[Function QuillEditorComponent]}
   focused="false"
@@ -14969,7 +14968,7 @@ exports[`Advanced QuillEditorComponent should set required state correctly 1`] =
               tabindex="0"
             />
             <span
-              class="ql-picker-item ql-selected"
+              class="ql-picker-item"
               role="button"
               tabindex="0"
             />
@@ -15077,7 +15076,7 @@ exports[`Advanced QuillEditorComponent should set required state correctly 1`] =
               tabindex="0"
             />
             <span
-              class="ql-picker-item ql-selected"
+              class="ql-picker-item"
               role="button"
               tabindex="0"
             />
@@ -15157,7 +15156,7 @@ exports[`Advanced QuillEditorComponent should set required state correctly 1`] =
             tabindex="-1"
           >
             <span
-              class="ql-picker-item ql-selected ql-primary"
+              class="ql-picker-item ql-primary"
               role="button"
               tabindex="0"
             />
@@ -15879,7 +15878,7 @@ exports[`Advanced QuillEditorComponent should set required state correctly 1`] =
               tabindex="0"
             />
             <span
-              class="ql-picker-item ql-selected"
+              class="ql-picker-item"
               role="button"
               tabindex="0"
             />
@@ -16221,7 +16220,7 @@ exports[`Advanced QuillEditorComponent should set required state correctly 1`] =
             tabindex="-1"
           >
             <span
-              class="ql-picker-item ql-selected"
+              class="ql-picker-item"
               role="button"
               tabindex="0"
             />
@@ -16304,7 +16303,7 @@ exports[`Advanced QuillEditorComponent should set required state correctly 1`] =
             tabindex="-1"
           >
             <span
-              class="ql-picker-item ql-selected"
+              class="ql-picker-item"
               role="button"
               tabindex="0"
             >
@@ -21515,8 +21514,6 @@ exports[`Advanced QuillEditorComponent should set valid minlength if model is em
 exports[`Advanced QuillEditorComponent should update editor style 1`] = `
 <ng-component
   blured="false"
-  changed={[Function Object]}
-  changedEditor={[Function Object]}
   editor={[Function Quill]}
   editorComponent={[Function QuillEditorComponent]}
   focused="false"
@@ -23902,8 +23899,6 @@ exports[`Advanced QuillEditorComponent should update editor style 1`] = `
 exports[`Advanced QuillEditorComponent should update editor style to null and readd styling 1`] = `
 <ng-component
   blured="false"
-  changed={[Function Object]}
-  changedEditor={[Function Object]}
   editor={[Function Quill]}
   editorComponent={[Function QuillEditorComponent]}
   focused="false"
@@ -38247,6 +38242,7 @@ exports[`Basic QuillEditorComponent ngOnDestroy - removes listeners 1`] = `
   required="false"
   sanitize="false"
   selectionChangeHandler={[Function Function]}
+  service={[Function QuillService]}
   strict={[Function Boolean]}
   styles="null"
   textChangeHandler={[Function Function]}
@@ -40646,6 +40642,7 @@ exports[`Basic QuillEditorComponent should render text div 1`] = `
   required="false"
   sanitize="false"
   selectionChangeHandler={[Function Function]}
+  service={[Function QuillService]}
   strict={[Function Boolean]}
   styles="null"
   textChangeHandler={[Function Function]}
@@ -43045,6 +43042,7 @@ exports[`Basic QuillEditorComponent should render toolbar 1`] = `
   required="false"
   sanitize="false"
   selectionChangeHandler={[Function Function]}
+  service={[Function QuillService]}
   strict={[Function Boolean]}
   styles="null"
   textChangeHandler={[Function Function]}
@@ -93668,7 +93666,7 @@ exports[`QuillEditor - preserveWhitespace renders editor with config 1`] = `
               tabindex="0"
             />
             <span
-              class="ql-picker-item ql-selected"
+              class="ql-picker-item"
               role="button"
               tabindex="0"
             />
@@ -93776,7 +93774,7 @@ exports[`QuillEditor - preserveWhitespace renders editor with config 1`] = `
               tabindex="0"
             />
             <span
-              class="ql-picker-item ql-selected"
+              class="ql-picker-item"
               role="button"
               tabindex="0"
             />
@@ -93856,7 +93854,7 @@ exports[`QuillEditor - preserveWhitespace renders editor with config 1`] = `
             tabindex="-1"
           >
             <span
-              class="ql-picker-item ql-selected ql-primary"
+              class="ql-picker-item ql-primary"
               role="button"
               tabindex="0"
             />
@@ -94578,7 +94576,7 @@ exports[`QuillEditor - preserveWhitespace renders editor with config 1`] = `
               tabindex="0"
             />
             <span
-              class="ql-picker-item ql-selected"
+              class="ql-picker-item"
               role="button"
               tabindex="0"
             />
@@ -94920,7 +94918,7 @@ exports[`QuillEditor - preserveWhitespace renders editor with config 1`] = `
             tabindex="-1"
           >
             <span
-              class="ql-picker-item ql-selected"
+              class="ql-picker-item"
               role="button"
               tabindex="0"
             />
@@ -95003,7 +95001,7 @@ exports[`QuillEditor - preserveWhitespace renders editor with config 1`] = `
             tabindex="-1"
           >
             <span
-              class="ql-picker-item ql-selected"
+              class="ql-picker-item"
               role="button"
               tabindex="0"
             >
@@ -95396,13 +95394,13 @@ exports[`QuillEditor - preserveWhitespace renders editor with config 1`] = `
       quill-editor-element=""
     >
       <div
-        class="ql-editor ql-blank"
+        class="ql-editor"
         contenteditable="true"
         data-gramm="false"
         data-placeholder="Insert text here ..."
       >
         <p>
-          <br />
+          test test
         </p>
       </div>
       <div

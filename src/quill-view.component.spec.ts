@@ -21,7 +21,7 @@ class CustomModule {
 describe('Basic QuillViewComponent', () => {
   let fixture: ComponentFixture<QuillViewComponent>
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
         QuillModule.forRoot({
@@ -39,6 +39,8 @@ describe('Basic QuillViewComponent', () => {
     })
 
     fixture = TestBed.createComponent(QuillViewComponent)
+    fixture.detectChanges()
+    await fixture.whenStable()
   })
 
   it('should render and set default snow theme class', async () => {

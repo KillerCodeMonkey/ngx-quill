@@ -11,6 +11,7 @@ exports[`Basic QuillViewComponent should render and set default snow theme class
   preserveWhitespace="false"
   quillEditor={[Function Quill]}
   renderer={[Function DebugRenderer2]}
+  service={[Function QuillService]}
   strict={[Function Boolean]}
   valueSetter={[Function Function]}
   zone={[Function NgZone]}

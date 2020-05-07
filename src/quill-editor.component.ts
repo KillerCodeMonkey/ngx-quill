@@ -3,9 +3,7 @@ import {DomSanitizer} from '@angular/platform-browser'
 
 import {QUILL_CONFIG_TOKEN, QuillConfig, QuillModules, CustomOption, CustomModule} from './quill-editor.interfaces'
 
-import Quill, { Delta } from 'quill'
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const QuillNamespace = require('quill')
+import QuillType, { Delta } from 'quill'
 
 import {
   AfterViewInit,
@@ -30,6 +28,7 @@ import {ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator} from 
 import {defaultModules} from './quill-defaults'
 
 import {getFormat} from './helpers'
+import { QuillService } from './quill.service'
 
 export interface Range {
   index: number
@@ -39,7 +38,7 @@ export interface Range {
 export interface ContentChange {
   content: any
   delta: Delta
-  editor: Quill
+  editor: QuillType
   html: string | null
   oldDelta: Delta
   source: string
@@ -47,19 +46,19 @@ export interface ContentChange {
 }
 
 export interface SelectionChange {
-  editor: Quill
+  editor: QuillType
   oldRange: Range | null
   range: Range | null
   source: string
 }
 
 export interface Blur {
-  editor: Quill
+  editor: QuillType
   source: string
 }
 
 export interface Focus {
-  editor: Quill
+  editor: QuillType
   source: string
 }
 
@@ -101,7 +100,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     }, [])
   }
 
-  quillEditor!: Quill
+  quillEditor!: QuillType
   editorElem!: HTMLElement
   content: any
 
@@ -128,7 +127,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   @Input() classes?: string
   @Input() trimOnValidation = false
 
-  @Output() onEditorCreated: EventEmitter<Quill> = new EventEmitter()
+  @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
   @Output() onEditorChanged: EventEmitter<EditorChangeContent | EditorChangeSelection> = new EventEmitter()
   @Output() onContentChanged: EventEmitter<ContentChange> = new EventEmitter()
   @Output() onSelectionChanged: EventEmitter<SelectionChange> = new EventEmitter()
@@ -144,7 +143,8 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     @Inject(PLATFORM_ID) private platformId: any,
     @Inject(Renderer2) private renderer: Renderer2,
     @Inject(NgZone) private zone: NgZone,
-    @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig
+    @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig,
+    @Inject(QuillService) private service: QuillService
   ) {}
 
   onModelChange(_modelValue?: any) {}
@@ -152,7 +152,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   onValidatorChanged() {}
 
   @Input()
-  valueGetter = (quillEditor: Quill, editorElement: HTMLElement): string | any  => {
+  valueGetter = (quillEditor: QuillType, editorElement: HTMLElement): string | any  => {
     let html: string | null = editorElement.querySelector('.ql-editor')!.innerHTML
     if (html === '<p><br></p>' || html === '<div><br></div>') {
       html = null
@@ -176,7 +176,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   }
 
   @Input()
-  valueSetter = (quillEditor: Quill, value: any): any => {
+  valueSetter = (quillEditor: QuillType, value: any): any => {
     const format = getFormat(this.format, this.config.format)
     if (format === 'html') {
       if (this.sanitize) {
@@ -194,10 +194,12 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     return value
   }
 
-  ngAfterViewInit() {
+  async ngAfterViewInit() {
     if (isPlatformServer(this.platformId)) {
       return
     }
+
+    const Quill = await this.service.getQuill()
 
     this.elementRef.nativeElement.insertAdjacentHTML(
       this.customToolbarPosition === 'top' ? 'beforeend' : 'afterbegin',
@@ -235,13 +237,13 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     }
 
     this.customOptions.forEach((customOption) => {
-      const newCustomOption = QuillNamespace.import(customOption.import)
+      const newCustomOption = Quill.import(customOption.import)
       newCustomOption.whitelist = customOption.whitelist
-      QuillNamespace.register(newCustomOption, true)
+      Quill.register(newCustomOption, true)
     })
 
     this.customModules.forEach(({implementation, path}) => {
-      QuillNamespace.register(path, implementation)
+      Quill.register(path, implementation)
     })
 
     let bounds = this.bounds && this.bounds === 'self' ? this.editorElem : this.bounds
@@ -270,7 +272,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     }
 
     this.zone.runOutsideAngular(() => {
-      this.quillEditor = new QuillNamespace(this.editorElem, {
+      this.quillEditor = new Quill(this.editorElem, {
         bounds,
         debug: debug as any,
         formats: formats as any,
@@ -383,7 +385,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     }
 
     const trackChanges = this.trackChanges || this.config.trackChanges
-    const shouldTriggerOnModelChange = (source === QuillNamespace['sources'].USER || trackChanges && trackChanges === 'all') && this.onModelChange
+    const shouldTriggerOnModelChange = (source === 'user' || trackChanges && trackChanges === 'all') && this.onModelChange
 
     // only emit changes when there's any listener
     if (!this.onContentChanged.observers.length && !shouldTriggerOnModelChange) {

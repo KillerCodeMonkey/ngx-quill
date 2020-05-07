@@ -1,36 +1,30 @@
 {
+  "angularCompilerOptions": {
+    "enableIvy": false,
+    "skipTemplateCodegen": true,
+    "strictMetadataEmit": true,
+    "fullTemplateTypeCheck": true,
+    "enableResourceInlining": true
+  },
+  "buildOnSave": false,
+  "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl": ".",
+    "target": "es2015",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "declaration": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "skipLibCheck": true,
     "strict": true,
     "alwaysStrict": true,
-    "target": "es5",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "sourceMap": false,
-    "inlineSourceMap": true,
-    "noImplicitAny": true,
-    "emitDecoratorMetadata": true,
-    "noUnusedLocals": true,
-    "outDir": "./dist",
-    "declaration": true,
+    "emitDecoratorMetadata": false,
     "experimentalDecorators": true,
-    "lib": ["es2016", "dom"],
-    "suppressImplicitAnyIndexErrors": true
+    "importHelpers": true,
+    "noUnusedLocals": true,
+    "lib": ["es2016", "dom"]
   },
-  "type": [
-    "quill",
-    "jasmine",
-    "node",
-    "core-js"
-  ],
-  "exclude": [
-    "node_modules",
-    "bundles",
-    "aot",
-    "dist"
-  ],
-  "angularCompilerOptions": {
-    "strictMetadataEmit": true,
-    "skipTemplateCodegen": true,
-    "fullTemplateTypeCheck": true
-  }
+  "exclude": ["node_modues"]
 }
