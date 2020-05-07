@@ -1,8 +1,6 @@
 import { isPlatformServer } from '@angular/common'
+import QuillType from 'quill'
 import { QUILL_CONFIG_TOKEN, QuillConfig, QuillModules } from './quill-editor.interfaces'
-import Quill from 'quill'
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const QuillNamespace = require('quill')
 
 import {
   AfterViewInit,
@@ -21,6 +19,7 @@ import {
 import { defaultModules } from './quill-defaults'
 import { CustomOption, CustomModule } from './quill-editor.interfaces'
 import {getFormat} from './helpers'
+import { QuillService } from './quill.service'
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -34,7 +33,7 @@ import {getFormat} from './helpers'
 `
 })
 export class QuillViewComponent implements AfterViewInit, OnChanges {
-  quillEditor!: Quill
+  quillEditor!: QuillType
   editorElem!: HTMLElement
 
   @Input() format?: 'object' | 'html' | 'text' | 'json'
@@ -53,10 +52,11 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
     @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig,
     @Inject(Renderer2) private renderer: Renderer2,
     @Inject(ElementRef) private elementRef: ElementRef,
-    @Inject(NgZone) private zone: NgZone
+    @Inject(NgZone) private zone: NgZone,
+    @Inject(QuillService) private service: QuillService
   ) {}
 
-  valueSetter = (quillEditor: Quill, value: any): any => {
+  valueSetter = (quillEditor: QuillType, value: any): any => {
     const format = getFormat(this.format, this.config.format)
     let content = value
     if (format === 'html' || format === 'text') {
@@ -80,22 +80,24 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
     }
   }
 
-  ngAfterViewInit() {
+  async ngAfterViewInit() {
     if (isPlatformServer(this.platformId)) {
       return
     }
+
+    const Quill = await this.service.getQuill()
 
     const modules = Object.assign({}, this.modules || (this.config.modules || defaultModules))
     modules.toolbar = false
 
     this.customOptions.forEach((customOption) => {
-      const newCustomOption = QuillNamespace.import(customOption.import)
+      const newCustomOption = Quill.import(customOption.import)
       newCustomOption.whitelist = customOption.whitelist
-      QuillNamespace.register(newCustomOption, true)
+      Quill.register(newCustomOption, true)
     })
 
     this.customModules.forEach(({implementation, path}) => {
-      QuillNamespace.register(path, implementation)
+      Quill.register(path, implementation)
     })
 
     let debug = this.debug
@@ -119,7 +121,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
     ) as HTMLElement
 
     this.zone.runOutsideAngular(() => {
-      this.quillEditor = new QuillNamespace(this.editorElem, {
+      this.quillEditor = new Quill(this.editorElem, {
         debug: debug as any,
         formats: formats as any,
         modules,
