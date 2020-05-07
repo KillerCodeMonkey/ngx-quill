@@ -89,7 +89,7 @@
     "ts-helpers": "^1.1.2",
     "ts-loader": "7.0.2",
     "tsickle": "0.38.1",
-    "tslib": "^1.11.1",
+    "tslib": "^1.11.2",
     "tslint": "^5.20.0",
     "tslint-eslint-rules": "^5.4.0",
     "typescript": "~3.8.3",
