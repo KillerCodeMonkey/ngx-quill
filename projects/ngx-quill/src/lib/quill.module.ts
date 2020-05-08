@@ -19,7 +19,7 @@ import { QuillService } from './quill.service'
   providers: [QuillService]
 })
 export class QuillModule {
-  static forRoot(config?: QuillConfig): ModuleWithProviders {
+  static forRoot(config?: QuillConfig): ModuleWithProviders<QuillModule> {
     if (config) {
       // set default modules as modules if not modules key passed on custom config
       if (!config.modules) {
