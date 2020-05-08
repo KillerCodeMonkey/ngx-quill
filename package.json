@@ -9,7 +9,6 @@
     "e2e": "ng e2e"
   },
   "license": "MIT",
-  "version": "10.0.0-0",
   "author": {
     "name": "Bengt Weiße"
   },
