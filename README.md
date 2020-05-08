@@ -159,6 +159,12 @@ class YourModule { ... }
 
 ## Angular Universal
 
+### ngx-quill >= v10
+
+Nothing to do here :)
+
+### ngx-quill v9
+
 QuillJS (1.x) is directly using the `document`, `window`, `Node` and `navigator` context of the browser, when you require or import it.
 To get things working in ssr you need to mock them on server side.
 

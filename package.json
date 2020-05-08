@@ -3,7 +3,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --prod",
+    "build": "ng build --prod && cp ./README.md ./dist/ngx-quill",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
