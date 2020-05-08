@@ -38,3 +38,6 @@ jobs:
       - name: Test
         run: npm run test -- --watch=false
 
+      - name: Build
+        run: npm run build
+
