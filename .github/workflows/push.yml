@@ -26,5 +26,5 @@ jobs:
           npm install
 
       - name: Test
-        run: npm run test:ci
+        run: ng test --watch=false
 

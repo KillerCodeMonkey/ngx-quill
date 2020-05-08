@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { QuillViewComponent } from '../src/quill-view.component'
+import { QuillViewComponent } from './quill-view.component'
 
 import { QuillModule } from './quill.module'
 import Quill from 'quill'
@@ -52,8 +52,6 @@ describe('Basic QuillViewComponent', () => {
     expect(fixture.componentInstance.quillEditor).toBeDefined()
     const viewElement = element.querySelector('.ql-container.ql-snow.ngx-quill-view > .ql-editor')
     expect(viewElement).toBeDefined()
-
-    expect(fixture).toMatchSnapshot()
   })
 })
 
@@ -93,8 +91,6 @@ describe('Formats', () => {
 
       await fixture.whenStable()
       expect(JSON.stringify(component.view!.quillEditor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hello\n'}]}))
-
-      expect(fixture).toMatchSnapshot()
     })
 
     it('should update object content', async () => {
@@ -105,8 +101,6 @@ describe('Formats', () => {
 
       await fixture.whenStable()
       expect(JSON.stringify(component.view!.quillEditor.getContents())).toEqual(JSON.stringify({ops: [{insert: '1234\n'}]}))
-
-      expect(fixture).toMatchSnapshot()
     })
   })
 
@@ -140,8 +134,6 @@ describe('Formats', () => {
 
       await fixture.whenStable()
       expect(component.view!.quillEditor.getText().trim()).toEqual('Hallo')
-
-      expect(fixture).toMatchSnapshot()
     })
 
     it('should update html', async () => {
@@ -152,8 +144,6 @@ describe('Formats', () => {
       await fixture.whenStable()
 
       expect(component.view!.quillEditor.getText().trim()).toEqual('test')
-
-      expect(fixture).toMatchSnapshot()
     })
   })
 
@@ -186,8 +176,6 @@ describe('Formats', () => {
       const component = fixture.componentInstance
       await fixture.whenStable()
       expect(component.view!.quillEditor.getText().trim()).toEqual('Hallo')
-
-      expect(fixture).toMatchSnapshot()
     })
 
     it('should update text', async () => {
@@ -198,8 +186,6 @@ describe('Formats', () => {
       await fixture.whenStable()
 
       expect(component.view!.quillEditor.getText().trim()).toEqual('test')
-
-      expect(fixture).toMatchSnapshot()
     })
   })
 
@@ -237,8 +223,6 @@ describe('Formats', () => {
       await fixture.whenStable()
 
       expect(JSON.stringify(component.view!.quillEditor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hallo\n'}]}))
-
-      expect(fixture).toMatchSnapshot()
     })
 
     it('should update json string', async () => {
@@ -252,8 +236,6 @@ describe('Formats', () => {
       await fixture.whenStable()
 
       expect(JSON.stringify(component.view!.quillEditor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hallo 123\n'}]}))
-
-      expect(fixture).toMatchSnapshot()
     })
   })
 })

@@ -88,18 +88,6 @@ export type EditorChangeSelection = SelectionChange & {event: 'selection-change'
 })
 export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor, OnChanges, OnDestroy, Validator {
 
-  static normalizeClassNames(classes: string): string[] {
-    const classList = classes.trim().split(' ')
-    return classList.reduce((prev: string[], cur: string) => {
-      const trimmed = cur.trim()
-      if (trimmed) {
-        prev.push(trimmed)
-      }
-
-      return prev
-    }, [])
-  }
-
   quillEditor!: QuillType
   editorElem!: HTMLElement
   content: any
@@ -136,6 +124,10 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
   disabled = false // used to store initial value before ViewInit
 
+  onModelChange: (modelValue?: any) => void
+  onModelTouched: () => void
+  onValidatorChanged: () => void
+
   constructor(
     @Inject(ElementRef) private elementRef: ElementRef,
     @Inject(DomSanitizer) private domSanitizer: DomSanitizer,
@@ -147,9 +139,17 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     @Inject(QuillService) private service: QuillService
   ) {}
 
-  onModelChange(_modelValue?: any) {}
-  onModelTouched() {}
-  onValidatorChanged() {}
+  static normalizeClassNames(classes: string): string[] {
+    const classList = classes.trim().split(' ')
+    return classList.reduce((prev: string[], cur: string) => {
+      const trimmed = cur.trim()
+      if (trimmed) {
+        prev.push(trimmed)
+      }
+
+      return prev
+    }, [])
+  }
 
   @Input()
   valueGetter = (quillEditor: QuillType, editorElement: HTMLElement): string | any  => {
@@ -332,13 +332,15 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     // trigger created in a timeout to avoid changed models after checked
     // if you are using the editor api in created output to change the editor content
     setTimeout(() => {
-      this.onValidatorChanged()
+      if (this.onValidatorChanged) {
+        this.onValidatorChanged()
+      }
       this.onEditorCreated.emit(this.quillEditor)
     })
   }
 
   selectionChangeHandler = (range: Range | null, oldRange: Range | null, source: string) => {
-    const shouldTriggerOnModelTouched = !range && this.onModelTouched
+    const shouldTriggerOnModelTouched = !range && !!this.onModelTouched
 
     // only emit changes when there's any listener
     if (!this.onBlur.observers.length &&
@@ -385,7 +387,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     }
 
     const trackChanges = this.trackChanges || this.config.trackChanges
-    const shouldTriggerOnModelChange = (source === 'user' || trackChanges && trackChanges === 'all') && this.onModelChange
+    const shouldTriggerOnModelChange = (source === 'user' || trackChanges && trackChanges === 'all') && !!this.onModelChange
 
     // only emit changes when there's any listener
     if (!this.onContentChanged.observers.length && !shouldTriggerOnModelChange) {
@@ -411,6 +413,7 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
     })
   }
 
+  // tslint:disable-next-line:max-line-length
   editorChangeHandler = (event: 'text-change' | 'selection-change', current: any | Range | null, old: any | Range | null, source: string): void => {
     // only emit changes when there's any listener
     if (!this.onEditorChanged.observers.length) {
