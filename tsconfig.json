@@ -1,30 +1,41 @@
 {
-  "angularCompilerOptions": {
-    "enableIvy": false,
-    "skipTemplateCodegen": true,
-    "strictMetadataEmit": true,
-    "fullTemplateTypeCheck": true,
-    "enableResourceInlining": true
-  },
-  "buildOnSave": false,
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": ".",
-    "target": "es2015",
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
     "module": "esnext",
     "moduleResolution": "node",
-    "outDir": "dist",
-    "declaration": true,
-    "inlineSourceMap": true,
-    "inlineSources": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "alwaysStrict": true,
-    "emitDecoratorMetadata": false,
-    "experimentalDecorators": true,
     "importHelpers": true,
-    "noUnusedLocals": true,
-    "lib": ["es2016", "dom"]
+    "target": "es2015",
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "paths": {
+      "ngx-quill": [
+        "dist/ngx-quill/ngx-quill",
+        "dist/ngx-quill"
+      ],
+      "ngx-quill-example": [
+        "dist/ngx-quill-example/ngx-quill-example",
+        "dist/ngx-quill-example"
+      ],
+      "ngx-quill-ionic": [
+        "dist/ngx-quill-ionic/ngx-quill-ionic",
+        "dist/ngx-quill-ionic"
+      ],
+      "ngx-quill-universal": [
+        "dist/ngx-quill-universal/ngx-quill-universal",
+        "dist/ngx-quill-universal"
+      ]
+    }
   },
-  "exclude": ["node_modues"]
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true
+  }
 }
