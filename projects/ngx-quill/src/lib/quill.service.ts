@@ -17,7 +17,7 @@ export class QuillService {
     this.count++
     if (!this.Quill && this.count === 1) {
       this.$importPromise = new Promise(async (resolve) => {
-        this.Quill = await import('quill');
+        this.Quill = await import('quill')
 
         // Only register custom options and modules once
         this.config.customOptions?.forEach((customOption) => {
