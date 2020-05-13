@@ -117,7 +117,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     @Inject(PLATFORM_ID) protected platformId: any,
     protected renderer: Renderer2,
     protected zone: NgZone,
-    @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig,
     protected service: QuillService
   ) {}
 
@@ -140,7 +139,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       html = null
     }
     let modelValue: string | Delta | null = html
-    const format = getFormat(this.format, this.config.format)
+    const format = getFormat(this.format, this.service.config.format)
 
     if (format === 'text') {
       modelValue = quillEditor.getText()
@@ -159,7 +158,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
   @Input()
   valueSetter = (quillEditor: QuillType, value: any): any => {
-    const format = getFormat(this.format, this.config.format)
+    const format = getFormat(this.format, this.service.config.format)
     if (format === 'html') {
       if (this.sanitize) {
         value = this.domSanitizer.sanitize(SecurityContext.HTML, value)
@@ -203,7 +202,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       modules.toolbar = defaultModules.toolbar
     }
 
-    let placeholder = this.placeholder !== undefined ? this.placeholder : this.config.placeholder
+    let placeholder = this.placeholder !== undefined ? this.placeholder : this.service.config.placeholder
     if (placeholder === undefined) {
       placeholder = 'Insert text here ...'
     }
@@ -230,27 +229,27 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
     let bounds = this.bounds && this.bounds === 'self' ? this.editorElem : this.bounds
     if (!bounds) {
-      bounds = this.config.bounds ? this.config.bounds : this.doc.body
+      bounds = this.service.config.bounds ? this.service.config.bounds : this.doc.body
     }
 
     let debug = this.debug
-    if (!debug && debug !== false && this.config.debug) {
-      debug = this.config.debug
+    if (!debug && debug !== false && this.service.config.debug) {
+      debug = this.service.config.debug
     }
 
     let readOnly = this.readOnly
     if (!readOnly && this.readOnly !== false) {
-      readOnly = this.config.readOnly !== undefined ? this.config.readOnly : false
+      readOnly = this.service.config.readOnly !== undefined ? this.service.config.readOnly : false
     }
 
     let scrollingContainer = this.scrollingContainer
     if (!scrollingContainer && this.scrollingContainer !== null) {
-      scrollingContainer = this.config.scrollingContainer === null || this.config.scrollingContainer ? this.config.scrollingContainer : null
+      scrollingContainer = this.service.config.scrollingContainer === null || this.service.config.scrollingContainer ? this.service.config.scrollingContainer : null
     }
 
     let formats = this.formats
     if (!formats && formats === undefined) {
-      formats = this.config.formats ? [...this.config.formats] : (this.config.formats === null ? null : undefined)
+      formats = this.service.config.formats ? [...this.service.config.formats] : (this.service.config.formats === null ? null : undefined)
     }
 
     this.zone.runOutsideAngular(() => {
@@ -263,12 +262,12 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         readOnly,
         scrollingContainer: scrollingContainer as any,
         strict: this.strict,
-        theme: this.theme || (this.config.theme ? this.config.theme : 'snow')
+        theme: this.theme || (this.service.config.theme ? this.service.config.theme : 'snow')
       })
     })
 
     if (this.content) {
-      const format = getFormat(this.format, this.config.format)
+      const format = getFormat(this.format, this.service.config.format)
       if (format === 'object') {
         this.quillEditor.setContents(this.content, 'silent')
       } else if (format === 'text') {
@@ -368,7 +367,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       html = null
     }
 
-    const trackChanges = this.trackChanges || this.config.trackChanges
+    const trackChanges = this.trackChanges || this.service.config.trackChanges
     const shouldTriggerOnModelChange = (source === 'user' || trackChanges && trackChanges === 'all') && !!this.onModelChange
 
     // only emit changes when there's any listener
@@ -499,7 +498,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
   writeValue(currentValue: any) {
     this.content = currentValue
-    const format = getFormat(this.format, this.config.format)
+    const format = getFormat(this.format, this.service.config.format)
 
     if (this.quillEditor) {
       if (currentValue) {
@@ -626,7 +625,6 @@ export class QuillEditorComponent extends QuillEditorBase {
     @Inject(PLATFORM_ID) platformId: any,
     @Inject(Renderer2) renderer: Renderer2,
     @Inject(NgZone) zone: NgZone,
-    @Inject(QUILL_CONFIG_TOKEN) config: QuillConfig,
     @Inject(QuillService) service: QuillService
   ) {
     super(
@@ -636,7 +634,6 @@ export class QuillEditorComponent extends QuillEditorBase {
       platformId,
       renderer,
       zone,
-      config,
       service
     )
   }
