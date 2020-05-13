@@ -22,7 +22,7 @@ export class QuillService {
 
         this.Quill = (quillImport.default ? quillImport.default : quillImport) as any
 
-        if(!this.config){
+        if (!this.config) {
           this.config = { modules: defaultModules }
         }
 
