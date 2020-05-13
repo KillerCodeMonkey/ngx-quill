@@ -1,6 +1,5 @@
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
-
-import { QUILL_CONFIG_TOKEN, QuillConfig } from './quill-editor.interfaces'
+import { QuillService } from './quill.service'
 
 import {
   Component,
@@ -35,15 +34,15 @@ export class QuillViewHTMLComponent implements OnChanges {
 
   constructor(
     @Inject(DomSanitizer) private sanitizer: DomSanitizer,
-    @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig
+    protected service: QuillService
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.theme) {
-      const theme = changes.theme.currentValue || (this.config.theme ? this.config.theme : 'snow')
+      const theme = changes.theme.currentValue || (this.service.config.theme ? this.service.config.theme : 'snow')
       this.themeClass = `ql-${theme} ngx-quill-view-html`
     } else if (!this.theme) {
-      const theme = this.config.theme ? this.config.theme : 'snow'
+      const theme = this.service.config.theme ? this.service.config.theme : 'snow'
       this.themeClass = `ql-${theme} ngx-quill-view-html`
     }
     if (changes.content) {
