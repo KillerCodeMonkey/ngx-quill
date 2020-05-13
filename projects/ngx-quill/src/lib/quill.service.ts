@@ -1,5 +1,6 @@
 import { Injectable, Inject } from '@angular/core'
 import { QUILL_CONFIG_TOKEN, QuillConfig } from './quill-editor.interfaces'
+import { defaultModules } from './quill-defaults'
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,10 @@ export class QuillService {
         const quillImport = await import('quill')
 
         this.Quill = (quillImport.default ? quillImport.default : quillImport) as any
+
+        if(!this.config){
+          this.config = { modules: defaultModules }
+        }
 
         // Only register custom options and modules once
         this.config.customOptions?.forEach((customOption) => {
