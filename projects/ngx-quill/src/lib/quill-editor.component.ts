@@ -8,6 +8,7 @@ import QuillType, { Delta } from 'quill'
 import {
   AfterViewInit,
   Component,
+  Directive,
   ElementRef,
   EventEmitter,
   forwardRef,
@@ -65,28 +66,9 @@ export interface Focus {
 export type EditorChangeContent = ContentChange & {event: 'text-change'}
 export type EditorChangeSelection = SelectionChange & {event: 'selection-change'}
 
-@Component({
-  encapsulation: ViewEncapsulation.None,
-  providers: [
-    {
-      multi: true,
-      provide: NG_VALUE_ACCESSOR,
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      useExisting: forwardRef(() => QuillEditorComponent)
-    },
-    {
-      multi: true,
-      provide: NG_VALIDATORS,
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      useExisting: forwardRef(() => QuillEditorComponent)
-    }
-  ],
-  selector: 'quill-editor',
-  template: `
-  <ng-content select="[quill-editor-toolbar]"></ng-content>
-`
-})
-export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor, OnChanges, OnDestroy, Validator {
+@Directive()
+// tslint:disable-next-line:directive-class-suffix
+export abstract class QuillEditorBase implements AfterViewInit, ControlValueAccessor, OnChanges, OnDestroy, Validator {
 
   quillEditor!: QuillType
   editorElem!: HTMLElement
@@ -129,14 +111,14 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   onValidatorChanged: () => void
 
   constructor(
-    @Inject(ElementRef) private elementRef: ElementRef,
-    @Inject(DomSanitizer) private domSanitizer: DomSanitizer,
-    @Inject(DOCUMENT) private doc: any,
-    @Inject(PLATFORM_ID) private platformId: any,
-    @Inject(Renderer2) private renderer: Renderer2,
-    @Inject(NgZone) private zone: NgZone,
+    public elementRef: ElementRef,
+    protected domSanitizer: DomSanitizer,
+    @Inject(DOCUMENT) protected doc: any,
+    @Inject(PLATFORM_ID) protected platformId: any,
+    protected renderer: Renderer2,
+    protected zone: NgZone,
     @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig,
-    @Inject(QuillService) private service: QuillService
+    protected service: QuillService
   ) {}
 
   static normalizeClassNames(classes: string): string[] {
@@ -504,13 +486,13 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
   }
 
   addClasses(classList: string): void {
-    QuillEditorComponent.normalizeClassNames(classList).forEach((c: string) => {
+    QuillEditorBase.normalizeClassNames(classList).forEach((c: string) => {
       this.renderer.addClass(this.editorElem, c)
     })
   }
 
   removeClasses(classList: string): void {
-    QuillEditorComponent.normalizeClassNames(classList).forEach((c: string) => {
+    QuillEditorBase.normalizeClassNames(classList).forEach((c: string) => {
       this.renderer.removeClass(this.editorElem, c)
     })
   }
@@ -612,4 +594,51 @@ export class QuillEditorComponent implements AfterViewInit, ControlValueAccessor
 
     return valid ? null : err
   }
+}
+
+@Component({
+  encapsulation: ViewEncapsulation.None,
+  providers: [
+    {
+      multi: true,
+      provide: NG_VALUE_ACCESSOR,
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      useExisting: forwardRef(() => QuillEditorComponent)
+    },
+    {
+      multi: true,
+      provide: NG_VALIDATORS,
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      useExisting: forwardRef(() => QuillEditorComponent)
+    }
+  ],
+  selector: 'quill-editor',
+  template: `
+  <ng-content select="[quill-editor-toolbar]"></ng-content>
+`
+})
+export class QuillEditorComponent extends QuillEditorBase {
+
+  constructor(
+    @Inject(ElementRef) elementRef: ElementRef,
+    @Inject(DomSanitizer) domSanitizer: DomSanitizer,
+    @Inject(DOCUMENT) doc: any,
+    @Inject(PLATFORM_ID) platformId: any,
+    @Inject(Renderer2) renderer: Renderer2,
+    @Inject(NgZone) zone: NgZone,
+    @Inject(QUILL_CONFIG_TOKEN) config: QuillConfig,
+    @Inject(QuillService) service: QuillService
+  ) {
+    super(
+      elementRef,
+      domSanitizer,
+      doc,
+      platformId,
+      renderer,
+      zone,
+      config,
+      service
+    )
+  }
+
 }
