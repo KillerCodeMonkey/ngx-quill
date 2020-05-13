@@ -12,7 +12,11 @@ export class QuillService {
 
   constructor(
     @Inject(QUILL_CONFIG_TOKEN) public config: QuillConfig
-  ) {}
+  ) {
+    if (!this.config) {
+      this.config = { modules: defaultModules }
+    }
+  }
 
   getQuill() {
     this.count++
@@ -21,10 +25,6 @@ export class QuillService {
         const quillImport = await import('quill')
 
         this.Quill = (quillImport.default ? quillImport.default : quillImport) as any
-
-        if (!this.config) {
-          this.config = { modules: defaultModules }
-        }
 
         // Only register custom options and modules once
         this.config.customOptions?.forEach((customOption) => {

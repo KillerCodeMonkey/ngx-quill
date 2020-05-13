@@ -1,6 +1,6 @@
 import { isPlatformServer } from '@angular/common'
 import QuillType from 'quill'
-import { QUILL_CONFIG_TOKEN, QuillConfig, QuillModules } from './quill-editor.interfaces'
+import { QuillModules } from './quill-editor.interfaces'
 
 import {
   AfterViewInit,
@@ -106,7 +106,8 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
 
     let formats = this.formats
     if (!formats && formats === undefined) {
-      formats = this.service.config.formats ? Object.assign({}, this.service.config.formats) : (this.service.config.formats === null ? null : undefined)
+      formats = this.service.config.formats ?
+        Object.assign({}, this.service.config.formats) : (this.service.config.formats === null ? null : undefined)
     }
     const theme = this.theme || (this.service.config.theme ? this.service.config.theme : 'snow')
 

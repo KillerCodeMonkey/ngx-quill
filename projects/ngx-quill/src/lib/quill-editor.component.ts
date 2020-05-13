@@ -1,7 +1,7 @@
 import {DOCUMENT, isPlatformServer} from '@angular/common'
 import {DomSanitizer} from '@angular/platform-browser'
 
-import {QUILL_CONFIG_TOKEN, QuillConfig, QuillModules, CustomOption, CustomModule} from './quill-editor.interfaces'
+import { QuillModules, CustomOption, CustomModule} from './quill-editor.interfaces'
 
 import QuillType, { Delta } from 'quill'
 
@@ -244,7 +244,9 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
     let scrollingContainer = this.scrollingContainer
     if (!scrollingContainer && this.scrollingContainer !== null) {
-      scrollingContainer = this.service.config.scrollingContainer === null || this.service.config.scrollingContainer ? this.service.config.scrollingContainer : null
+      scrollingContainer =
+        this.service.config.scrollingContainer === null
+          || this.service.config.scrollingContainer ? this.service.config.scrollingContainer : null
     }
 
     let formats = this.formats
