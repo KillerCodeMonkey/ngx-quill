@@ -87,7 +87,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
 
     const Quill = await this.service.getQuill()
 
-    const modules = Object.assign({}, this.modules || (this.config.modules || defaultModules))
+    const modules = this.service.config.modules;
     modules.toolbar = false
 
     this.customOptions.forEach((customOption) => {
