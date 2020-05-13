@@ -11,7 +11,7 @@ export class QuillService {
   private count = 0
 
   constructor(
-    @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig
+    @Inject(QUILL_CONFIG_TOKEN) public config: QuillConfig
   ) {}
 
   getQuill() {
