@@ -49,7 +49,6 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: any,
-    @Inject(QUILL_CONFIG_TOKEN) private config: QuillConfig,
     @Inject(Renderer2) private renderer: Renderer2,
     @Inject(ElementRef) private elementRef: ElementRef,
     @Inject(NgZone) private zone: NgZone,
@@ -57,7 +56,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
   ) {}
 
   valueSetter = (quillEditor: QuillType, value: any): any => {
-    const format = getFormat(this.format, this.config.format)
+    const format = getFormat(this.format, this.service.config.format)
     let content = value
     if (format === 'html' || format === 'text') {
       content = quillEditor.clipboard.convert(value)
@@ -101,15 +100,15 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
     })
 
     let debug = this.debug
-    if (!debug && debug !== false && this.config.debug) {
-      debug = this.config.debug
+    if (!debug && debug !== false && this.service.config.debug) {
+      debug = this.service.config.debug
     }
 
     let formats = this.formats
     if (!formats && formats === undefined) {
-      formats = this.config.formats ? Object.assign({}, this.config.formats) : (this.config.formats === null ? null : undefined)
+      formats = this.service.config.formats ? Object.assign({}, this.service.config.formats) : (this.service.config.formats === null ? null : undefined)
     }
-    const theme = this.theme || (this.config.theme ? this.config.theme : 'snow')
+    const theme = this.theme || (this.service.config.theme ? this.service.config.theme : 'snow')
 
     this.elementRef.nativeElement.insertAdjacentHTML(
       'afterbegin',
