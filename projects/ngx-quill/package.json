@@ -1,6 +1,6 @@
 {
   "name": "ngx-quill",
-  "version": "10.0.5",
+  "version": "11.0.0",
   "license": "MIT",
   "author": {
     "name": "Bengt Weiße"
@@ -30,12 +30,12 @@
     "text editor"
   ],
   "peerDependencies": {
-    "@angular/common": "^7.0.0 || ^8.0.0 || ^9.0.0",
-    "@angular/core": "^7.0.0 || ^8.0.0 || ^9.0.0",
-    "@angular/forms": "^7.0.0 || ^8.0.0 || ^9.0.0",
-    "@angular/platform-browser": "^7.0.0 || ^8.0.0 || ^9.0.0",
+    "@angular/common": "^9.0.0",
+    "@angular/core": "^9.0.0",
+    "@angular/forms": "^9.0.0",
+    "@angular/platform-browser": "^9.0.0",
     "quill": "^1.3.7",
-    "rxjs": "^6.4.0 || ^6.5.0"
+    "rxjs": "^6.5.0"
   },
   "contributors": [
     {
