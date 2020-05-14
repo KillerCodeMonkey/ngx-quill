@@ -194,7 +194,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     const toolbarElem = this.elementRef.nativeElement.querySelector(
       '[quill-editor-toolbar]'
     )
-    const modules = Object.assign({}, this.service.config.modules)
+    const modules = Object.assign({}, this.modules || this.service.config.modules)
 
     if (toolbarElem) {
       modules.toolbar = toolbarElem
