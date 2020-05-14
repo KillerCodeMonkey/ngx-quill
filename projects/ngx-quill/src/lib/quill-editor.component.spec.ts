@@ -127,7 +127,7 @@ class PreserveWhitespaceTestComponent {
 
 @Component({
   template: `
-    <quill-editor [customModules]="[{path: 'modules/custom', implementation: impl}]"></quill-editor>
+    <quill-editor [modules]="{custom: true}" [customModules]="[{path: 'modules/custom', implementation: impl}]"></quill-editor>
 `
 })
 class CustomModuleTestComponent {
@@ -1098,6 +1098,14 @@ describe('QuillEditor - base config', () => {
     expect(registerSpy).toHaveBeenCalledWith(
       jasmine.objectContaining({attrName: 'size', keyName: 'font-size', scope: 5, whitelist: ['14']}), true, true
     )
+
+    // tslint:disable-next-line:no-string-literal
+    expect(fixture.componentInstance.editorComponent.quillEditor['options'].modules.toolbar)
+      .toEqual(jasmine.objectContaining({
+        container: [
+          ['bold']
+        ]
+      }))
   })
 })
 
@@ -1134,11 +1142,13 @@ describe('QuillEditor - customModules', () => {
   })
 
   it('renders editor with config', async () => {
-    const spy = spyOn(QuillNamespace, 'register')
+    const spy = spyOn(QuillNamespace, 'register').and.callThrough()
     fixture = TestBed.createComponent(CustomModuleTestComponent)
     fixture.detectChanges()
     await fixture.whenStable()
 
     expect(spy).toHaveBeenCalled()
+    // tslint:disable-next-line:no-string-literal
+    expect(fixture.componentInstance.editor.quillEditor['options'].modules.custom).toBeDefined()
   })
 })
