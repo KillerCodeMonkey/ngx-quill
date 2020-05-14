@@ -16,7 +16,6 @@ import {
   NgZone
 } from '@angular/core'
 
-import { defaultModules } from './quill-defaults'
 import { CustomOption, CustomModule } from './quill-editor.interfaces'
 import {getFormat} from './helpers'
 import { QuillService } from './quill.service'
@@ -86,7 +85,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
 
     const Quill = await this.service.getQuill()
 
-    const modules = Object.assign({}, this.service.config.modules)
+    const modules = Object.assign({}, this.modules || this.service.config.modules)
     modules.toolbar = false
 
     this.customOptions.forEach((customOption) => {
