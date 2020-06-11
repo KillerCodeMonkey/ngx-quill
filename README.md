@@ -75,7 +75,7 @@ XLM Wallet Address:
         v8
       </td>
       <td>
-        >= 5.2.0, < 10
+        >= 5.2.0, < 9
       </td>
       <td>
         until Nov 28, 2020
