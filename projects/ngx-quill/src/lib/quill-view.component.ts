@@ -13,12 +13,14 @@ import {
   Renderer2,
   SimpleChanges,
   ViewEncapsulation,
-  NgZone
+  NgZone,
+  SecurityContext
 } from '@angular/core'
 
 import { CustomOption, CustomModule } from './quill-editor.interfaces'
 import {getFormat} from './helpers'
 import { QuillService } from './quill.service'
+import { DomSanitizer } from '@angular/platform-browser'
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -40,6 +42,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
   @Input() modules?: QuillModules
   @Input() debug?: 'warn' | 'log' | 'error' | false
   @Input() formats?: string[] | null
+  @Input() sanitize = false
   @Input() strict = true
   @Input() content: any
   @Input() customModules: CustomModule[] = []
@@ -47,26 +50,34 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
   @Input() preserveWhitespace = false
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: any,
-    @Inject(Renderer2) private renderer: Renderer2,
-    @Inject(ElementRef) private elementRef: ElementRef,
-    @Inject(NgZone) private zone: NgZone,
-    @Inject(QuillService) private service: QuillService
+    public elementRef: ElementRef,
+    protected renderer: Renderer2,
+    protected zone: NgZone,
+    protected service: QuillService,
+    protected domSanitizer: DomSanitizer,
+    @Inject(PLATFORM_ID) protected platformId: any,
   ) {}
 
   valueSetter = (quillEditor: QuillType, value: any): any => {
     const format = getFormat(this.format, this.service.config.format)
     let content = value
-    if (format === 'html' || format === 'text') {
-      content = quillEditor.clipboard.convert(value)
-    } else if (format === 'json') {
-      try {
-        content = JSON.parse(value)
-      } catch (e) {
-        content = [{ insert: value }]
+    if (format === 'text') {
+      quillEditor.setText(content)
+    } else {
+      if (format === 'html') {
+        if (this.sanitize) {
+          value = this.domSanitizer.sanitize(SecurityContext.HTML, value)
+        }
+        content = quillEditor.clipboard.convert(value)
+      } else if (format === 'json') {
+        try {
+          content = JSON.parse(value)
+        } catch (e) {
+          content = [{ insert: value }]
+        }
       }
+      quillEditor.setContents(content)
     }
-    quillEditor.setContents(content)
   }
 
   ngOnChanges(changes: SimpleChanges) {
