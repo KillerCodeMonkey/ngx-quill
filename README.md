@@ -55,10 +55,21 @@ XLM Wallet Address:
     <tr>
       <th>Angular</th>
       <th>ngx-quill</th>
-      <th>supported/maintained</th>
+      <th>supported</th>
     </tr>
   </thead>
   <tbody>
+    <tr>
+      <td>
+        v10
+      </td>
+      <td>
+        >= 12.0.0
+      </td>
+      <td>
+        until Feb 24, 2022
+      </td>
+    </tr>
     <tr>
       <td>
         v9
@@ -79,17 +90,6 @@ XLM Wallet Address:
       </td>
       <td>
         until Nov 28, 2020
-      </td>
-    </tr>
-    <tr>
-      <td>
-        v7
-      </td>
-      <td>
-        >= 4.0.0, < 8.0.0
-      </td>
-      <td>
-        no
       </td>
     </tr>
   </tbody>
