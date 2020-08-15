@@ -50,9 +50,9 @@
     "zone.js": "^0.10.3"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.1000.5",
-    "@angular-devkit/build-ng-packagr": "^0.1000.5",
-    "@angular/cli": "^10.0.5",
+    "@angular-devkit/build-angular": "^0.1000.6",
+    "@angular-devkit/build-ng-packagr": "^0.1000.6",
+    "@angular/cli": "^10.0.6",
     "@angular/compiler-cli": "^10.0.9",
     "@angular/language-service": "^10.0.9",
     "@types/jasmine": "^3.5.12",
@@ -71,7 +71,7 @@
     "karma-jasmine-html-reporter": "^1.5.4",
     "karma-mocha-reporter": "^2.2.5",
     "karma-spec-reporter": "0.0.32",
-    "ng-packagr": "^10.0.3",
+    "ng-packagr": "^10.0.4",
     "node-sass": "^4.14.1",
     "protractor": "^7.0.0",
     "puppeteer": "^4.0.1",
