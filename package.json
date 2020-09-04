@@ -57,7 +57,7 @@
     "@angular/language-service": "^10.0.14",
     "@types/jasmine": "^3.5.14",
     "@types/jasminewd2": "^2.0.8",
-    "@types/node": "^12.12.54",
+    "@types/node": "^12.12.55",
     "@types/quill": "^1.3.10",
     "codelyzer": "^5.2.2",
     "fibers": "^5.0.0",
