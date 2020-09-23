@@ -63,7 +63,7 @@
     "fibers": "^5.0.0",
     "jasmine-core": "^3.6.0",
     "jasmine-spec-reporter": "^5.0.2",
-    "html-webpack-plugin": "^4.4.1",
+    "html-webpack-plugin": "^4.5.0",
     "karma": "^5.2.2",
     "karma-chrome-launcher": "^3.1.0",
     "karma-coverage-istanbul-reporter": "^3.0.3",
