@@ -55,7 +55,7 @@
     "@angular/cli": "^10.2.0",
     "@angular/compiler-cli": "^10.2.0",
     "@angular/language-service": "^10.2.0",
-    "@types/jasmine": "^3.5.14",
+    "@types/jasmine": "^3.6.0",
     "@types/jasminewd2": "^2.0.8",
     "@types/node": "^12.19.1",
     "@types/quill": "^1.3.10",
