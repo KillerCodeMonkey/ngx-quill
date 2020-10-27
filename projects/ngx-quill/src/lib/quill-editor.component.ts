@@ -175,12 +175,12 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     return value
   }
 
-  async ngAfterViewInit() {
+  ngAfterViewInit() {
     if (isPlatformServer(this.platformId)) {
       return
     }
 
-    const Quill = await this.service.getQuill()
+    const Quill = this.service.getQuill()
 
     this.elementRef.nativeElement.insertAdjacentHTML(
       this.customToolbarPosition === 'top' ? 'beforeend' : 'afterbegin',

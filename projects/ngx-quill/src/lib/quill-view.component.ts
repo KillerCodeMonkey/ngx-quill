@@ -89,12 +89,12 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
     }
   }
 
-  async ngAfterViewInit() {
+  ngAfterViewInit() {
     if (isPlatformServer(this.platformId)) {
       return
     }
 
-    const Quill = await this.service.getQuill()
+    const Quill = this.service.getQuill()
 
     const modules = Object.assign({}, this.modules || this.service.config.modules)
     modules.toolbar = false
