@@ -180,7 +180,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       return
     }
 
-    const Quill = await this.service.getQuill()
+    const Quill = this.service.getQuill()
 
     this.elementRef.nativeElement.insertAdjacentHTML(
       this.customToolbarPosition === 'top' ? 'beforeend' : 'afterbegin',
