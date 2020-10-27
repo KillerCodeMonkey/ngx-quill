@@ -175,7 +175,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     return value
   }
 
-  async ngAfterViewInit() {
+  ngAfterViewInit() {
     if (isPlatformServer(this.platformId)) {
       return
     }

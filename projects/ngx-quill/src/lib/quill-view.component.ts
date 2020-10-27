@@ -89,7 +89,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
     }
   }
 
-  async ngAfterViewInit() {
+  ngAfterViewInit() {
     if (isPlatformServer(this.platformId)) {
       return
     }
