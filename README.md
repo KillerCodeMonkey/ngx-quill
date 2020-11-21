@@ -61,13 +61,24 @@ XLM Wallet Address:
   <tbody>
     <tr>
       <td>
+        v11
+      </td>
+      <td>
+        >= 13.0.0
+      </td>
+      <td>
+        until May 11, 2022
+      </td>
+    </tr>
+    <tr>
+      <td>
         v10
       </td>
       <td>
         >= 12.0.0
       </td>
       <td>
-        until Feb 24, 2022
+        until Dec 24, 2021
       </td>
     </tr>
     <tr>
@@ -79,17 +90,6 @@ XLM Wallet Address:
       </td>
       <td>
         until Aug 06, 2021
-      </td>
-    </tr>
-    <tr>
-      <td>
-        v8
-      </td>
-      <td>
-        >= 5.2.0, < 9
-      </td>
-      <td>
-        until Nov 28, 2020
       </td>
     </tr>
   </tbody>
@@ -107,7 +107,7 @@ XLM Wallet Address:
     @import '~quill/dist/quill.bubble.css';
     @import '~quill/dist/quill.snow.css';
    ```
-  
+
 
 
 ### For standard webpack, angular-cli and tsc builds
