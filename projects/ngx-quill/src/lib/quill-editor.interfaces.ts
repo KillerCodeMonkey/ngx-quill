@@ -29,38 +29,38 @@ export interface QuillModules {
   clipboard?: {
     matchers?: any[]
     matchVisual?: boolean
-  } | boolean
+  } | boolean
   history?: {
     delay?: number
     maxStack?: number
     userOnly?: boolean
-  } | boolean
+  } | boolean
   keyboard?: {
     bindings?: any
   } | boolean
   syntax?: boolean
-  toolbar?: QuillToolbarConfig | string | {
+  toolbar?: QuillToolbarConfig | string | {
     container?: string | string[] | QuillToolbarConfig
     handlers?: {
       [key: string]: any
     }
-  } | boolean
+  } | boolean
 }
 
-export type QuillFormat = 'object' | 'json' | 'html' | 'text'
+export type QuillFormat = 'object' | 'json' | 'html' | 'text'
 
 export interface QuillConfig {
-  bounds?: HTMLElement | string
+  bounds?: HTMLElement | string
   customModules?: CustomModule[]
   customOptions?: CustomOption[]
   suppressGlobalRegisterWarning?: boolean
-  debug?: 'error' | 'warn' | 'log' | false
+  debug?: 'error' | 'warn' | 'log' | false
   format?: QuillFormat
   formats?: string[]
   modules?: QuillModules
   placeholder?: string
   readOnly?: boolean
-  scrollingContainer?: HTMLElement | string | null
+  scrollingContainer?: HTMLElement | string | null
   theme?: string
   strict?: boolean
   // Custom Config to track all changes or only changes by 'user'

@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core'
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing'
 
 import { QuillViewHTMLComponent } from './quill-view-html.component'
 
@@ -19,7 +19,7 @@ describe('Basic QuillViewHTMLComponent', () => {
     fixture = TestBed.createComponent(QuillViewHTMLComponent)
   })
 
-  it('should render and set default snow theme class', async(async () => {
+  it('should render and set default snow theme class', waitForAsync(async () => {
     const element = fixture.nativeElement
     fixture.detectChanges()
     await fixture.whenStable()
@@ -56,7 +56,7 @@ describe('QuillViewHTMLComponent - content', () => {
     fixture = TestBed.createComponent(HTMLComponent) as ComponentFixture<HTMLComponent>
     fixture.detectChanges()
   })
-  it('should be set html', async(async () => {
+  it('should be set html', waitForAsync(async () => {
     const element = fixture.nativeElement
 
     await fixture.whenStable()
@@ -64,7 +64,7 @@ describe('QuillViewHTMLComponent - content', () => {
     expect(viewElement.innerHTML).toEqual('<p>Hallo</p>')
   }))
 
-  it('should update html', async(async () => {
+  it('should update html', waitForAsync(async () => {
     const component = fixture.componentInstance
     await fixture.whenStable()
     component.content = '<p>test</p>'

@@ -26,11 +26,11 @@ import {
 `
 })
 export class QuillViewHTMLComponent implements OnChanges {
-  innerHTML: SafeHtml = ''
-  themeClass = 'ql-snow'
-
   @Input() content = ''
   @Input() theme?: string
+
+  innerHTML: SafeHtml = ''
+  themeClass = 'ql-snow'
 
   constructor(
     @Inject(DomSanitizer) private sanitizer: DomSanitizer,

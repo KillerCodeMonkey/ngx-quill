@@ -67,24 +67,19 @@ export type EditorChangeContent = ContentChange & {event: 'text-change'}
 export type EditorChangeSelection = SelectionChange & {event: 'selection-change'}
 
 @Directive()
-// tslint:disable-next-line:directive-class-suffix
+// eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class QuillEditorBase implements AfterViewInit, ControlValueAccessor, OnChanges, OnDestroy, Validator {
-
-  quillEditor!: QuillType
-  editorElem!: HTMLElement
-  content: any
-
   @Input() format?: 'object' | 'html' | 'text' | 'json'
   @Input() theme?: string
   @Input() modules?: QuillModules
-  @Input() debug?: 'warn' | 'log' | 'error' | false
+  @Input() debug?: 'warn' | 'log' | 'error' | false
   @Input() readOnly?: boolean
   @Input() placeholder?: string
   @Input() maxLength?: number
   @Input() minLength?: number
   @Input() required = false
-  @Input() formats?: string[] | null
-  @Input() customToolbarPosition: 'top' | 'bottom' = 'top'
+  @Input() formats?: string[] | null
+  @Input() customToolbarPosition: 'top' | 'bottom' = 'top'
   @Input() sanitize = false
   @Input() styles: any = null
   @Input() strict = true
@@ -92,18 +87,21 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   @Input() bounds?: HTMLElement | string
   @Input() customOptions: CustomOption[] = []
   @Input() customModules: CustomModule[] = []
-  @Input() trackChanges?: 'user' | 'all'
+  @Input() trackChanges?: 'user' | 'all'
   @Input() preserveWhitespace = false
   @Input() classes?: string
   @Input() trimOnValidation = false
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
-  @Output() onEditorChanged: EventEmitter<EditorChangeContent | EditorChangeSelection> = new EventEmitter()
+  @Output() onEditorChanged: EventEmitter<EditorChangeContent | EditorChangeSelection> = new EventEmitter()
   @Output() onContentChanged: EventEmitter<ContentChange> = new EventEmitter()
   @Output() onSelectionChanged: EventEmitter<SelectionChange> = new EventEmitter()
   @Output() onFocus: EventEmitter<Focus> = new EventEmitter()
   @Output() onBlur: EventEmitter<Blur> = new EventEmitter()
 
+  quillEditor!: QuillType
+  editorElem!: HTMLElement
+  content: any
   disabled = false // used to store initial value before ViewInit
 
   onModelChange: (modelValue?: any) => void
@@ -133,12 +131,12 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   }
 
   @Input()
-  valueGetter = (quillEditor: QuillType, editorElement: HTMLElement): string | any  => {
+  valueGetter = (quillEditor: QuillType, editorElement: HTMLElement): string | any  => {
     let html: string | null = editorElement.querySelector('.ql-editor')!.innerHTML
     if (html === '<p><br></p>' || html === '<div><br></div>') {
       html = null
     }
-    let modelValue: string | Delta | null = html
+    let modelValue: string | Delta | null = html
     const format = getFormat(this.format, this.service.config.format)
 
     if (format === 'text') {
@@ -180,6 +178,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       return
     }
 
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const Quill = await this.service.getQuill()
 
     this.elementRef.nativeElement.insertAdjacentHTML(
@@ -246,12 +245,12 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     if (!scrollingContainer && this.scrollingContainer !== null) {
       scrollingContainer =
         this.service.config.scrollingContainer === null
-          || this.service.config.scrollingContainer ? this.service.config.scrollingContainer : null
+          || this.service.config.scrollingContainer ? this.service.config.scrollingContainer : null
     }
 
     let formats = this.formats
     if (!formats && formats === undefined) {
-      formats = this.service.config.formats ? [...this.service.config.formats] : (this.service.config.formats === null ? null : undefined)
+      formats = this.service.config.formats ? [...this.service.config.formats] : (this.service.config.formats === null ? null : undefined)
     }
 
     this.zone.runOutsideAngular(() => {
@@ -322,7 +321,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     })
   }
 
-  selectionChangeHandler = (range: Range | null, oldRange: Range | null, source: string) => {
+  selectionChangeHandler = (range: Range | null, oldRange: Range | null, source: string) => {
     const shouldTriggerOnModelTouched = !range && !!this.onModelTouched
 
     // only emit changes when there's any listener
@@ -369,7 +368,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       html = null
     }
 
-    const trackChanges = this.trackChanges || this.service.config.trackChanges
+    const trackChanges = this.trackChanges || this.service.config.trackChanges
     const shouldTriggerOnModelChange = (source === 'user' || trackChanges && trackChanges === 'all') && !!this.onModelChange
 
     // only emit changes when there's any listener
@@ -396,8 +395,11 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     })
   }
 
-  // tslint:disable-next-line:max-line-length
-  editorChangeHandler = (event: 'text-change' | 'selection-change', current: any | Range | null, old: any | Range | null, source: string): void => {
+  // eslint-disable-next-line max-len
+  editorChangeHandler = (
+    event: 'text-change' | 'selection-change',
+    current: any | Range | null, old: any | Range | null, source: string
+  ): void => {
     // only emit changes when there's any listener
     if (!this.onEditorChanged.observers.length) {
       return
@@ -448,17 +450,17 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     if (!this.quillEditor) {
       return
     }
-    // tslint:disable:no-string-literal
-    if (changes['readOnly']) {
-      this.quillEditor.enable(!changes['readOnly'].currentValue)
+    /* eslint-disable @typescript-eslint/dot-notation */
+    if (changes.readOnly) {
+      this.quillEditor.enable(!changes.readOnly.currentValue)
     }
-    if (changes['placeholder']) {
+    if (changes.placeholder) {
       this.quillEditor.root.dataset.placeholder =
-        changes['placeholder'].currentValue
+        changes.placeholder.currentValue
     }
-    if (changes['styles']) {
-      const currentStyling = changes['styles'].currentValue
-      const previousStyling = changes['styles'].previousValue
+    if (changes.styles) {
+      const currentStyling = changes.styles.currentValue
+      const previousStyling = changes.styles.previousValue
 
       if (previousStyling) {
         Object.keys(previousStyling).forEach((key: string) => {
@@ -471,9 +473,9 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         })
       }
     }
-    if (changes['classes']) {
-      const currentClasses = changes['classes'].currentValue
-      const previousClasses = changes['classes'].previousValue
+    if (changes.classes) {
+      const currentClasses = changes.classes.currentValue
+      const previousClasses = changes.classes.previousValue
 
       if (previousClasses) {
         this.removeClasses(previousClasses)
@@ -483,7 +485,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         this.addClasses(currentClasses)
       }
     }
-    // tslint:enable:no-string-literal
+    /* eslint-enable @typescript-eslint/dot-notation */
   }
 
   addClasses(classList: string): void {

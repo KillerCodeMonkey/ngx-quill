@@ -6,6 +6,7 @@ import { defaultModules } from './quill-defaults'
   providedIn: 'root'
 })
 export class QuillService {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   private Quill!: any
   private $importPromise!: Promise<any>
   private count = 0
@@ -14,7 +15,7 @@ export class QuillService {
     @Inject(QUILL_CONFIG_TOKEN) public config: QuillConfig
   ) {
     if (!this.config) {
-      this.config = { modules: defaultModules }
+      this.config = { modules: defaultModules }
     }
   }
 

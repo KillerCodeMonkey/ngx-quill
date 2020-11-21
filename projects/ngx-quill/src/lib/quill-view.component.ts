@@ -34,20 +34,20 @@ import { DomSanitizer } from '@angular/platform-browser'
 `
 })
 export class QuillViewComponent implements AfterViewInit, OnChanges {
-  quillEditor!: QuillType
-  editorElem!: HTMLElement
-
   @Input() format?: 'object' | 'html' | 'text' | 'json'
   @Input() theme?: string
   @Input() modules?: QuillModules
-  @Input() debug?: 'warn' | 'log' | 'error' | false
-  @Input() formats?: string[] | null
+  @Input() debug?: 'warn' | 'log' | 'error' | false
+  @Input() formats?: string[] | null
   @Input() sanitize = false
   @Input() strict = true
   @Input() content: any
   @Input() customModules: CustomModule[] = []
   @Input() customOptions: CustomOption[] = []
   @Input() preserveWhitespace = false
+
+  quillEditor!: QuillType
+  editorElem!: HTMLElement
 
   constructor(
     public elementRef: ElementRef,
@@ -69,7 +69,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
           value = this.domSanitizer.sanitize(SecurityContext.HTML, value)
         }
         content = quillEditor.clipboard.convert(value)
-      } else if (format === 'json') {
+      } else if (format === 'json') {
         try {
           content = JSON.parse(value)
         } catch (e) {
@@ -94,6 +94,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
       return
     }
 
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const Quill = await this.service.getQuill()
 
     const modules = Object.assign({}, this.modules || this.service.config.modules)
@@ -117,7 +118,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
     let formats = this.formats
     if (!formats && formats === undefined) {
       formats = this.service.config.formats ?
-        Object.assign({}, this.service.config.formats) : (this.service.config.formats === null ? null : undefined)
+        Object.assign({}, this.service.config.formats) : (this.service.config.formats === null ? null : undefined)
     }
     const theme = this.theme || (this.service.config.theme ? this.service.config.theme : 'snow')
 

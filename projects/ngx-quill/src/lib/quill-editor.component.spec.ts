@@ -13,7 +13,8 @@ window.setTimeout = ((cb) => {
   return 0
 }) as any
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const QuillNamespace = require('quill')
 
 class CustomModule {
@@ -28,7 +29,21 @@ class CustomModule {
 
 @Component({
   template: `
-<quill-editor (onBlur)="blured = true" (onFocus)="focused = true" [(ngModel)]="title" [customOptions]="[{import: 'attributors/style/size', whitelist: ['14']}]" [styles]="style" [required]="required" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onEditorChanged)="handleEditorChange($event)" (onContentChanged)="handleChange($event)" (onSelectionChanged)="handleSelection($event)"></quill-editor>
+<quill-editor
+  (onBlur)="blured = true"
+  (onFocus)="focused = true"
+  [(ngModel)]="title"
+  [customOptions]="[{import: 'attributors/style/size', whitelist: ['14']}]"
+  [styles]="style"
+  [required]="required"
+  [minLength]="minLength"
+  [maxLength]="maxLength"
+  [readOnly]="isReadOnly"
+  (onEditorCreated)="handleEditorCreated($event)"
+  (onEditorChanged)="handleEditorChange($event)"
+  (onContentChanged)="handleChange($event)"
+  (onSelectionChanged)="handleSelection($event)"
+></quill-editor>
 `
 })
 class TestComponent {
@@ -44,7 +59,7 @@ class TestComponent {
     backgroundColor?: string
     color?: string
     height?: string
-  } | null = { height: '30px' }
+  } | null = { height: '30px' }
   editor: any
 
   changed: any
@@ -70,7 +85,15 @@ class TestComponent {
 
 @Component({
   template: `
-<quill-editor [customToolbarPosition]="toolbarPosition" [(ngModel)]="title" [required]="true" [minLength]="minLength" [maxLength]="maxLength" [readOnly]="isReadOnly" (onEditorCreated)="handleEditorCreated($event)" (onContentChanged)="handleChange($event)">
+<quill-editor
+  [customToolbarPosition]="toolbarPosition"
+  [(ngModel)]="title" [required]="true"
+  [minLength]="minLength"
+  [maxLength]="maxLength"
+  [readOnly]="isReadOnly"
+  (onEditorCreated)="handleEditorCreated($event)"
+  (onContentChanged)="handleChange($event)"
+>
   <div quill-editor-toolbar="true">
     <span class="ql-formats">
       <button class="ql-bold" [title]="'Bold'"></button>
@@ -110,9 +133,9 @@ class TestToolbarComponent {
 `
 })
 class ReactiveFormTestComponent {
+  @ViewChild(QuillEditorComponent, { static: true }) editor!: QuillEditorComponent
   formControl: FormControl = new FormControl('a')
   minLength = 3
-  @ViewChild(QuillEditorComponent, { static: true }) editor!: QuillEditorComponent
 }
 
 @Component({
@@ -121,8 +144,8 @@ class ReactiveFormTestComponent {
 `
 })
 class PreserveWhitespaceTestComponent {
-  content = '<p>test     test   </p>'
   @ViewChild(QuillEditorComponent, { static: true }) editor!: QuillEditorComponent
+  content = '<p>test     test   </p>'
 }
 
 @Component({
@@ -131,8 +154,8 @@ class PreserveWhitespaceTestComponent {
 `
 })
 class CustomModuleTestComponent {
-  impl = CustomModule
   @ViewChild(QuillEditorComponent, { static: true }) editor!: QuillEditorComponent
+  impl = CustomModule
 }
 
 describe('Basic QuillEditorComponent', () => {
@@ -309,7 +332,8 @@ describe('Formats', () => {
       await sanfixture.whenStable()
       const incomponent = sanfixture.componentInstance
 
-      expect(JSON.stringify(incomponent.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hallo ' }, {insert: {image: 'wroooong.jpg'}}, {insert: '\n'}]}))
+      expect(JSON.stringify(incomponent.editor.getContents()))
+      .toEqual(JSON.stringify({ops: [{insert: 'Hallo ' }, {insert: {image: 'wroooong.jpg'}}, {insert: '\n'}]}))
 
       incomponent.title = '<p><img src="xxxx" onerror="window.alert()"></p>'
       sanfixture.detectChanges()
@@ -475,7 +499,12 @@ describe('Formats', () => {
 describe('Dynamic styles', () => {
   @Component({
     template: `
-  <quill-editor [bounds]="'self'" [(ngModel)]="title" format="text" [styles]="style" (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
+  <quill-editor
+    [bounds]="'self'"
+    [(ngModel)]="title"
+    format="text"
+    [styles]="style"
+    (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
   `
   })
   class StylingComponent {
@@ -524,7 +553,12 @@ describe('Dynamic styles', () => {
 describe('Dynamic classes', () => {
   @Component({
     template: `
-  <quill-editor [bounds]="'self'" [(ngModel)]="title" format="text" [classes]="classes" (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
+  <quill-editor
+    [bounds]="'self'"
+    [(ngModel)]="title"
+    format="text"
+    [classes]="classes"
+    (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
   `
   })
   class ClassesComponent {
@@ -622,7 +656,7 @@ describe('Reactive forms integration', () => {
   })
 
   it('should leave form pristine when content of editor changed programmatically', async () => {
-    const values: Array<string | null> = []
+    const values: Array<string | null> = []
 
     fixture.detectChanges()
     await fixture.whenStable()
@@ -1093,13 +1127,13 @@ describe('QuillEditor - base config', () => {
     fixture.detectChanges()
 
     expect(JSON.stringify(fixture.componentInstance.title))
-      .toEqual(JSON.stringify({ ops: [{ attributes: { bold: true }, insert: 'content'}, {insert: '\n'}] }))
+      .toEqual(JSON.stringify({ ops: [{ attributes: { bold: true }, insert: 'content'}, {insert: '\n'}] }))
     expect(editor.root.dataset.placeholder).toEqual('placeholder')
     expect(registerSpy).toHaveBeenCalledWith(
       jasmine.objectContaining({attrName: 'size', keyName: 'font-size', scope: 5, whitelist: ['14']}), true, true
     )
 
-    // tslint:disable-next-line:no-string-literal
+    // eslint-disable-next-line @typescript-eslint/dot-notation
     expect(fixture.componentInstance.editorComponent.quillEditor['options'].modules.toolbar)
       .toEqual(jasmine.objectContaining({
         container: [
@@ -1148,7 +1182,7 @@ describe('QuillEditor - customModules', () => {
     await fixture.whenStable()
 
     expect(spy).toHaveBeenCalled()
-    // tslint:disable-next-line:no-string-literal
+    // eslint-disable-next-line @typescript-eslint/dot-notation
     expect(fixture.componentInstance.editor.quillEditor['options'].modules.custom).toBeDefined()
   })
 })
