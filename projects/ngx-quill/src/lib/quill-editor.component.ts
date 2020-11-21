@@ -49,7 +49,7 @@ export interface ContentChange {
 export interface SelectionChange {
   editor: QuillType
   oldRange: Range | null
-  range: Range | null
+  range: Range | null
   source: string
 }
 
