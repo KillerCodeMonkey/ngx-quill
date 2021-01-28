@@ -1071,12 +1071,12 @@ describe('Advanced QuillEditorComponent', () => {
   })
 
   it('should render custom link placeholder', async () => {
-    const fixture = TestBed.createComponent(CustomLinkPlaceholderTestComponent) as ComponentFixture<CustomLinkPlaceholderTestComponent>
+    const linkFixture = TestBed.createComponent(CustomLinkPlaceholderTestComponent) as ComponentFixture<CustomLinkPlaceholderTestComponent>
 
-    fixture.detectChanges()
-    await fixture.whenStable()
-    
-    const el = fixture.nativeElement.querySelector('input[data-link]');
+    linkFixture.detectChanges()
+    await linkFixture.whenStable()
+
+    const el = linkFixture.nativeElement.querySelector('input[data-link]')
 
     expect(el.dataset.link).toBe('https://test.de')
   })

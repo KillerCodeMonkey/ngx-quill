@@ -91,9 +91,9 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   @Input() preserveWhitespace = false
   @Input() classes?: string
   @Input() trimOnValidation = false
-  @Input() linkPlaceholder?: string;
-  @Input() compareValues = false;
-  @Input() filterNull = false;
+  @Input() linkPlaceholder?: string
+  @Input() compareValues = false
+  @Input() filterNull = false
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
   @Output() onEditorChanged: EventEmitter<EditorChangeContent | EditorChangeSelection> = new EventEmitter()
@@ -267,29 +267,29 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         scrollingContainer: scrollingContainer as any,
         strict: this.strict,
         theme: this.theme || (this.service.config.theme ? this.service.config.theme : 'snow')
-      });
+      })
 
       // Set optional link placeholder, Quill has no native API for it so using workaround
       if (this.linkPlaceholder) {
-        const tooltip = (this.quillEditor as any)?.theme?.tooltip;
-        const input = tooltip?.root?.querySelector('input[data-link]');
+        const tooltip = (this.quillEditor as any)?.theme?.tooltip
+        const input = tooltip?.root?.querySelector('input[data-link]')
         if (input?.dataset) {
-          input.dataset.link = this.linkPlaceholder;
+          input.dataset.link = this.linkPlaceholder
         }
       }
     })
 
     if (this.content) {
-      const format = getFormat(this.format, this.service.config.format);
+      const format = getFormat(this.format, this.service.config.format)
 
       if (format === 'text') {
-        this.quillEditor.setText(this.content, 'silent');
+        this.quillEditor.setText(this.content, 'silent')
       } else {
-        const newValue = this.valueSetter(this.quillEditor, this.content);
-        this.quillEditor.setContents(newValue, 'silent');
+        const newValue = this.valueSetter(this.quillEditor, this.content)
+        this.quillEditor.setContents(newValue, 'silent')
       }
 
-      this.quillEditor.getModule('history').clear();
+      this.quillEditor.getModule('history').clear()
     }
 
     // initialize disabled status based on this.disabled as default value
@@ -506,35 +506,35 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
     // optional fix for https://github.com/angular/angular/issues/14988
     if(this.filterNull && currentValue === null){
-      return;
+      return
     }
 
-    this.content = currentValue;
+    this.content = currentValue
 
     if(!this.quillEditor){
-      return;
+      return
     }
 
-    const format = getFormat(this.format, this.service.config.format);
-    const newValue = this.valueSetter(this.quillEditor, currentValue);
+    const format = getFormat(this.format, this.service.config.format)
+    const newValue = this.valueSetter(this.quillEditor, currentValue)
 
     if(this.compareValues){
-     const currentEditorValue = this.quillEditor.getContents();
+     const currentEditorValue = this.quillEditor.getContents()
       if (JSON.stringify(currentEditorValue) === JSON.stringify(newValue)) {
-        return;
+        return
       }
     }
 
     if (currentValue) {
       if (format === 'text') {
-        this.quillEditor.setText(currentValue);
+        this.quillEditor.setText(currentValue)
       } else {
-        this.quillEditor.setContents(newValue);
+        this.quillEditor.setContents(newValue)
       }
-      return;
+      return
     }
-    this.quillEditor.setText('');
-  
+    this.quillEditor.setText('')
+
 
   }
 
