@@ -505,20 +505,20 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   writeValue(currentValue: any) {
 
     // optional fix for https://github.com/angular/angular/issues/14988
-    if(this.filterNull && currentValue === null){
+    if (this.filterNull && currentValue === null) {
       return
     }
 
     this.content = currentValue
 
-    if(!this.quillEditor){
+    if (!this.quillEditor) {
       return
     }
 
     const format = getFormat(this.format, this.service.config.format)
     const newValue = this.valueSetter(this.quillEditor, currentValue)
 
-    if(this.compareValues){
+    if (this.compareValues) {
      const currentEditorValue = this.quillEditor.getContents()
       if (JSON.stringify(currentEditorValue) === JSON.stringify(newValue)) {
         return
@@ -534,7 +534,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       return
     }
     this.quillEditor.setText('')
-
 
   }
 
