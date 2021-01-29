@@ -158,6 +158,17 @@ class CustomModuleTestComponent {
   impl = CustomModule
 }
 
+@Component({
+  template: `
+    <quill-editor [ngModel]="content" [linkPlaceholder]="'https://test.de'"></quill-editor>
+`
+})
+class CustomLinkPlaceholderTestComponent {
+  @ViewChild(QuillEditorComponent, { static: true }) editor!: QuillEditorComponent
+  content = ''
+}
+
+
 describe('Basic QuillEditorComponent', () => {
   let fixture: ComponentFixture<QuillEditorComponent>
 
@@ -700,7 +711,7 @@ describe('Advanced QuillEditorComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [TestComponent, TestToolbarComponent],
+      declarations: [TestComponent, TestToolbarComponent, CustomLinkPlaceholderTestComponent],
       imports: [FormsModule, QuillModule],
       providers: QuillModule.forRoot().providers
     }).compileComponents()
@@ -1057,6 +1068,17 @@ describe('Advanced QuillEditorComponent', () => {
 
     const editorComponent = toolbarFixture.debugElement.children[0].componentInstance
     expect(editorComponent.customToolbarPosition).toEqual('bottom')
+  })
+
+  it('should render custom link placeholder', async () => {
+    const linkFixture = TestBed.createComponent(CustomLinkPlaceholderTestComponent) as ComponentFixture<CustomLinkPlaceholderTestComponent>
+
+    linkFixture.detectChanges()
+    await linkFixture.whenStable()
+
+    const el = linkFixture.nativeElement.querySelector('input[data-link]')
+
+    expect(el.dataset.link).toBe('https://test.de')
   })
 })
 
