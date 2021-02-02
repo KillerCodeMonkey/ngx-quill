@@ -102,8 +102,6 @@ LTC Wallet Address:
     @import '~quill/dist/quill.snow.css';
    ```
 
-
-
 ### For standard webpack, angular-cli and tsc builds
 
 - import `QuillModule` from `ngx-quill`:
@@ -228,7 +226,7 @@ If you are using the editor reference to directly manipulate the editor content 
 
 - ngModel - set initial value or allow two-way databinding for template driven forms
 - formControl/formControlName - set initial value or allow two-way databinding for reactive forms
-- readOnly (true | false) if user can edit content
+- readOnly (true | false) if user can edit content
 - formats - array of allowed formats/groupings
 - format - model format - default: `html`, values: `html | object | text | json`, sets the model value type - html = html string, object = quill operation object, json = quill operation json, text = plain text
 - modules - configure/disable quill modules, e.g toolbar or add custom toolbar via html element default is
@@ -297,8 +295,9 @@ const modules = {
 - customToolbarPosition - if you are working with a custom toolbar you can switch the position :). - default: `top`, possible values `top`, `bottom`
 - debug - set log level `warn`, `error`, `log` or `false` to deactivate logging, default: `warn`
 - trackChanges - check if only `user` (quill source user) or `all` change should be trigger model update, default `user`. Using `all` is not recommended, it cause some unexpected sideeffects.
-- preserveWhitespace - default: false - possbility to use a pre-tag instead of a div-tag for the contenteditable area to preserve duplicated whitespaces | caution if used with syntax plugin [Related issue](https://github.com/quilljs/quill/issues/1751)
+- preserveWhitespace - default: false - possbility to use a pre-tag instead of a div-tag for the contenteditable area to preserve duplicated whitespaces | caution if used with syntax plugin [Related issue](https://github.com/quilljs/quill/issues/1751)
 - classes - a space separated list of CSS classes that will be added onto the editor element
+- linkPlaceholder - optional - set placeholder for the link tooltip
 
 [Full Quill Toolbar HTML](https://github.com/quilljs/quill/blob/f75ff2973f068c3db44f949915eb8a74faf162a8/docs/_includes/full-toolbar.html)
 
@@ -399,7 +398,7 @@ As a helper `ngx-quill` provides a component where you can pass many options of 
 - use customOptions for adding for example custom font sizes --> this overwrites this options **globally** !!!
 - use customModules for adding and overwriting modules --> this overwrites this modules **globally** !!!
 - strict - default: true, sets editor in strict mode
-- preserveWhitespace - default: false - possbility to use a pre-tag instead of a div-tag for the contenteditable area to preserve duplicated whitespaces | caution if used with syntax plugin [Related issue](https://github.com/quilljs/quill/issues/1751)
+- preserveWhitespace - default: false - possbility to use a pre-tag instead of a div-tag for the contenteditable area to preserve duplicated whitespaces | caution if used with syntax plugin [Related issue](https://github.com/quilljs/quill/issues/1751)
 - sanitize - uses angulars DomSanitizer to santize html values - default: `false`, boolean (only for format="html")
 
 ```HTML
