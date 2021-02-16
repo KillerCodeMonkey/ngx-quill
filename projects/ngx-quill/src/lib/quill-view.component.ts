@@ -6,8 +6,10 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
   Inject,
   Input,
+  Output,
   OnChanges,
   PLATFORM_ID,
   Renderer2,
@@ -45,6 +47,8 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
   @Input() customModules: CustomModule[] = []
   @Input() customOptions: CustomOption[] = []
   @Input() preserveWhitespace = false
+
+  @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
 
   quillEditor!: QuillType
   editorElem!: HTMLElement
@@ -147,5 +151,10 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
     if (this.content) {
       this.valueSetter(this.quillEditor, this.content)
     }
+
+    // trigger created in a timeout to avoid changed models after checked
+    setTimeout(() => {
+      this.onEditorCreated.emit(this.quillEditor)
+    })
   }
 }

@@ -401,6 +401,10 @@ As a helper `ngx-quill` provides a component where you can pass many options of 
 - preserveWhitespace - default: false - possbility to use a pre-tag instead of a div-tag for the contenteditable area to preserve duplicated whitespaces | caution if used with syntax plugin [Related issue](https://github.com/quilljs/quill/issues/1751)
 - sanitize - uses angulars DomSanitizer to santize html values - default: `false`, boolean (only for format="html")
 
+### Outputs
+
+- onEditorCreated - editor instance
+
 ```HTML
 <quill-view [content]="content" format="text" theme="snow"></quill-view>
 ```
