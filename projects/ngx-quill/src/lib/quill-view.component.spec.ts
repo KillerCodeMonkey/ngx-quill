@@ -239,3 +239,45 @@ describe('Formats', () => {
     })
   })
 })
+
+describe('Advanced QuillViewComponent', () => {
+
+  @Component({
+    template: `
+  <quill-view [content]="content" format="html" (onEditorCreated)="handleEditorCreated($event)"></quill-view>
+  `
+  })
+  class AdvancedComponent {
+    @ViewChild(QuillViewComponent, {static: true}) view: QuillViewComponent | undefined
+    content = '<p>Hallo</p>'
+    quillEditor: any
+
+    handleEditorCreated(event: any) {
+      this.quillEditor = event
+    }
+  }
+
+  let fixture: ComponentFixture<AdvancedComponent>
+
+  beforeEach(async () => {
+
+    TestBed.configureTestingModule({
+      declarations: [AdvancedComponent],
+      imports: [QuillModule],
+      providers: QuillModule.forRoot().providers
+    }).compileComponents()
+
+    fixture = TestBed.createComponent(AdvancedComponent) as ComponentFixture<AdvancedComponent>
+  })
+
+  it('should emit onEditorCreated with editor instance',  async () => {
+
+    spyOn(fixture.componentInstance, 'handleEditorCreated')
+    fixture.detectChanges()
+
+    await fixture.whenStable()
+
+    const viewComponent = fixture.debugElement.children[0].componentInstance
+    expect(fixture.componentInstance.handleEditorCreated).toHaveBeenCalledWith(viewComponent.quillEditor)
+  })
+})
