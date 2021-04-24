@@ -28,7 +28,7 @@ import {
 import {ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator} from '@angular/forms'
 import {defaultModules} from './quill-defaults'
 
-import {getFormat} from './helpers'
+import {debounce, getFormat} from './helpers'
 import { QuillService } from './quill.service'
 
 export interface Range {
@@ -94,6 +94,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   @Input() linkPlaceholder?: string
   @Input() compareValues = false
   @Input() filterNull = false
+  @Input() debounceTime = 0
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
   @Output() onEditorChanged: EventEmitter<EditorChangeContent | EditorChangeSelection> = new EventEmitter()
@@ -298,7 +299,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     // triggered if selection or text changed
     this.quillEditor.on(
       'editor-change',
-      this.editorChangeHandler
+      debounce(this.editorChangeHandler, this.debounceTime)
     )
 
     // mark model as touched if editor lost focus
@@ -310,7 +311,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     // update model if text changes
     this.quillEditor.on(
       'text-change',
-      this.textChangeHandler
+      debounce(this.textChangeHandler, this.debounceTime)
     )
 
     // trigger created in a timeout to avoid changed models after checked
