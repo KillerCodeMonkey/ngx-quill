@@ -941,25 +941,6 @@ describe('Advanced QuillEditorComponent', () => {
     expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
   }))
 
-  it(`should destroy previous subscriptions and create new ones if value of 'debounceTime' changes`, fakeAsync(() => {
-    /* eslint-disable no-underscore-dangle */
-    fixture.componentInstance.debounceTime = 400
-    fixture.detectChanges()
-    tick()
-
-    let {quillEditor}= fixture.debugElement.children[0].componentInstance
-    const editorChangeListenerCount = quillEditor.emitter._events['editor-change'].length
-
-    fixture.componentInstance.debounceTime = 200
-    fixture.detectChanges()
-    tick()
-
-    quillEditor = fixture.debugElement.children[0].componentInstance.quillEditor
-    expect(quillEditor.emitter._events['editor-change']).toHaveSize(editorChangeListenerCount)
-    expect(quillEditor.emitter._events['text-change']).toBeInstanceOf(Object)
-    /* eslint-enable no-underscore-dangle */
-  }))
-
   it('should emit onSelectionChanged when selection changed + editor changed', async () => {
     spyOn(fixture.componentInstance, 'handleSelection').and.callThrough()
     spyOn(fixture.componentInstance, 'handleEditorChange').and.callThrough()
