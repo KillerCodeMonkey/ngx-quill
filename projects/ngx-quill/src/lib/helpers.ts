@@ -13,7 +13,8 @@ export const debounce = <T extends (...args: any[]) => any>(
 
   return function (...args: Parameters<T>) {
     if (typeof debounceTime !== "number") {
-      return callback.apply(this, args)
+      callback.apply(this, args)
+      return
     }
 
     clearTimeout(timer);
