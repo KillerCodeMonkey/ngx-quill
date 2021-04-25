@@ -7,7 +7,7 @@ export const getFormat = (format?: QuillFormat, configFormat?: QuillFormat): Qui
 
 export const debounce = <T extends (...args: any[]) => any>(
   callback: T,
-  debounceTime: number
+  debounceTime?: number
 ): ((...args: Parameters<T>) => void) => {
   let timer: number
 
