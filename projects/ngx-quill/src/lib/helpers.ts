@@ -11,16 +11,16 @@ export const debounce = <T extends (...args: any[]) => any>(
 ): ((...args: Parameters<T>) => void) => {
   let timer: number
 
-  return function (...args: Parameters<T>) {
-    if (typeof debounceTime !== "number") {
+  return function(...args: Parameters<T>) {
+    if (typeof debounceTime !== 'number') {
       callback.apply(this, args)
       return
     }
 
-    clearTimeout(timer);
+    clearTimeout(timer)
 
     timer = setTimeout(() => {
       callback.apply(this, args)
     }, debounceTime)
-  };
-};
+  }
+}
