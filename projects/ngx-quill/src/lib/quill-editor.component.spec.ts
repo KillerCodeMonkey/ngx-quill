@@ -953,7 +953,6 @@ describe('Advanced QuillEditorComponent', () => {
 
     quillEditor = fixture.debugElement.children[0].componentInstance.quillEditor
     expect(quillEditor.emitter._events['editor-change']).toHaveSize(editorChangeListenerCount)
-    debugger;
     expect(quillEditor.emitter._events['text-change']).toBeInstanceOf(Object)
   }))
 

@@ -5,13 +5,15 @@ export const getFormat = (format?: QuillFormat, configFormat?: QuillFormat): Qui
   return passedFormat || 'html'
 }
 
-export const debounce = <T extends (...args: any[]) => any>(callback: T, debounceTime: number): T => {
-  let timer: ReturnType<typeof setTimeout>;
+export const debounce = <T extends (...args: any[]) => any>(
+  callback: T,
+  debounceTime: number
+): ((...args: Parameters<T>) => void) => {
+  let timer: number
 
-  return function (...args: any[]) {
-    if (typeof debounceTime !== 'number') {
-      callback.apply(this, args)
-      return
+  return function (...args: Parameters<T>) {
+    if (typeof debounceTime !== "number") {
+      return callback.apply(this, args)
     }
 
     clearTimeout(timer);
@@ -19,5 +21,5 @@ export const debounce = <T extends (...args: any[]) => any>(callback: T, debounc
     timer = setTimeout(() => {
       callback.apply(this, args)
     }, debounceTime)
-  } as T
-}
+  };
+};
