@@ -298,7 +298,7 @@ const modules = {
 - preserveWhitespace - default: false - possbility to use a pre-tag instead of a div-tag for the contenteditable area to preserve duplicated whitespaces | caution if used with syntax plugin [Related issue](https://github.com/quilljs/quill/issues/1751)
 - classes - a space separated list of CSS classes that will be added onto the editor element
 - linkPlaceholder - optional - set placeholder for the link tooltip
-- debounceTime - default: 0 - debounces `onContentChanged`, `onEditorChanged`, `ngModel` and form control value changes. Improves performance (especially when working with large, >2-3 MiB Deltas), as neither `editorChangeHandler`, nor `textChangeHandler` handler runs internally.
+- debounceTime - optional - debounces `onContentChanged`, `onEditorChanged`, `ngModel` and form control value changes. Improves performance (especially when working with large, >2-3 MiB Deltas), as neither `editorChangeHandler`, nor `textChangeHandler` handler runs internally.
 
 [Full Quill Toolbar HTML](https://github.com/quilljs/quill/blob/f75ff2973f068c3db44f949915eb8a74faf162a8/docs/_includes/full-toolbar.html)
 

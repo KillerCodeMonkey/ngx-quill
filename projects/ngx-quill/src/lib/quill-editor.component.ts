@@ -94,7 +94,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   @Input() linkPlaceholder?: string
   @Input() compareValues = false
   @Input() filterNull = false
-  @Input() debounceTime = 0
+  @Input() debounceTime: number
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
   @Output() onEditorChanged: EventEmitter<EditorChangeContent | EditorChangeSelection> = new EventEmitter()
