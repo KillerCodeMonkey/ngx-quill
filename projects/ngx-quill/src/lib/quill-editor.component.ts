@@ -623,7 +623,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   }
 
   private debounce<T extends(...args: any[]) => any>(callback: T): ((...args: Parameters<T>) => void) {
-    let timer: any
+    let timer: number
     return (...args: Parameters<T>) => {
       if (typeof this.debounceTime !== 'number') {
         callback(...args)
