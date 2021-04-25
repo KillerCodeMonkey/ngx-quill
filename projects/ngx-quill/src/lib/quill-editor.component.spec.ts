@@ -872,8 +872,7 @@ describe('Advanced QuillEditorComponent', () => {
 
     expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
     expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
-    })
-  )
+  }))
 
   it('should emit onContentChanged only once with after content of editor changed + editor changed', fakeAsync(() => {
     fixture.componentInstance.debounceTime = 400
@@ -896,8 +895,7 @@ describe('Advanced QuillEditorComponent', () => {
     expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
     expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledTimes(1)
     expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
-    })
-  )
+  }))
 
   it('should adjust the debounce time if the bound value changes', fakeAsync(() => {
     fixture.componentInstance.debounceTime = 400
