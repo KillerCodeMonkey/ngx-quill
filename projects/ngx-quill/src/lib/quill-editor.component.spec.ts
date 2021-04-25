@@ -939,7 +939,7 @@ describe('Advanced QuillEditorComponent', () => {
     expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
   }))
 
-  it(`should destroy previous subscriptions and create ones new if value of 'debounceTime' changes`, fakeAsync(() => {
+  it(`should destroy previous subscriptions and create new ones if value of 'debounceTime' changes`, fakeAsync(() => {
     fixture.componentInstance.debounceTime = 400
     fixture.detectChanges()
     tick()
