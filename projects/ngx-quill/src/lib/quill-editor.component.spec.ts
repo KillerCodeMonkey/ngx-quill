@@ -193,9 +193,11 @@ describe('Basic QuillEditorComponent', () => {
 
     expect(spy).toHaveBeenCalledTimes(3)
     const quillEditor: any = fixture.componentInstance.quillEditor
+    /* eslint-disable no-underscore-dangle */
     expect(quillEditor.emitter._events['editor-change']).toHaveSize(5)
     expect(quillEditor.emitter._events['selection-change']).toBeInstanceOf(Object)
     expect(quillEditor.emitter._events['content-change']).toBeFalsy()
+    /* eslint-enable no-underscore-dangle */
   })
 
   it('should render toolbar', async () => {
@@ -940,6 +942,7 @@ describe('Advanced QuillEditorComponent', () => {
   }))
 
   it(`should destroy previous subscriptions and create new ones if value of 'debounceTime' changes`, fakeAsync(() => {
+    /* eslint-disable no-underscore-dangle */
     fixture.componentInstance.debounceTime = 400
     fixture.detectChanges()
     tick()
@@ -954,6 +957,7 @@ describe('Advanced QuillEditorComponent', () => {
     quillEditor = fixture.debugElement.children[0].componentInstance.quillEditor
     expect(quillEditor.emitter._events['editor-change']).toHaveSize(editorChangeListenerCount)
     expect(quillEditor.emitter._events['text-change']).toBeInstanceOf(Object)
+    /* eslint-enable no-underscore-dangle */
   }))
 
   it('should emit onSelectionChanged when selection changed + editor changed', async () => {
