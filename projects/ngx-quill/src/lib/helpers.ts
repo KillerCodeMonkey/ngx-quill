@@ -5,9 +5,13 @@ export const getFormat = (format?: QuillFormat, configFormat?: QuillFormat): Qui
   return passedFormat || 'html'
 }
 
-export const debounce = (callback: Function, debounceTime = 0) => {
+export const debounce = (callback: Function, debounceTime: number) => {
   let timer: ReturnType<typeof setTimeout>;
   return function (...args: any[]) {
+    if (typeof debounceTime !== 'number') {
+      return callback.apply(this, args)
+    }
+
     clearTimeout(timer);
 
     timer = setTimeout(() => {
