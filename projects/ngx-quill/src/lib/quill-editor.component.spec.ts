@@ -196,7 +196,7 @@ describe('Basic QuillEditorComponent', () => {
     /* eslint-disable no-underscore-dangle */
     expect(quillEditor.emitter._events['editor-change']).toHaveSize(5)
     expect(quillEditor.emitter._events['selection-change']).toBeInstanceOf(Object)
-    expect(quillEditor.emitter._events['content-change']).toBeFalsy()
+    expect(quillEditor.emitter._events['text-change']).toBeFalsy()
     /* eslint-enable no-underscore-dangle */
   })
 

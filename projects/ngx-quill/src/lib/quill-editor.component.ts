@@ -28,7 +28,7 @@ import {
 import {ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator} from '@angular/forms'
 import {defaultModules} from './quill-defaults'
 
-import {debounce, getFormat} from './helpers'
+import {getFormat} from './helpers'
 import { QuillService } from './quill.service'
 
 export interface Range {
@@ -301,7 +301,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     this.setDisabledState()
 
     // triggered if selection or text changed
-    this.editorChangeHandlerRef = debounce(this.editorChangeHandler, this.debounceTime)
+    this.editorChangeHandlerRef = this.debounce(this.editorChangeHandler)
     this.quillEditor.on(
       'editor-change',
       this.editorChangeHandlerRef
@@ -314,7 +314,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     )
 
     // update model if text changes
-    this.textChangeHandlerRef = debounce(this.textChangeHandler, this.debounceTime)
+    this.textChangeHandlerRef = this.debounce(this.textChangeHandler)
     this.quillEditor.on(
       'text-change',
       this.textChangeHandlerRef
@@ -494,22 +494,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         this.addClasses(currentClasses)
       }
     }
-    /* eslint-enable @typescript-eslint/dot-notation */
-    if (changes.debounceTime) {
-      this.quillEditor.off('editor-change', this.editorChangeHandlerRef)
-      this.editorChangeHandlerRef = debounce(this.editorChangeHandler, this.debounceTime)
-      this.quillEditor.on(
-        'editor-change',
-        this.editorChangeHandlerRef
-      )
-
-      this.quillEditor.off('text-change', this.textChangeHandlerRef)
-      this.textChangeHandlerRef = debounce(this.textChangeHandler, this.debounceTime)
-      this.quillEditor.on(
-        'text-change',
-        this.textChangeHandlerRef
-      )
-    }
   }
 
   addClasses(classList: string): void {
@@ -636,6 +620,22 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     }
 
     return valid ? null : err
+  }
+
+  private debounce<T extends(...args: any[]) => any>(callback: T): ((...args: Parameters<T>) => void) {
+    let timer: any
+    return (...args: Parameters<T>) => {
+      if (typeof this.debounceTime !== 'number') {
+        callback(...args)
+        return
+      }
+
+      clearTimeout(timer)
+
+      timer = setTimeout(() => {
+        callback(...args)
+      }, this.debounceTime)
+    }
   }
 }
 
