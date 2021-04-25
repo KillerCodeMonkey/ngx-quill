@@ -192,6 +192,10 @@ describe('Basic QuillEditorComponent', () => {
     fixture.componentInstance.ngOnDestroy()
 
     expect(spy).toHaveBeenCalledTimes(3)
+    const quillEditor: any = fixture.componentInstance.quillEditor
+    expect(quillEditor.emitter._events['editor-change']).toHaveSize(5)
+    expect(quillEditor.emitter._events['selection-change']).toBeInstanceOf(Object)
+    expect(quillEditor.emitter._events['content-change']).toBeFalsy()
   })
 
   it('should render toolbar', async () => {
@@ -849,51 +853,109 @@ describe('Advanced QuillEditorComponent', () => {
   })
 
   it('should emit onContentChanged with a delay after content of editor changed + editor changed', fakeAsync(() => {
-      fixture.componentInstance.debounceTime = 400
-      spyOn(fixture.componentInstance, 'handleChange').and.callThrough()
-      spyOn(fixture.componentInstance, 'handleEditorChange').and.callThrough()
+    fixture.componentInstance.debounceTime = 400
+    spyOn(fixture.componentInstance, 'handleChange').and.callThrough()
+    spyOn(fixture.componentInstance, 'handleEditorChange').and.callThrough()
 
-      fixture.detectChanges()
-      tick()
+    fixture.detectChanges()
+    tick()
 
-      const editorFixture = fixture.debugElement.children[0]
-      editorFixture.componentInstance.quillEditor.setText('foo', 'bar')
-      fixture.detectChanges()
-      tick()
+    const editorFixture = fixture.debugElement.children[0]
+    editorFixture.componentInstance.quillEditor.setText('foo', 'bar')
+    fixture.detectChanges()
+    tick()
 
-      expect(fixture.componentInstance.handleChange).not.toHaveBeenCalled()
-      expect(fixture.componentInstance.handleEditorChange).not.toHaveBeenCalled()
+    expect(fixture.componentInstance.handleChange).not.toHaveBeenCalled()
+    expect(fixture.componentInstance.handleEditorChange).not.toHaveBeenCalled()
 
-      tick(400)
+    tick(400)
 
-      expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
-      expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
+    expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
+    expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
     })
   )
 
   it('should emit onContentChanged only once with after content of editor changed + editor changed', fakeAsync(() => {
-      fixture.componentInstance.debounceTime = 400
-      spyOn(fixture.componentInstance, 'handleChange').and.callThrough()
-      spyOn(fixture.componentInstance, 'handleEditorChange').and.callThrough()
+    fixture.componentInstance.debounceTime = 400
+    spyOn(fixture.componentInstance, 'handleChange').and.callThrough()
+    spyOn(fixture.componentInstance, 'handleEditorChange').and.callThrough()
 
-      fixture.detectChanges()
-      tick()
+    fixture.detectChanges()
+    tick()
 
-      const editorFixture = fixture.debugElement.children[0]
-      editorFixture.componentInstance.quillEditor.setText('foo', 'bar')
-      fixture.detectChanges()
-      tick(200)
+    const editorFixture = fixture.debugElement.children[0]
+    editorFixture.componentInstance.quillEditor.setText('foo', 'bar')
+    fixture.detectChanges()
+    tick(200)
 
-      editorFixture.componentInstance.quillEditor.setText('baz', 'bar')
-      fixture.detectChanges()
-      tick(400)
+    editorFixture.componentInstance.quillEditor.setText('baz', 'bar')
+    fixture.detectChanges()
+    tick(400)
 
-      expect(fixture.componentInstance.handleChange).toHaveBeenCalledTimes(1)
-      expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
-      expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledTimes(1)
-      expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
+    expect(fixture.componentInstance.handleChange).toHaveBeenCalledTimes(1)
+    expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
+    expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledTimes(1)
+    expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
     })
   )
+
+  it('should adjust the debounce time if the bound value changes', fakeAsync(() => {
+    fixture.componentInstance.debounceTime = 400
+    const handleChangeSpy = spyOn(fixture.componentInstance, 'handleChange').and.callThrough()
+    const handleEditorChangeSpy = spyOn(fixture.componentInstance, 'handleEditorChange').and.callThrough()
+
+    fixture.detectChanges()
+    tick()
+
+    const editorFixture = fixture.debugElement.children[0]
+    editorFixture.componentInstance.quillEditor.setText('foo', 'bar')
+    fixture.detectChanges()
+    tick()
+
+    expect(fixture.componentInstance.handleChange).not.toHaveBeenCalled()
+    expect(fixture.componentInstance.handleEditorChange).not.toHaveBeenCalled()
+
+    tick(400)
+
+    expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
+    expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
+    handleChangeSpy.calls.reset()
+    handleEditorChangeSpy.calls.reset()
+
+    fixture.componentInstance.debounceTime = 200
+    fixture.detectChanges()
+    tick()
+
+    editorFixture.componentInstance.quillEditor.setText('baz', 'foo')
+    fixture.detectChanges()
+    tick()
+
+    expect(fixture.componentInstance.handleChange).not.toHaveBeenCalled()
+    expect(fixture.componentInstance.handleEditorChange).not.toHaveBeenCalled()
+
+    tick(200)
+
+    expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
+    expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
+  }))
+
+  it('should destroy previous subscriptions and create new if debounceTime changes', fakeAsync(() => {
+    fixture.componentInstance.debounceTime = 400
+    fixture.detectChanges()
+    tick()
+
+    let {quillEditor}= fixture.debugElement.children[0].componentInstance
+    const editorChangeListenerCount = quillEditor.emitter._events['editor-change'].length
+    const textChangeListenerCount = quillEditor.emitter._events['text-change'].length
+
+    fixture.componentInstance.debounceTime = 200
+    fixture.detectChanges()
+    tick()
+
+    quillEditor = fixture.debugElement.children[0].componentInstance.quillEditor
+    expect(quillEditor.emitter._events['editor-change']).toHaveSize(editorChangeListenerCount)
+    expect(quillEditor.emitter._events['content-change']).toBeFalsy(textChangeListenerCount)
+  }))
 
   it('should emit onSelectionChanged when selection changed + editor changed', async () => {
     spyOn(fixture.componentInstance, 'handleSelection').and.callThrough()
