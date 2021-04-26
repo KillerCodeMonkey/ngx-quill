@@ -494,6 +494,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         this.addClasses(currentClasses)
       }
     }
+    /* eslint-enable @typescript-eslint/dot-notation */
   }
 
   addClasses(classList: string): void {
