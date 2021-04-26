@@ -115,6 +115,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   // used to store reference from 'debounce' to destroy subscription
   private editorChangeHandlerRef: typeof QuillEditorBase.prototype.editorChangeHandler
   private textChangeHandlerRef: typeof QuillEditorBase.prototype.textChangeHandler
+  private debounceTimers: number[] = []
 
   constructor(
     public elementRef: ElementRef,
@@ -452,6 +453,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       this.quillEditor.off('selection-change', this.selectionChangeHandler)
       this.quillEditor.off('text-change', this.textChangeHandlerRef)
       this.quillEditor.off('editor-change', this.editorChangeHandlerRef)
+      this.debounceTimers.forEach((timer) => this.doc.defaultView.clearTimeout(timer))
     }
   }
 
@@ -631,11 +633,13 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         return
       }
 
-      clearTimeout(timer)
+      this.doc.defaultView.clearTimeout(timer)
+      this.debounceTimers = this.debounceTimers.filter((debounceTimer) => debounceTimer !== timer)
 
-      timer = setTimeout(() => {
+      timer = this.doc.defaultView.setTimeout(() => {
         callback(...args)
       }, this.debounceTime)
+      this.debounceTimers.push(timer)
     }
   }
 }
