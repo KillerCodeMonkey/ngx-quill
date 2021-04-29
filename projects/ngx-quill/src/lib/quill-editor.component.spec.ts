@@ -959,7 +959,7 @@ describe('Advanced QuillEditorComponent', () => {
     expect(editorFixture.componentInstance.debounceTimers.length).toBe(0)
   }))
 
-  it(`should clear the active debounce timers on destroy`, fakeAsync(() => {
+  it('should clear the active debounce timers on destroy', fakeAsync(() => {
     fixture.componentInstance.debounceTime = 400
     fixture.detectChanges()
     tick()
