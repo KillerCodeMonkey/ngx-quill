@@ -453,7 +453,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       this.quillEditor.off('selection-change', this.selectionChangeHandler)
       this.quillEditor.off('text-change', this.textChangeHandlerRef)
       this.quillEditor.off('editor-change', this.editorChangeHandlerRef)
-      this.debounceTimers.forEach((timer) => this.doc.defaultView.clearTimeout(timer))
+      this.debounceTimers.forEach((timer) => this.clearDebounceTimer(timer))
     }
   }
 
@@ -633,14 +633,20 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         return
       }
 
-      this.doc.defaultView.clearTimeout(timer)
-      this.debounceTimers = this.debounceTimers.filter((debounceTimer) => debounceTimer !== timer)
+      this.clearDebounceTimer(timer)
 
       timer = this.doc.defaultView.setTimeout(() => {
+        this.clearDebounceTimer(timer)
+
         callback(...args)
       }, this.debounceTime)
       this.debounceTimers.push(timer)
     }
+  }
+
+  private clearDebounceTimer(timer: number): void {
+    this.doc.defaultView.clearTimeout(timer)
+    this.debounceTimers = this.debounceTimers.filter((debounceTimer) => debounceTimer !== timer)
   }
 }
 
