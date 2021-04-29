@@ -714,7 +714,7 @@ describe('Reactive forms integration', () => {
   })
 })
 
-fdescribe('Advanced QuillEditorComponent', () => {
+describe('Advanced QuillEditorComponent', () => {
   let fixture: ComponentFixture<TestComponent>
 
   beforeEach(async () => {
@@ -941,7 +941,7 @@ fdescribe('Advanced QuillEditorComponent', () => {
     expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
   }))
 
-  fit(`should clear the 'debounceTimers' array after timeout callbacks were called`, fakeAsync(() => {
+  it(`should clear the 'debounceTimers' array after timeout callbacks were called`, fakeAsync(() => {
     fixture.componentInstance.debounceTime = 400
     spyOn(fixture.componentInstance, 'handleChange').and.callThrough()
     spyOn(fixture.componentInstance, 'handleEditorChange').and.callThrough()
@@ -959,7 +959,7 @@ fdescribe('Advanced QuillEditorComponent', () => {
     expect(editorFixture.componentInstance.debounceTimers.length).toBe(0)
   }))
 
-  fit(`should clear the active debounce timers on destroy`, fakeAsync(() => {
+  it(`should clear the active debounce timers on destroy`, fakeAsync(() => {
     fixture.componentInstance.debounceTime = 400
     fixture.detectChanges()
     tick()
