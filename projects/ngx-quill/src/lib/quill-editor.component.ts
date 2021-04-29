@@ -94,6 +94,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   @Input() linkPlaceholder?: string
   @Input() compareValues = false
   @Input() filterNull = false
+  @Input() debounceTime?: number
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
   @Output() onEditorChanged: EventEmitter<EditorChangeContent | EditorChangeSelection> = new EventEmitter()
@@ -110,6 +111,11 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   onModelChange: (modelValue?: any) => void
   onModelTouched: () => void
   onValidatorChanged: () => void
+
+  // used to store reference from 'debounce' to destroy subscription
+  private editorChangeHandlerRef: typeof QuillEditorBase.prototype.editorChangeHandler
+  private textChangeHandlerRef: typeof QuillEditorBase.prototype.textChangeHandler
+  private debounceTimers: number[] = []
 
   constructor(
     public elementRef: ElementRef,
@@ -296,9 +302,10 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     this.setDisabledState()
 
     // triggered if selection or text changed
+    this.editorChangeHandlerRef = this.debounce(this.editorChangeHandler)
     this.quillEditor.on(
       'editor-change',
-      this.editorChangeHandler
+      this.editorChangeHandlerRef
     )
 
     // mark model as touched if editor lost focus
@@ -308,9 +315,10 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     )
 
     // update model if text changes
+    this.textChangeHandlerRef = this.debounce(this.textChangeHandler)
     this.quillEditor.on(
       'text-change',
-      this.textChangeHandler
+      this.textChangeHandlerRef
     )
 
     // trigger created in a timeout to avoid changed models after checked
@@ -443,8 +451,9 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   ngOnDestroy() {
     if (this.quillEditor) {
       this.quillEditor.off('selection-change', this.selectionChangeHandler)
-      this.quillEditor.off('text-change', this.textChangeHandler)
-      this.quillEditor.off('editor-change', this.editorChangeHandler)
+      this.quillEditor.off('text-change', this.textChangeHandlerRef)
+      this.quillEditor.off('editor-change', this.editorChangeHandlerRef)
+      this.debounceTimers.forEach((timer) => this.clearDebounceTimer(timer))
     }
   }
 
@@ -614,6 +623,30 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     }
 
     return valid ? null : err
+  }
+
+  private debounce<T extends(...args: any[]) => any>(callback: T): ((...args: Parameters<T>) => void) {
+    let timer: number
+    return (...args: Parameters<T>) => {
+      if (typeof this.debounceTime !== 'number') {
+        callback(...args)
+        return
+      }
+
+      this.clearDebounceTimer(timer)
+
+      timer = this.doc.defaultView.setTimeout(() => {
+        this.clearDebounceTimer(timer)
+
+        callback(...args)
+      }, this.debounceTime)
+      this.debounceTimers.push(timer)
+    }
+  }
+
+  private clearDebounceTimer(timer: number): void {
+    this.doc.defaultView.clearTimeout(timer)
+    this.debounceTimers = this.debounceTimers.filter((debounceTimer) => debounceTimer !== timer)
   }
 }
 

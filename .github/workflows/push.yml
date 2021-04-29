@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [12.x, 14.x]
     steps:
       - uses: actions/checkout@v1
 
@@ -30,7 +30,7 @@ jobs:
 
       - name: Intall deps
         run: |
-          npm install
+          npm ci
 
       - name: Lint
         run: npm run lint
