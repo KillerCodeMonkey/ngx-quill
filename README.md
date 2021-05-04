@@ -269,6 +269,9 @@ const modules = {
 - use customOptions for adding for example custom font sizes --> this overwrites this options **globally** !!!
 - use customModules for adding and overwriting modules --> this overwrites this modules **globally** !!!
 - possbility to create a custom toolbar via projection slot `[quill-editor-toolbar]`:
+
+**Try to not use much angular magic here, like `(output)` listeners. Use native EventListeners**
+
 ```HTML
 <quill-editor>
   <div quill-editor-toolbar>
