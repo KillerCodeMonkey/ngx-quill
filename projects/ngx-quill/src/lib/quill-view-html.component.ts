@@ -28,6 +28,7 @@ import {
 export class QuillViewHTMLComponent implements OnChanges {
   @Input() content = ''
   @Input() theme?: string
+  @Input() sanitize = false
 
   innerHTML: SafeHtml = ''
   themeClass = 'ql-snow'
@@ -46,7 +47,8 @@ export class QuillViewHTMLComponent implements OnChanges {
       this.themeClass = `ql-${theme} ngx-quill-view-html`
     }
     if (changes.content) {
-      this.innerHTML = this.sanitizer.bypassSecurityTrustHtml(changes.content.currentValue)
+      const content = changes.content.currentValue
+      this.innerHTML = this.sanitize ? content : this.sanitizer.bypassSecurityTrustHtml(content)
     }
   }
 }
