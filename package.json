@@ -3,10 +3,12 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build -- --prod && cp ./README.md ./dist/ngx-quill",
+    "build": "ng build",
+    "build:prod": "npm run build -- --prod && npm run cp:readme",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "cp:readme": "cp ./README.md ./dist/ngx-quill"
   },
   "license": "MIT",
   "author": {
