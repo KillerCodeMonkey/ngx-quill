@@ -1,9 +1,9 @@
 import { Component, ViewChild } from '@angular/core'
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing'
-
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { QuillViewHTMLComponent } from './quill-view-html.component'
-
 import { QuillModule } from './quill.module'
+
+
 
 describe('Basic QuillViewHTMLComponent', () => {
   let fixture: ComponentFixture<QuillViewHTMLComponent>
@@ -75,4 +75,46 @@ describe('QuillViewHTMLComponent - content', () => {
     const viewElement = element.querySelector('.ql-container.ql-snow.ngx-quill-view-html > .ql-editor')
     expect(viewElement.innerHTML).toEqual('<p>test</p>')
   }))
+})
+
+describe('QuillViewHTMLComponent - sanitize', () => {
+  @Component({
+    template: `
+  <quill-view-html [content]="content" [sanitize]="sanitize"></quill-view-html>
+  `
+  })
+  class HTMLComponent {
+    content = '<p>Hallo <img src="wroooong.jpg" onerror="window.alert(\'sanitize me\')"></p>'
+    sanitize = false
+  }
+
+  let fixture: ComponentFixture<HTMLComponent>
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [HTMLComponent],
+      imports: [QuillModule],
+      providers: QuillModule.forRoot().providers
+    })
+
+    fixture = TestBed.createComponent(HTMLComponent)
+  })
+
+  it('should NOT sanitize content when sanitize parameter is false', () => {
+    fixture.detectChanges()
+
+    const element = fixture.nativeElement
+    const viewElement = element.querySelector('.ql-container.ql-snow.ngx-quill-view-html > .ql-editor')
+    expect(viewElement.innerHTML).toEqual('<p>Hallo <img src="wroooong.jpg" onerror="window.alert(\'sanitize me\')"></p>')
+  })
+
+  it('should sanitize content when sanitize parameter is true', () => {
+    const component = fixture.componentInstance
+    component.sanitize = true
+    fixture.detectChanges()
+
+    const element = fixture.nativeElement
+    const viewElement = element.querySelector('.ql-container.ql-snow.ngx-quill-view-html > .ql-editor')
+    expect(viewElement.innerHTML).toEqual('<p>Hallo <img src="wroooong.jpg"></p>')
+  })
 })

@@ -446,10 +446,9 @@ As a helper `ngx-quill` provides a component where you can simply pass your html
 
 #### Config
 
-As inputs you can set the `content` and optional the `theme` (default is `snow`).
-
 - content - html string to be presented
 - theme - bubble/snow, default is `snow`
+- sanitize - default: `false`, boolean (uses [DomSanitizer](https://angular.io/api/platform-browser/DomSanitizer#bypasssecuritytrusthtml) to bypass angular html sanitation when set to false) 
 
 ## Security Hint
 
