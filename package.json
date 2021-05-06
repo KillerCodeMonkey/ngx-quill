@@ -3,7 +3,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --prod && cp ./README.md ./dist/ngx-quill",
+    "build": "ng build -- --prod && cp ./README.md ./dist/ngx-quill",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -100,5 +100,5 @@
       "name": "Bengt Weiße"
     }
   ],
-  "version": "13.3.0"
+  "version": "13.4.0"
 }
