@@ -3,7 +3,8 @@ import {DomSanitizer} from '@angular/platform-browser'
 
 import { QuillModules, CustomOption, CustomModule} from './quill-editor.interfaces'
 
-import QuillType, { Delta } from 'quill'
+import QuillType from 'quill'
+import Delta from 'quill-delta'
 
 import {
   AfterViewInit,
