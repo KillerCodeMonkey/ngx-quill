@@ -85,15 +85,15 @@
     "utf-8-validate": "^5.0.5",
     "eslint": "^7.26.0",
     "eslint-plugin-import": "^2.23.2",
-    "eslint-plugin-jsdoc": "^34.2.2",
+    "eslint-plugin-jsdoc": "^34.7.0",
     "eslint-plugin-prefer-arrow": "^1.2.2",
     "@angular-eslint/builder": "^4.3.0",
     "@angular-eslint/eslint-plugin": "^4.3.0",
     "@angular-eslint/eslint-plugin-template": "^4.3.0",
     "@angular-eslint/schematics": "^4.3.0",
     "@angular-eslint/template-parser": "^4.3.0",
-    "@typescript-eslint/eslint-plugin": "^4.23.0",
-    "@typescript-eslint/parser": "^4.23.0"
+    "@typescript-eslint/eslint-plugin": "^4.24.0",
+    "@typescript-eslint/parser": "^4.24.0"
   },
   "contributors": [
     {
