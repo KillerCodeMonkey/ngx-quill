@@ -92,8 +92,8 @@
     "@angular-eslint/eslint-plugin-template": "^4.3.0",
     "@angular-eslint/schematics": "^4.3.0",
     "@angular-eslint/template-parser": "^4.3.0",
-    "@typescript-eslint/eslint-plugin": "^4.24.0",
-    "@typescript-eslint/parser": "^4.24.0"
+    "@typescript-eslint/eslint-plugin": "^4.25.0",
+    "@typescript-eslint/parser": "^4.25.0"
   },
   "contributors": [
     {
