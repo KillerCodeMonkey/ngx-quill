@@ -65,6 +65,8 @@ export interface QuillConfig {
   strict?: boolean
   // Custom Config to track all changes or only changes by 'user'
   trackChanges?: 'user' | 'all'
+  // provide default empty value 
+  defaultEmptyValue?: any;
 }
 
 export const QUILL_CONFIG_TOKEN = new InjectionToken<QuillConfig>('config')
