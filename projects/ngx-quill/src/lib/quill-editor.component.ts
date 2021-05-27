@@ -98,7 +98,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   /*
   https://github.com/KillerCodeMonkey/ngx-quill/issues/1257 - fix null value set
 
-  provide default empty value 
+  provide default empty value
   by default null
 
   e.g. defaultEmptyValue="" - empty string
@@ -108,7 +108,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     formControlName="message"
   ></quill-editor>
   */
-  @Input() defaultEmptyValue?: any = null;
+  @Input() defaultEmptyValue?: any = null
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
   @Output() onEditorChanged: EventEmitter<EditorChangeContent | EditorChangeSelection> = new EventEmitter()
@@ -157,7 +157,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   valueGetter = (quillEditor: QuillType, editorElement: HTMLElement): string | any  => {
     let html: string | null = editorElement.querySelector('.ql-editor')!.innerHTML
     if (html === '<p><br></p>' || html === '<div><br></div>') {
-      html = this.defaultEmptyValue;
+      html = this.defaultEmptyValue
     }
     let modelValue: string | Delta | null = html
     const format = getFormat(this.format, this.service.config.format)
@@ -268,7 +268,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       'defaultEmptyValue'
     )
       ? this.service.config.defaultEmptyValue
-      : this.defaultEmptyValue;
+      : this.defaultEmptyValue
 
     let scrollingContainer = this.scrollingContainer
     if (!scrollingContainer && this.scrollingContainer !== null) {
@@ -395,7 +395,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
     let html: string | null = this.editorElem!.querySelector('.ql-editor')!.innerHTML
     if (html === '<p><br></p>' || html === '<div><br></div>') {
-      html = this.defaultEmptyValue;
+      html = this.defaultEmptyValue
     }
 
     const trackChanges = this.trackChanges || this.service.config.trackChanges
@@ -442,7 +442,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
       let html: string | null = this.editorElem!.querySelector('.ql-editor')!.innerHTML
       if (html === '<p><br></p>' || html === '<div><br></div>') {
-        html = this.defaultEmptyValue;
+        html = this.defaultEmptyValue
       }
 
       this.zone.run(() => {
