@@ -264,11 +264,10 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       readOnly = this.service.config.readOnly !== undefined ? this.service.config.readOnly : false
     }
 
-    this.defaultEmptyValue = this.service.config.hasOwnProperty(
-      'defaultEmptyValue'
-    )
-      ? this.service.config.defaultEmptyValue
-      : this.defaultEmptyValue
+    let defaultEmptyValue = this.defaultEmptyValue
+    if (this.service.config.hasOwnProperty('defaultEmptyValue')) {
+      defaultEmptyValue = this.service.config.defaultEmptyValue
+    }
 
     let scrollingContainer = this.scrollingContainer
     if (!scrollingContainer && this.scrollingContainer !== null) {
@@ -290,6 +289,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         modules,
         placeholder,
         readOnly,
+        defaultEmptyValue,
         scrollingContainer: scrollingContainer as any,
         strict: this.strict,
         theme: this.theme || (this.service.config.theme ? this.service.config.theme : 'snow')
@@ -488,6 +488,10 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     if (changes.placeholder) {
       this.quillEditor.root.dataset.placeholder =
         changes.placeholder.currentValue
+    }
+    if (changes.defaultEmptyValue) {
+      this.quillEditor.root.dataset.defaultEmptyValue =
+        changes.defaultEmptyValue.currentValue
     }
     if (changes.styles) {
       const currentStyling = changes.styles.currentValue
