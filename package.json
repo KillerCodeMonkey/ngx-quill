@@ -8,7 +8,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "cp:readme": "cp ./README.md ./dist/ngx-quill"
+    "cp:readme": "cp ./README.md ./dist/ngx-quill",
+    "postinstall": "ngcc"
   },
   "license": "MIT",
   "author": {

@@ -9,12 +9,14 @@
     "lib": [
       "dom",
       "es2018"
-    ]
+    ],
   },
   "angularCompilerOptions": {
     "skipTemplateCodegen": true,
     "strictMetadataEmit": true,
-    "enableResourceInlining": true
+    "enableResourceInlining": true,
+    "ivyEnabled": true,
+    "compilationMode": "partial"
   },
   "exclude": [
     "src/test.ts",
