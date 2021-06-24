@@ -8,8 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "cp:readme": "cp ./README.md ./dist/ngx-quill",
-    "postinstall": "ngcc"
+    "cp:readme": "cp ./README.md ./dist/ngx-quill"
   },
   "license": "MIT",
   "author": {
@@ -101,5 +100,5 @@
       "name": "Bengt Weiße"
     }
   ],
-  "version": "14.1.0"
+  "version": "14.1.1"
 }
