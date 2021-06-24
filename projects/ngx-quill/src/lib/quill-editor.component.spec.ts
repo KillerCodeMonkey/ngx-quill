@@ -1338,3 +1338,33 @@ describe('QuillEditor - customModules', () => {
     expect(fixture.componentInstance.editor.quillEditor['options'].modules.custom).toBeDefined()
   })
 })
+
+describe('QuillEditor - defaultEmptyValue', () => {
+  @Component({
+    template: `
+      <quill-editor defaultEmptyValue=""></quill-editor>
+  `
+  })
+  class DefaultEmptyValueTestComponent {
+    @ViewChild(QuillEditorComponent, { static: true }) editor!: QuillEditorComponent
+  }
+
+  let fixture: ComponentFixture<DefaultEmptyValueTestComponent>
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [DefaultEmptyValueTestComponent],
+      imports: [QuillModule],
+      providers: QuillModule.forRoot().providers
+    }).compileComponents()
+  })
+
+  it('should change default empty value', async () => {
+    fixture = TestBed.createComponent(DefaultEmptyValueTestComponent)
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    expect(fixture.componentInstance.editor.defaultEmptyValue).toBeDefined()
+  })
+})
