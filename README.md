@@ -302,6 +302,7 @@ const modules = {
 - classes - a space separated list of CSS classes that will be added onto the editor element
 - linkPlaceholder - optional - set placeholder for the link tooltip
 - debounceTime - optional - debounces `onContentChanged`, `onEditorChanged`, `ngModel` and form control value changes. Improves performance (especially when working with large, >2-3 MiB Deltas), as neither `editorChangeHandler`, nor `textChangeHandler` handler runs internally.
+- defaultEmptyValue - optional - change the default value for an empty editor. Currently it is `null`, but you can set it e.g. to empty string
 
 [Full Quill Toolbar HTML](https://github.com/quilljs/quill/blob/f75ff2973f068c3db44f949915eb8a74faf162a8/docs/_includes/full-toolbar.html)
 
