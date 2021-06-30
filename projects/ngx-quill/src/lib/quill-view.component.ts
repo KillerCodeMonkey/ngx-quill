@@ -152,8 +152,16 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
       this.valueSetter(this.quillEditor, this.content)
     }
 
-    // trigger created in a timeout to avoid changed models after checked
-    setTimeout(() => {
+    // The `requestAnimationFrame` triggers change detection. There's no sense to invoke the `requestAnimationFrame` if anyone is
+    // listening to the `onEditorCreated` event inside the template, for instance `<quill-view (onEditorCreated)="...">`.
+    if (!this.onEditorCreated.observers.length) {
+      return
+    }
+
+    // The `requestAnimationFrame` will trigger change detection and `onEditorCreated` will also call `markDirty()`
+    // internally, since Angular wraps template event listeners into `listener` instruction. We're using the `requestAnimationFrame`
+    // to prevent the frame drop and avoid `ExpressionChangedAfterItHasBeenCheckedError` error.
+    requestAnimationFrame(() => {
       this.onEditorCreated.emit(this.quillEditor)
     })
   }
