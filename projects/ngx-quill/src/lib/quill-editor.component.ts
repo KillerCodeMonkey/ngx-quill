@@ -341,9 +341,16 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       this.textChangeHandlerRef
     )
 
-    // trigger created in a timeout to avoid changed models after checked
-    // if you are using the editor api in created output to change the editor content
-    setTimeout(() => {
+    // The `requestAnimationFrame` triggers change detection. There's no sense to invoke the `requestAnimationFrame` if anyone is
+    // listening to the `onEditorCreated` event inside the template, for instance `<quill-view (onEditorCreated)="...">`.
+    if (!this.onEditorCreated.observers.length && !this.onValidatorChanged) {
+      return
+    }
+
+    // The `requestAnimationFrame` will trigger change detection and `onEditorCreated` will also call `markDirty()`
+    // internally, since Angular wraps template event listeners into `listener` instruction. We're using the `requestAnimationFrame`
+    // to prevent the frame drop and avoid `ExpressionChangedAfterItHasBeenCheckedError` error.
+    requestAnimationFrame(() => {
       if (this.onValidatorChanged) {
         this.onValidatorChanged()
       }
