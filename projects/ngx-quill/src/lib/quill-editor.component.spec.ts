@@ -941,40 +941,28 @@ describe('Advanced QuillEditorComponent', () => {
     expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
   }))
 
-  it(`should clear the 'debounceTimers' array after timeout callbacks were called`, fakeAsync(() => {
-    fixture.componentInstance.debounceTime = 400
-    spyOn(fixture.componentInstance, 'handleChange').and.callThrough()
-    spyOn(fixture.componentInstance, 'handleEditorChange').and.callThrough()
-
-    fixture.detectChanges()
-    tick()
-
-    const editorFixture = fixture.debugElement.children[0]
-    editorFixture.componentInstance.quillEditor.setText('baz', 'bar')
-    fixture.detectChanges()
-    tick(400)
-
-    expect(fixture.componentInstance.handleChange).toHaveBeenCalledTimes(1)
-    expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledTimes(1)
-    expect(editorFixture.componentInstance.debounceTimers.length).toBe(0)
-  }))
-
-  it('should clear the active debounce timers on destroy', fakeAsync(() => {
+  it('should unsubscribe from Quill events on destroy', async () => {
     fixture.componentInstance.debounceTime = 400
     fixture.detectChanges()
-    tick()
+    await fixture.whenStable()
 
     const editorFixture = fixture.debugElement.children[0]
+    const quillOffSpy = spyOn(editorFixture.componentInstance.quillEditor, 'off').and.callThrough()
     editorFixture.componentInstance.quillEditor.setText('baz', 'bar')
     fixture.detectChanges()
-    tick(200)
+    await fixture.whenStable()
 
-    spyOn(editorFixture.componentInstance.document.defaultView, 'clearTimeout').and.callThrough()
-    editorFixture.componentInstance.ngOnDestroy()
+    // eslint-disable-next-line no-underscore-dangle
+    expect(editorFixture.componentInstance.subscription._subscriptions.length).toEqual(3)
 
-    expect(editorFixture.componentInstance.document.defaultView.clearTimeout).toHaveBeenCalledTimes(2)
-    expect(editorFixture.componentInstance.debounceTimers.length).toBe(0)
-  }))
+    fixture.destroy()
+
+    expect(quillOffSpy).toHaveBeenCalledTimes(3)
+    expect(editorFixture.componentInstance.subscription).toEqual(null)
+    expect(quillOffSpy).toHaveBeenCalledWith('text-change', jasmine.any(Function))
+    expect(quillOffSpy).toHaveBeenCalledWith('editor-change', jasmine.any(Function))
+    expect(quillOffSpy).toHaveBeenCalledWith('selection-change', jasmine.any(Function))
+  })
 
   it('should emit onSelectionChanged when selection changed + editor changed', async () => {
     spyOn(fixture.componentInstance, 'handleSelection').and.callThrough()
