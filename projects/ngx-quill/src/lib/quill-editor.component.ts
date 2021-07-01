@@ -469,12 +469,14 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         })
       })
     } else {
-      this.onEditorChanged.emit({
-        editor: this.quillEditor,
-        event,
-        oldRange: old,
-        range: current,
-        source
+      this.zone.run(() => {
+        this.onEditorChanged.emit({
+          editor: this.quillEditor,
+          event,
+          oldRange: old,
+          range: current,
+          source
+        })
       })
     }
   }
