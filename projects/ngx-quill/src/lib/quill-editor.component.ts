@@ -1,7 +1,7 @@
-import {DOCUMENT, isPlatformServer} from '@angular/common'
-import {DomSanitizer} from '@angular/platform-browser'
+import { DOCUMENT, isPlatformServer } from '@angular/common'
+import { DomSanitizer } from '@angular/platform-browser'
 
-import { QuillModules, CustomOption, CustomModule} from './quill-editor.interfaces'
+import { QuillModules, CustomOption, CustomModule } from './quill-editor.interfaces'
 
 import QuillType, { Delta } from 'quill'
 
@@ -25,11 +25,13 @@ import {
   SimpleChanges,
   ViewEncapsulation
 } from '@angular/core'
+import { fromEvent, Subscription } from 'rxjs'
+import { debounceTime } from 'rxjs/operators'
 
-import {ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator} from '@angular/forms'
-import {defaultModules} from './quill-defaults'
+import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator } from '@angular/forms'
+import { defaultModules } from './quill-defaults'
 
-import {getFormat} from './helpers'
+import { getFormat } from './helpers'
 import { QuillService } from './quill.service'
 
 export interface Range {
@@ -127,11 +129,8 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   onModelTouched: () => void
   onValidatorChanged: () => void
 
-  // used to store reference from 'debounce' to destroy subscription
-  private editorChangeHandlerRef: typeof QuillEditorBase.prototype.editorChangeHandler
-  private textChangeHandlerRef: typeof QuillEditorBase.prototype.textChangeHandler
-  private debounceTimers: number[] = []
   private document: Document
+  private subscription: Subscription | null = null
 
   constructor(
     injector: Injector,
@@ -325,25 +324,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     // initialize disabled status based on this.disabled as default value
     this.setDisabledState()
 
-    // triggered if selection or text changed
-    this.editorChangeHandlerRef = this.debounce(this.editorChangeHandler)
-    this.quillEditor.on(
-      'editor-change',
-      this.editorChangeHandlerRef
-    )
-
-    // mark model as touched if editor lost focus
-    this.quillEditor.on(
-      'selection-change',
-      this.selectionChangeHandler
-    )
-
-    // update model if text changes
-    this.textChangeHandlerRef = this.debounce(this.textChangeHandler)
-    this.quillEditor.on(
-      'text-change',
-      this.textChangeHandlerRef
-    )
+    this.addQuillEventListeners()
 
     // The `requestAnimationFrame` triggers change detection. There's no sense to invoke the `requestAnimationFrame` if anyone is
     // listening to the `onEditorCreated` event inside the template, for instance `<quill-view (onEditorCreated)="...">`.
@@ -482,12 +463,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   }
 
   ngOnDestroy() {
-    if (this.quillEditor) {
-      this.quillEditor.off('selection-change', this.selectionChangeHandler)
-      this.quillEditor.off('text-change', this.textChangeHandlerRef)
-      this.quillEditor.off('editor-change', this.editorChangeHandlerRef)
-      this.debounceTimers.forEach((timer) => this.clearDebounceTimer(timer))
-    }
+    this.dispose()
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -532,6 +508,11 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       if (currentClasses) {
         this.addClasses(currentClasses)
       }
+    }
+    // We'd want to re-apply event listeners if the `debounceTime` binding changes to apply the
+    // `debounceTime` operator or vice-versa remove it.
+    if (changes.debounceTime) {
+      this.addQuillEventListeners()
     }
     /* eslint-enable @typescript-eslint/dot-notation */
   }
@@ -662,28 +643,55 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     return valid ? null : err
   }
 
-  private debounce<T extends(...args: any[]) => any>(callback: T): ((...args: Parameters<T>) => void) {
-    let timer: number
-    return (...args: Parameters<T>) => {
-      if (typeof this.debounceTime !== 'number') {
-        callback(...args)
-        return
+  private addQuillEventListeners(): void {
+    this.dispose()
+
+    // We have to enter the `<root>` zone when adding event listeners, so `debounceTime` will spawn the
+    // `AsyncAction` there w/o triggering change detections. We still re-enter the Angular's zone through
+    // `zone.run` when we emit an event to the parent component.
+    this.zone.runOutsideAngular(() => {
+      this.subscription = new Subscription()
+
+      this.subscription.add(
+        // mark model as touched if editor lost focus
+        fromEvent(this.quillEditor, 'selection-change').subscribe(
+          ([range, oldRange, source]) => {
+            this.selectionChangeHandler(range, oldRange, source)
+          }
+        )
+      )
+
+      // The `fromEvent` supports passing JQuery-style event targets, the editor has `on` and `off` methods which
+      // will be invoked upon subscription and teardown.
+      let textChange$ = fromEvent(this.quillEditor, 'text-change')
+      let editorChange$ = fromEvent(this.quillEditor, 'editor-change')
+
+      if (typeof this.debounceTime === 'number') {
+        textChange$ = textChange$.pipe(debounceTime(this.debounceTime))
+        editorChange$ = editorChange$.pipe(debounceTime(this.debounceTime))
       }
 
-      this.clearDebounceTimer(timer)
+      this.subscription.add(
+        // update model if text changes
+        textChange$.subscribe(([delta, oldDelta, source]) => {
+          this.textChangeHandler(delta, oldDelta, source)
+        })
+      )
 
-      timer = this.document.defaultView.setTimeout(() => {
-        this.clearDebounceTimer(timer)
-
-        callback(...args)
-      }, this.debounceTime)
-      this.debounceTimers.push(timer)
-    }
+      this.subscription.add(
+        // triggered if selection or text changed
+        editorChange$.subscribe(([event, current, old, source]) => {
+          this.editorChangeHandler(event, current, old, source)
+        })
+      )
+    })
   }
 
-  private clearDebounceTimer(timer: number): void {
-    this.document.defaultView.clearTimeout(timer)
-    this.debounceTimers = this.debounceTimers.filter((debounceTimer) => debounceTimer !== timer)
+  private dispose(): void {
+    if (this.subscription !== null) {
+      this.subscription.unsubscribe()
+      this.subscription = null
+    }
   }
 }
 
