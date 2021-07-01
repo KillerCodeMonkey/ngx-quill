@@ -969,10 +969,10 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.detectChanges()
     tick(200)
 
-    spyOn(editorFixture.componentInstance.doc.defaultView, 'clearTimeout').and.callThrough()
+    spyOn(editorFixture.componentInstance.document.defaultView, 'clearTimeout').and.callThrough()
     editorFixture.componentInstance.ngOnDestroy()
 
-    expect(editorFixture.componentInstance.doc.defaultView.clearTimeout).toHaveBeenCalledTimes(2)
+    expect(editorFixture.componentInstance.document.defaultView.clearTimeout).toHaveBeenCalledTimes(2)
     expect(editorFixture.componentInstance.debounceTimers.length).toBe(0)
   }))
 

@@ -13,6 +13,7 @@ import {
   EventEmitter,
   forwardRef,
   Inject,
+  Injector,
   Input,
   NgZone,
   OnChanges,
@@ -130,16 +131,19 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   private editorChangeHandlerRef: typeof QuillEditorBase.prototype.editorChangeHandler
   private textChangeHandlerRef: typeof QuillEditorBase.prototype.textChangeHandler
   private debounceTimers: number[] = []
+  private document: Document
 
   constructor(
+    injector: Injector,
     public elementRef: ElementRef,
     protected domSanitizer: DomSanitizer,
-    @Inject(DOCUMENT) protected doc: any,
     @Inject(PLATFORM_ID) protected platformId: any,
     protected renderer: Renderer2,
     protected zone: NgZone,
     protected service: QuillService
-  ) {}
+  ) {
+    this.document = injector.get(DOCUMENT)
+  }
 
   static normalizeClassNames(classes: string): string[] {
     const classList = classes.trim().split(' ')
@@ -251,7 +255,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
     let bounds = this.bounds && this.bounds === 'self' ? this.editorElem : this.bounds
     if (!bounds) {
-      bounds = this.service.config.bounds ? this.service.config.bounds : this.doc.body
+      bounds = this.service.config.bounds ? this.service.config.bounds : this.document.body
     }
 
     let debug = this.debug
@@ -666,7 +670,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
       this.clearDebounceTimer(timer)
 
-      timer = this.doc.defaultView.setTimeout(() => {
+      timer = this.document.defaultView.setTimeout(() => {
         this.clearDebounceTimer(timer)
 
         callback(...args)
@@ -676,7 +680,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   }
 
   private clearDebounceTimer(timer: number): void {
-    this.doc.defaultView.clearTimeout(timer)
+    this.document.defaultView.clearTimeout(timer)
     this.debounceTimers = this.debounceTimers.filter((debounceTimer) => debounceTimer !== timer)
   }
 }
@@ -705,18 +709,18 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 export class QuillEditorComponent extends QuillEditorBase {
 
   constructor(
+    injector: Injector,
     @Inject(ElementRef) elementRef: ElementRef,
     @Inject(DomSanitizer) domSanitizer: DomSanitizer,
-    @Inject(DOCUMENT) doc: any,
     @Inject(PLATFORM_ID) platformId: any,
     @Inject(Renderer2) renderer: Renderer2,
     @Inject(NgZone) zone: NgZone,
     @Inject(QuillService) service: QuillService
   ) {
     super(
+      injector,
       elementRef,
       domSanitizer,
-      doc,
       platformId,
       renderer,
       zone,
