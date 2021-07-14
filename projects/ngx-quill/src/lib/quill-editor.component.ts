@@ -66,8 +66,8 @@ export interface Focus {
   source: string
 }
 
-export type EditorChangeContent = ContentChange & {event: 'text-change'}
-export type EditorChangeSelection = SelectionChange & {event: 'selection-change'}
+export type EditorChangeContent = ContentChange & { event: 'text-change' }
+export type EditorChangeSelection = SelectionChange & { event: 'selection-change' }
 
 @Directive()
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
@@ -157,7 +157,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   }
 
   @Input()
-  valueGetter = (quillEditor: QuillType, editorElement: HTMLElement): string | any  => {
+  valueGetter = (quillEditor: QuillType, editorElement: HTMLElement): string | any => {
     let html: string | null = editorElement.querySelector('.ql-editor')!.innerHTML
     if (html === '<p><br></p>' || html === '<div><br></div>') {
       html = this.defaultEmptyValue
@@ -248,7 +248,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       Quill.register(newCustomOption, true)
     })
 
-    this.customModules.forEach(({implementation, path}) => {
+    this.customModules.forEach(({ implementation, path }) => {
       Quill.register(path, implementation)
     })
 
@@ -348,9 +348,9 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
     // only emit changes when there's any listener
     if (!this.onBlur.observers.length &&
-        !this.onFocus.observers.length &&
-        !this.onSelectionChanged.observers.length &&
-        !shouldTriggerOnModelTouched) {
+      !this.onFocus.observers.length &&
+      !this.onSelectionChanged.observers.length &&
+      !shouldTriggerOnModelTouched) {
       return
     }
 
@@ -546,7 +546,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     const newValue = this.valueSetter(this.quillEditor, currentValue)
 
     if (this.compareValues) {
-     const currentEditorValue = this.quillEditor.getContents()
+      const currentEditorValue = this.quillEditor.getContents()
       if (JSON.stringify(currentEditorValue) === JSON.stringify(newValue)) {
         return
       }
@@ -714,7 +714,14 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   selector: 'quill-editor',
   template: `
   <ng-content select="[quill-editor-toolbar]"></ng-content>
-`
+`,
+  styles: [
+    `
+    :host {
+      display: inline-block;
+    }
+    `
+  ]
 })
 export class QuillEditorComponent extends QuillEditorBase {
 
