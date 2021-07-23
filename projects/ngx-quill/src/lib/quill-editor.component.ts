@@ -613,6 +613,8 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     const text = this.quillEditor.getText()
     // trim text if wanted + handle special case that an empty editor contains a new line
     const textLength = this.trimOnValidation ? text.trim().length : (text.length === 1 && text.trim().length === 0 ? 0 : text.length - 1)
+    const deltaOperations = this.quillEditor.getContents().ops
+    const onyEmptyOperation = deltaOperations && deltaOperations.length === 1 && ['\n', ''].includes(deltaOperations[0].insert)
 
     if (this.minLength && textLength && textLength < this.minLength) {
       err.minLengthError = {
@@ -632,7 +634,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       valid = false
     }
 
-    if (this.required && !textLength) {
+    if (this.required && !textLength && onyEmptyOperation) {
       err.requiredError = {
         empty: true
       }

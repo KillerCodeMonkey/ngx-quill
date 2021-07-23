@@ -1156,6 +1156,13 @@ describe('Advanced QuillEditorComponent', () => {
 
     fixture.detectChanges()
     expect(editorElement.className).toMatch('ng-valid')
+
+    fixture.componentInstance.title = '<img src="test.jpg">'
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    fixture.detectChanges()
+    expect(editorElement.className).toMatch('ng-valid')
   })
 
   it('should add custom toolbar', async () => {
