@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common'
-import { Injectable, Inject, Injector } from '@angular/core'
+import { Injectable, Inject, Injector, Optional } from '@angular/core'
 
 import { defaultModules } from './quill-defaults'
 import { QUILL_CONFIG_TOKEN, QuillConfig } from './quill-editor.interfaces'
@@ -16,7 +16,7 @@ export class QuillService {
 
   constructor(
     injector: Injector,
-    @Inject(QUILL_CONFIG_TOKEN) public config: QuillConfig
+    @Optional() @Inject(QUILL_CONFIG_TOKEN) public config: QuillConfig
   ) {
     this.document = injector.get(DOCUMENT)
 
