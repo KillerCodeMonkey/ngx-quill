@@ -5,7 +5,6 @@ import { QuillEditorComponent } from './quill-editor.component'
 import { QUILL_CONFIG_TOKEN, QuillConfig } from './quill-editor.interfaces'
 import { QuillViewHTMLComponent } from './quill-view-html.component'
 import { QuillViewComponent } from './quill-view.component'
-import { QuillService } from './quill.service'
 
 @NgModule({
   declarations: [
@@ -15,7 +14,6 @@ import { QuillService } from './quill.service'
   ],
   exports: [QuillEditorComponent, QuillViewComponent, QuillViewHTMLComponent],
   imports: [CommonModule],
-  providers: [QuillService]
 })
 export class QuillModule {
   static forRoot(config?: QuillConfig): ModuleWithProviders<QuillModule> {

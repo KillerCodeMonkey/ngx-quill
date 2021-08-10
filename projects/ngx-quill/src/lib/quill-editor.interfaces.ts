@@ -1,5 +1,7 @@
 import { InjectionToken } from '@angular/core'
 
+import { defaultModules } from './quill-defaults'
+
 export interface CustomOption {
   import: string
   whitelist: any[]
@@ -69,4 +71,7 @@ export interface QuillConfig {
   defaultEmptyValue?: any
 }
 
-export const QUILL_CONFIG_TOKEN = new InjectionToken<QuillConfig>('config')
+export const QUILL_CONFIG_TOKEN = new InjectionToken<QuillConfig>('config', {
+  providedIn: 'root',
+  factory: () => ({ modules: defaultModules })
+})
