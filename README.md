@@ -268,7 +268,7 @@ const modules = {
 - scrollingContainer - default '.ql-editor', allows to set scrolling container
 - use customOptions for adding for example custom font sizes --> this overwrites this options **globally** !!!
 - use customModules for adding and overwriting modules --> this overwrites this modules **globally** !!!
-- possbility to create a custom toolbar via projection slot `[quill-editor-toolbar]`:
+- possibility to create a custom toolbar via projection slot `[quill-editor-toolbar]`:
 
 **Try to not use much angular magic here, like `(output)` listeners. Use native EventListeners**
 
@@ -298,7 +298,7 @@ const modules = {
 - customToolbarPosition - if you are working with a custom toolbar you can switch the position :). - default: `top`, possible values `top`, `bottom`
 - debug - set log level `warn`, `error`, `log` or `false` to deactivate logging, default: `warn`
 - trackChanges - check if only `user` (quill source user) or `all` change should be trigger model update, default `user`. Using `all` is not recommended, it cause some unexpected sideeffects.
-- preserveWhitespace - default: false - possbility to use a pre-tag instead of a div-tag for the contenteditable area to preserve duplicated whitespaces | caution if used with syntax plugin [Related issue](https://github.com/quilljs/quill/issues/1751)
+- preserveWhitespace - default: false - possibility to use a pre-tag instead of a div-tag for the contenteditable area to preserve duplicated whitespaces | caution if used with syntax plugin [Related issue](https://github.com/quilljs/quill/issues/1751)
 - classes - a space separated list of CSS classes that will be added onto the editor element
 - linkPlaceholder - optional - set placeholder for the link tooltip
 - debounceTime - optional - debounces `onContentChanged`, `onEditorChanged`, `ngModel` and form control value changes. Improves performance (especially when working with large, >2-3 MiB Deltas), as neither `editorChangeHandler`, nor `textChangeHandler` handler runs internally.
@@ -403,7 +403,7 @@ As a helper `ngx-quill` provides a component where you can pass many options of 
 - use customOptions for adding for example custom font sizes --> this overwrites this options **globally** !!!
 - use customModules for adding and overwriting modules --> this overwrites this modules **globally** !!!
 - strict - default: true, sets editor in strict mode
-- preserveWhitespace - default: false - possbility to use a pre-tag instead of a div-tag for the contenteditable area to preserve duplicated whitespaces | caution if used with syntax plugin [Related issue](https://github.com/quilljs/quill/issues/1751)
+- preserveWhitespace - default: false - possibility to use a pre-tag instead of a div-tag for the contenteditable area to preserve duplicated whitespaces | caution if used with syntax plugin [Related issue](https://github.com/quilljs/quill/issues/1751)
 - sanitize - uses angulars DomSanitizer to sanitize html values - default: `false`, boolean (only for format="html")
 
 ### Outputs
