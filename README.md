@@ -256,7 +256,7 @@ const modules = {
 };
 ```
 - theme - bubble/snow, default is `snow`
-- sanitize - uses angulars DomSanitizer to santize html values - default: `false`, boolean (only for format="html")
+- sanitize - uses angulars DomSanitizer to sanitize html values - default: `false`, boolean (only for format="html")
 - styles - set a styles object, e.g. `[styles]="{height: '250px'}"`
 - placeholder - placeholder text, default is `Insert text here ...`
 - bounds - boundary of the editor, default `document.body`, pass 'self' to attach the editor element
@@ -404,7 +404,7 @@ As a helper `ngx-quill` provides a component where you can pass many options of 
 - use customModules for adding and overwriting modules --> this overwrites this modules **globally** !!!
 - strict - default: true, sets editor in strict mode
 - preserveWhitespace - default: false - possbility to use a pre-tag instead of a div-tag for the contenteditable area to preserve duplicated whitespaces | caution if used with syntax plugin [Related issue](https://github.com/quilljs/quill/issues/1751)
-- sanitize - uses angulars DomSanitizer to santize html values - default: `false`, boolean (only for format="html")
+- sanitize - uses angulars DomSanitizer to sanitize html values - default: `false`, boolean (only for format="html")
 
 ### Outputs
 
