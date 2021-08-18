@@ -7,6 +7,7 @@ import QuillType, { Delta } from 'quill'
 
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   Directive,
   ElementRef,
@@ -135,6 +136,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   constructor(
     injector: Injector,
     public elementRef: ElementRef,
+    protected cd: ChangeDetectorRef,
     protected domSanitizer: DomSanitizer,
     @Inject(PLATFORM_ID) protected platformId: any,
     protected renderer: Renderer2,
@@ -377,6 +379,8 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       if (shouldTriggerOnModelTouched) {
         this.onModelTouched()
       }
+
+      this.cd.markForCheck()
     })
   }
 
@@ -414,6 +418,8 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         source,
         text
       })
+
+      this.cd.markForCheck()
     })
   }
 
@@ -448,6 +454,8 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
           source,
           text
         })
+
+        this.cd.markForCheck()
       })
     } else {
       this.zone.run(() => {
@@ -458,6 +466,8 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
           range: current,
           source
         })
+
+        this.cd.markForCheck()
       })
     }
   }
@@ -730,6 +740,7 @@ export class QuillEditorComponent extends QuillEditorBase {
   constructor(
     injector: Injector,
     @Inject(ElementRef) elementRef: ElementRef,
+    @Inject(ChangeDetectorRef) cd: ChangeDetectorRef,
     @Inject(DomSanitizer) domSanitizer: DomSanitizer,
     @Inject(PLATFORM_ID) platformId: any,
     @Inject(Renderer2) renderer: Renderer2,
@@ -739,6 +750,7 @@ export class QuillEditorComponent extends QuillEditorBase {
     super(
       injector,
       elementRef,
+      cd,
       domSanitizer,
       platformId,
       renderer,
