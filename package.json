@@ -85,7 +85,7 @@
     "utf-8-validate": "^5.0.5",
     "eslint": "^7.32.0",
     "eslint-plugin-import": "^2.24.2",
-    "eslint-plugin-jsdoc": "^36.0.8",
+    "eslint-plugin-jsdoc": "^36.1.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "@angular-eslint/builder": "^12.3.1",
     "@angular-eslint/eslint-plugin": "^12.3.1",
