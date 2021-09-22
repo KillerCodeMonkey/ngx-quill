@@ -87,13 +87,13 @@
     "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-jsdoc": "^36.1.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",
-    "@angular-eslint/builder": "^12.4.1",
-    "@angular-eslint/eslint-plugin": "^12.4.1",
-    "@angular-eslint/eslint-plugin-template": "^12.4.1",
-    "@angular-eslint/schematics": "^12.4.1",
-    "@angular-eslint/template-parser": "^12.4.1",
-    "@typescript-eslint/eslint-plugin": "^4.31.1",
-    "@typescript-eslint/parser": "^4.31.1"
+    "@angular-eslint/builder": "^12.5.0",
+    "@angular-eslint/eslint-plugin": "^12.5.0",
+    "@angular-eslint/eslint-plugin-template": "^12.5.0",
+    "@angular-eslint/schematics": "^12.5.0",
+    "@angular-eslint/template-parser": "^12.5.0",
+    "@typescript-eslint/eslint-plugin": "^4.31.2",
+    "@typescript-eslint/parser": "^4.31.2"
   },
   "contributors": [
     {
