@@ -69,7 +69,7 @@ LTC Wallet Address:
         v12
       </td>
       <td>
-        >= 14.0.0
+        >= 14.0.0, < 16.0.0
       </td>
       <td>
         until Nov 11, 2022
@@ -80,7 +80,7 @@ LTC Wallet Address:
         v11
       </td>
       <td>
-        >= 13.0.0
+        >= 13.0.0, < 16.0.0
       </td>
       <td>
         until May 11, 2022

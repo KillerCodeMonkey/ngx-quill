@@ -19,18 +19,6 @@
       "ngx-quill": [
         "dist/ngx-quill/ngx-quill",
         "dist/ngx-quill"
-      ],
-      "ngx-quill-example": [
-        "dist/ngx-quill-example/ngx-quill-example",
-        "dist/ngx-quill-example"
-      ],
-      "ngx-quill-ionic": [
-        "dist/ngx-quill-ionic/ngx-quill-ionic",
-        "dist/ngx-quill-ionic"
-      ],
-      "ngx-quill-universal": [
-        "dist/ngx-quill-universal/ngx-quill-universal",
-        "dist/ngx-quill-universal"
       ]
     }
   },
