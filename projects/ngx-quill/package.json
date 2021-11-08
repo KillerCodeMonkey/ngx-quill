@@ -29,11 +29,9 @@
     "ngx",
     "text editor"
   ],
+  "sideEffects": false,
   "peerDependencies": {
-    "@angular/common": "^11.0.0 || ^12.0.0 || ^13.0.0",
-    "@angular/core": "^11.0.0 || ^12.0.0 || ^13.0.0",
-    "@angular/forms": "^11.0.0 || ^12.0.0 || ^13.0.0",
-    "@angular/platform-browser": "^11.0.0 || ^12.0.0 || ^13.0.0",
+    "@angular/core": ">=13.0.0",
     "quill": "^1.3.7",
     "rxjs": "^6.5.0"
   },
