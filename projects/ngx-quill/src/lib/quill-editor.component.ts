@@ -668,7 +668,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         // mark model as touched if editor lost focus
         fromEvent(this.quillEditor, 'selection-change').subscribe(
           ([range, oldRange, source]) => {
-            this.selectionChangeHandler(range, oldRange, source)
+            this.selectionChangeHandler(range as any, oldRange as any, source)
           }
         )
       )
@@ -686,14 +686,14 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       this.subscription.add(
         // update model if text changes
         textChange$.subscribe(([delta, oldDelta, source]) => {
-          this.textChangeHandler(delta, oldDelta, source)
+          this.textChangeHandler(delta as any, oldDelta as any, source)
         })
       )
 
       this.subscription.add(
         // triggered if selection or text changed
         editorChange$.subscribe(([event, current, old, source]) => {
-          this.editorChangeHandler(event, current, old, source)
+          this.editorChangeHandler(event as 'text-change' | 'selection-change', current, old, source)
         })
       )
     })

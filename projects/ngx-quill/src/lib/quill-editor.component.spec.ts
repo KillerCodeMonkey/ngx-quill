@@ -952,9 +952,6 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.detectChanges()
     await fixture.whenStable()
 
-    // eslint-disable-next-line no-underscore-dangle
-    expect(editorFixture.componentInstance.subscription._subscriptions.length).toEqual(3)
-
     fixture.destroy()
 
     expect(quillOffSpy).toHaveBeenCalledTimes(3)
