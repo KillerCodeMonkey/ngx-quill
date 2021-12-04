@@ -16,8 +16,10 @@ import {
   SimpleChanges,
   ViewEncapsulation,
   NgZone,
-  SecurityContext
+  SecurityContext,
+  OnDestroy
 } from '@angular/core'
+import { Subscription } from 'rxjs'
 
 import { CustomOption, CustomModule } from './quill-editor.interfaces'
 import {getFormat} from './helpers'
@@ -35,7 +37,7 @@ import { DomSanitizer } from '@angular/platform-browser'
   template: `
 `
 })
-export class QuillViewComponent implements AfterViewInit, OnChanges {
+export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() format?: 'object' | 'html' | 'text' | 'json'
   @Input() theme?: string
   @Input() modules?: QuillModules
@@ -52,6 +54,8 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
 
   quillEditor!: QuillType
   editorElem!: HTMLElement
+
+  private quillSubscription: Subscription | null = null
 
   constructor(
     public elementRef: ElementRef,
@@ -93,76 +97,81 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
     }
   }
 
-  async ngAfterViewInit() {
+  ngAfterViewInit() {
     if (isPlatformServer(this.platformId)) {
       return
     }
 
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const Quill = await this.service.getQuill()
+    this.quillSubscription = this.service.getQuill().subscribe(Quill => {
+      const modules = Object.assign({}, this.modules || this.service.config.modules)
+      modules.toolbar = false
 
-    const modules = Object.assign({}, this.modules || this.service.config.modules)
-    modules.toolbar = false
+      this.customOptions.forEach((customOption) => {
+        const newCustomOption = Quill.import(customOption.import)
+        newCustomOption.whitelist = customOption.whitelist
+        Quill.register(newCustomOption, true)
+      })
 
-    this.customOptions.forEach((customOption) => {
-      const newCustomOption = Quill.import(customOption.import)
-      newCustomOption.whitelist = customOption.whitelist
-      Quill.register(newCustomOption, true)
-    })
+      this.customModules.forEach(({implementation, path}) => {
+        Quill.register(path, implementation)
+      })
 
-    this.customModules.forEach(({implementation, path}) => {
-      Quill.register(path, implementation)
-    })
+      let debug = this.debug
+      if (!debug && debug !== false && this.service.config.debug) {
+        debug = this.service.config.debug
+      }
 
-    let debug = this.debug
-    if (!debug && debug !== false && this.service.config.debug) {
-      debug = this.service.config.debug
-    }
+      let formats = this.formats
+      if (!formats && formats === undefined) {
+        formats = this.service.config.formats ?
+          Object.assign({}, this.service.config.formats) : (this.service.config.formats === null ? null : undefined)
+      }
+      const theme = this.theme || (this.service.config.theme ? this.service.config.theme : 'snow')
 
-    let formats = this.formats
-    if (!formats && formats === undefined) {
-      formats = this.service.config.formats ?
-        Object.assign({}, this.service.config.formats) : (this.service.config.formats === null ? null : undefined)
-    }
-    const theme = this.theme || (this.service.config.theme ? this.service.config.theme : 'snow')
+      this.elementRef.nativeElement.insertAdjacentHTML(
+        'afterbegin',
+        this.preserveWhitespace ? '<pre quill-view-element></pre>' : '<div quill-view-element></div>'
+      )
 
-    this.elementRef.nativeElement.insertAdjacentHTML(
-      'afterbegin',
-      this.preserveWhitespace ? '<pre quill-view-element></pre>' : '<div quill-view-element></div>'
-    )
+      this.editorElem = this.elementRef.nativeElement.querySelector(
+        '[quill-view-element]'
+      ) as HTMLElement
 
-    this.editorElem = this.elementRef.nativeElement.querySelector(
-      '[quill-view-element]'
-    ) as HTMLElement
+      this.zone.runOutsideAngular(() => {
+        this.quillEditor = new Quill(this.editorElem, {
+          debug: debug as any,
+          formats: formats as any,
+          modules,
+          readOnly: true,
+          strict: this.strict,
+          theme
+        })
+      })
 
-    this.zone.runOutsideAngular(() => {
-      this.quillEditor = new Quill(this.editorElem, {
-        debug: debug as any,
-        formats: formats as any,
-        modules,
-        readOnly: true,
-        strict: this.strict,
-        theme
+      this.renderer.addClass(this.editorElem, 'ngx-quill-view')
+
+      if (this.content) {
+        this.valueSetter(this.quillEditor, this.content)
+      }
+
+      // The `requestAnimationFrame` triggers change detection. There's no sense to invoke the `requestAnimationFrame` if anyone is
+      // listening to the `onEditorCreated` event inside the template, for instance `<quill-view (onEditorCreated)="...">`.
+      if (!this.onEditorCreated.observers.length) {
+        return
+      }
+
+      // The `requestAnimationFrame` will trigger change detection and `onEditorCreated` will also call `markDirty()`
+      // internally, since Angular wraps template event listeners into `listener` instruction. We're using the `requestAnimationFrame`
+      // to prevent the frame drop and avoid `ExpressionChangedAfterItHasBeenCheckedError` error.
+      requestAnimationFrame(() => {
+        this.onEditorCreated.emit(this.quillEditor)
       })
     })
+  }
 
-    this.renderer.addClass(this.editorElem, 'ngx-quill-view')
-
-    if (this.content) {
-      this.valueSetter(this.quillEditor, this.content)
-    }
-
-    // The `requestAnimationFrame` triggers change detection. There's no sense to invoke the `requestAnimationFrame` if anyone is
-    // listening to the `onEditorCreated` event inside the template, for instance `<quill-view (onEditorCreated)="...">`.
-    if (!this.onEditorCreated.observers.length) {
-      return
-    }
-
-    // The `requestAnimationFrame` will trigger change detection and `onEditorCreated` will also call `markDirty()`
-    // internally, since Angular wraps template event listeners into `listener` instruction. We're using the `requestAnimationFrame`
-    // to prevent the frame drop and avoid `ExpressionChangedAfterItHasBeenCheckedError` error.
-    requestAnimationFrame(() => {
-      this.onEditorCreated.emit(this.quillEditor)
-    })
+  ngOnDestroy(): void {
+    this.quillSubscription?.unsubscribe()
+    this.quillSubscription = null
   }
 }
