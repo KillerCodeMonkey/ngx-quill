@@ -132,6 +132,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
   private document: Document
   private subscription: Subscription | null = null
+  private quillSubscription: Subscription | null = null
 
   constructor(
     injector: Injector,
@@ -201,147 +202,150 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     return value
   }
 
-  async ngAfterViewInit() {
+  ngAfterViewInit() {
     if (isPlatformServer(this.platformId)) {
       return
     }
 
+    // The `quill-editor` component might be destroyed before the `quill` chunk is loaded and its code is executed
+    // this will lead to runtime exceptions, since the code will be executed on DOM nodes that don't exist within the tree.
+
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const Quill = await this.service.getQuill()
+    this.quillSubscription = this.service.getQuill().subscribe(Quill => {
+      this.elementRef.nativeElement.insertAdjacentHTML(
+        this.customToolbarPosition === 'top' ? 'beforeend' : 'afterbegin',
+        this.preserveWhitespace ? '<pre quill-editor-element></pre>' : '<div quill-editor-element></div>'
+      )
 
-    this.elementRef.nativeElement.insertAdjacentHTML(
-      this.customToolbarPosition === 'top' ? 'beforeend' : 'afterbegin',
-      this.preserveWhitespace ? '<pre quill-editor-element></pre>' : '<div quill-editor-element></div>'
-    )
+      this.editorElem = this.elementRef.nativeElement.querySelector(
+        '[quill-editor-element]'
+      )
 
-    this.editorElem = this.elementRef.nativeElement.querySelector(
-      '[quill-editor-element]'
-    )
+      const toolbarElem = this.elementRef.nativeElement.querySelector(
+        '[quill-editor-toolbar]'
+      )
+      const modules = Object.assign({}, this.modules || this.service.config.modules)
 
-    const toolbarElem = this.elementRef.nativeElement.querySelector(
-      '[quill-editor-toolbar]'
-    )
-    const modules = Object.assign({}, this.modules || this.service.config.modules)
+      if (toolbarElem) {
+        modules.toolbar = toolbarElem
+      } else if (modules.toolbar === undefined) {
+        modules.toolbar = defaultModules.toolbar
+      }
 
-    if (toolbarElem) {
-      modules.toolbar = toolbarElem
-    } else if (modules.toolbar === undefined) {
-      modules.toolbar = defaultModules.toolbar
-    }
+      let placeholder = this.placeholder !== undefined ? this.placeholder : this.service.config.placeholder
+      if (placeholder === undefined) {
+        placeholder = 'Insert text here ...'
+      }
 
-    let placeholder = this.placeholder !== undefined ? this.placeholder : this.service.config.placeholder
-    if (placeholder === undefined) {
-      placeholder = 'Insert text here ...'
-    }
+      if (this.styles) {
+        Object.keys(this.styles).forEach((key: string) => {
+          this.renderer.setStyle(this.editorElem, key, this.styles[key])
+        })
+      }
 
-    if (this.styles) {
-      Object.keys(this.styles).forEach((key: string) => {
-        this.renderer.setStyle(this.editorElem, key, this.styles[key])
-      })
-    }
+      if (this.classes) {
+        this.addClasses(this.classes)
+      }
 
-    if (this.classes) {
-      this.addClasses(this.classes)
-    }
-
-    this.customOptions.forEach((customOption) => {
-      const newCustomOption = Quill.import(customOption.import)
-      newCustomOption.whitelist = customOption.whitelist
-      Quill.register(newCustomOption, true)
-    })
-
-    this.customModules.forEach(({ implementation, path }) => {
-      Quill.register(path, implementation)
-    })
-
-    let bounds = this.bounds && this.bounds === 'self' ? this.editorElem : this.bounds
-    if (!bounds) {
-      bounds = this.service.config.bounds ? this.service.config.bounds : this.document.body
-    }
-
-    let debug = this.debug
-    if (!debug && debug !== false && this.service.config.debug) {
-      debug = this.service.config.debug
-    }
-
-    let readOnly = this.readOnly
-    if (!readOnly && this.readOnly !== false) {
-      readOnly = this.service.config.readOnly !== undefined ? this.service.config.readOnly : false
-    }
-
-    let defaultEmptyValue = this.defaultEmptyValue
-    if (this.service.config.hasOwnProperty('defaultEmptyValue')) {
-      defaultEmptyValue = this.service.config.defaultEmptyValue
-    }
-
-    let scrollingContainer = this.scrollingContainer
-    if (!scrollingContainer && this.scrollingContainer !== null) {
-      scrollingContainer =
-        this.service.config.scrollingContainer === null
-          || this.service.config.scrollingContainer ? this.service.config.scrollingContainer : null
-    }
-
-    let formats = this.formats
-    if (!formats && formats === undefined) {
-      formats = this.service.config.formats ? [...this.service.config.formats] : (this.service.config.formats === null ? null : undefined)
-    }
-
-    this.zone.runOutsideAngular(() => {
-      this.quillEditor = new Quill(this.editorElem, {
-        bounds,
-        debug: debug as any,
-        formats: formats as any,
-        modules,
-        placeholder,
-        readOnly,
-        defaultEmptyValue,
-        scrollingContainer: scrollingContainer as any,
-        strict: this.strict,
-        theme: this.theme || (this.service.config.theme ? this.service.config.theme : 'snow')
+      this.customOptions.forEach((customOption) => {
+        const newCustomOption = Quill.import(customOption.import)
+        newCustomOption.whitelist = customOption.whitelist
+        Quill.register(newCustomOption, true)
       })
 
-      // Set optional link placeholder, Quill has no native API for it so using workaround
-      if (this.linkPlaceholder) {
-        const tooltip = (this.quillEditor as any)?.theme?.tooltip
-        const input = tooltip?.root?.querySelector('input[data-link]')
-        if (input?.dataset) {
-          input.dataset.link = this.linkPlaceholder
+      this.customModules.forEach(({ implementation, path }) => {
+        Quill.register(path, implementation)
+      })
+
+      let bounds = this.bounds && this.bounds === 'self' ? this.editorElem : this.bounds
+      if (!bounds) {
+        bounds = this.service.config.bounds ? this.service.config.bounds : this.document.body
+      }
+
+      let debug = this.debug
+      if (!debug && debug !== false && this.service.config.debug) {
+        debug = this.service.config.debug
+      }
+
+      let readOnly = this.readOnly
+      if (!readOnly && this.readOnly !== false) {
+        readOnly = this.service.config.readOnly !== undefined ? this.service.config.readOnly : false
+      }
+
+      let defaultEmptyValue = this.defaultEmptyValue
+      if (this.service.config.hasOwnProperty('defaultEmptyValue')) {
+        defaultEmptyValue = this.service.config.defaultEmptyValue
+      }
+
+      let scrollingContainer = this.scrollingContainer
+      if (!scrollingContainer && this.scrollingContainer !== null) {
+        scrollingContainer =
+          this.service.config.scrollingContainer === null
+            || this.service.config.scrollingContainer ? this.service.config.scrollingContainer : null
+      }
+
+      let formats = this.formats
+      if (!formats && formats === undefined) {
+        formats = this.service.config.formats ? [...this.service.config.formats] : (this.service.config.formats === null ? null : undefined)
+      }
+
+      this.zone.runOutsideAngular(() => {
+        this.quillEditor = new Quill(this.editorElem, {
+          bounds,
+          debug: debug as any,
+          formats: formats as any,
+          modules,
+          placeholder,
+          readOnly,
+          defaultEmptyValue,
+          scrollingContainer: scrollingContainer as any,
+          strict: this.strict,
+          theme: this.theme || (this.service.config.theme ? this.service.config.theme : 'snow')
+        })
+
+        // Set optional link placeholder, Quill has no native API for it so using workaround
+        if (this.linkPlaceholder) {
+          const tooltip = (this.quillEditor as any)?.theme?.tooltip
+          const input = tooltip?.root?.querySelector('input[data-link]')
+          if (input?.dataset) {
+            input.dataset.link = this.linkPlaceholder
+          }
         }
+      })
+
+      if (this.content) {
+        const format = getFormat(this.format, this.service.config.format)
+
+        if (format === 'text') {
+          this.quillEditor.setText(this.content, 'silent')
+        } else {
+          const newValue = this.valueSetter(this.quillEditor, this.content)
+          this.quillEditor.setContents(newValue, 'silent')
+        }
+
+        this.quillEditor.getModule('history').clear()
       }
-    })
 
-    if (this.content) {
-      const format = getFormat(this.format, this.service.config.format)
+      // initialize disabled status based on this.disabled as default value
+      this.setDisabledState()
 
-      if (format === 'text') {
-        this.quillEditor.setText(this.content, 'silent')
-      } else {
-        const newValue = this.valueSetter(this.quillEditor, this.content)
-        this.quillEditor.setContents(newValue, 'silent')
+      this.addQuillEventListeners()
+
+      // The `requestAnimationFrame` triggers change detection. There's no sense to invoke the `requestAnimationFrame` if anyone is
+      // listening to the `onEditorCreated` event inside the template, for instance `<quill-view (onEditorCreated)="...">`.
+      if (!this.onEditorCreated.observers.length && !this.onValidatorChanged) {
+        return
       }
 
-      this.quillEditor.getModule('history').clear()
-    }
-
-    // initialize disabled status based on this.disabled as default value
-    this.setDisabledState()
-
-    this.addQuillEventListeners()
-
-    // The `requestAnimationFrame` triggers change detection. There's no sense to invoke the `requestAnimationFrame` if anyone is
-    // listening to the `onEditorCreated` event inside the template, for instance `<quill-view (onEditorCreated)="...">`.
-    if (!this.onEditorCreated.observers.length && !this.onValidatorChanged) {
-      return
-    }
-
-    // The `requestAnimationFrame` will trigger change detection and `onEditorCreated` will also call `markDirty()`
-    // internally, since Angular wraps template event listeners into `listener` instruction. We're using the `requestAnimationFrame`
-    // to prevent the frame drop and avoid `ExpressionChangedAfterItHasBeenCheckedError` error.
-    requestAnimationFrame(() => {
-      if (this.onValidatorChanged) {
-        this.onValidatorChanged()
-      }
-      this.onEditorCreated.emit(this.quillEditor)
+      // The `requestAnimationFrame` will trigger change detection and `onEditorCreated` will also call `markDirty()`
+      // internally, since Angular wraps template event listeners into `listener` instruction. We're using the `requestAnimationFrame`
+      // to prevent the frame drop and avoid `ExpressionChangedAfterItHasBeenCheckedError` error.
+      requestAnimationFrame(() => {
+        if (this.onValidatorChanged) {
+          this.onValidatorChanged()
+        }
+        this.onEditorCreated.emit(this.quillEditor)
+      })
     })
   }
 
@@ -474,6 +478,9 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
   ngOnDestroy() {
     this.dispose()
+
+    this.quillSubscription?.unsubscribe()
+    this.quillSubscription = null
   }
 
   ngOnChanges(changes: SimpleChanges): void {
