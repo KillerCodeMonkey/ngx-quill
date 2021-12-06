@@ -1,6 +1,7 @@
 import { DOCUMENT } from '@angular/common'
 import { Injectable, Inject, Injector, Optional } from '@angular/core'
-import { defer, Observable, shareReplay } from 'rxjs'
+import { defer, Observable } from 'rxjs'
+import { shareReplay } from 'rxjs/operators'
 
 import { defaultModules } from './quill-defaults'
 import { QUILL_CONFIG_TOKEN, QuillConfig } from './quill-editor.interfaces'
