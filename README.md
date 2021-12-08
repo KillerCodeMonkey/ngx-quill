@@ -7,8 +7,6 @@ ngx-quill is an angular (>=2) module for the [Quill Rich Text Editor](https://qu
 
 If you like my work, feel free to support it. Donations to the project are always welcomed :)
 
-<a href="https://www.buymeacoffee.com/bengtler" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
-
 PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
 
 BTC Wallet Address:
