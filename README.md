@@ -92,11 +92,11 @@ LTC Wallet Address:
 - `npm install ngx-quill`
 - for projects using Angular < v5.0.0 install `npm install ngx-quill@1.6.0`
 - install `@angular/core`, `@angular/common`, `@angular/forms`, `@angular/platform-browser`, `quill` v1.x, `@types/quill` v1.x  and `rxjs` - peer dependencies of ngx-quill
-- include theme stylings: 	**bubble.css, snow.css and core.css of quilljs** in your index.html (you can find them in `node_modules/quill/dist`), or add them in your css/scss files  with `@import` statements, or add them external stylings in your build process.
+- include theme styling: 	**bubble.css or snow.css of quilljs** in your index.html (you can find them in `node_modules/quill/dist`), or add them in your css/scss files  with `@import` statements, or add them external stylings in your build process.
   - Example at the beginning of your style.(s)css:
    ```TS
-    @import '~quill/dist/quill.core.css';
-    @import '~quill/dist/quill.bubble.css';
+    @import '~quill/dist/quill.bubble.css'; 
+    // or
     @import '~quill/dist/quill.snow.css';
    ```
 
