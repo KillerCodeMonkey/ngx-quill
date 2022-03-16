@@ -84,7 +84,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   @Input() required = false
   @Input() formats?: string[] | null
   @Input() customToolbarPosition: 'top' | 'bottom' = 'top'
-  @Input() sanitize = false
+  @Input() sanitize?: boolean
   @Input() styles: any = null
   @Input() strict = true
   @Input() scrollingContainer?: HTMLElement | string | null
@@ -187,7 +187,8 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   valueSetter = (quillEditor: QuillType, value: any): any => {
     const format = getFormat(this.format, this.service.config.format)
     if (format === 'html') {
-      if (this.sanitize) {
+      const sanitize = [true, false].includes(this.sanitize) ? this.sanitize : (this.service.config.sanitize || false)
+      if (sanitize) {
         value = this.domSanitizer.sanitize(SecurityContext.HTML, value)
       }
       return quillEditor.clipboard.convert(value)

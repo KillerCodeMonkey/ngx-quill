@@ -69,6 +69,7 @@ export interface QuillConfig {
   trackChanges?: 'user' | 'all'
   // provide default empty value
   defaultEmptyValue?: any
+  sanitize?: boolean
 }
 
 export const QUILL_CONFIG_TOKEN = new InjectionToken<QuillConfig>('config', {
