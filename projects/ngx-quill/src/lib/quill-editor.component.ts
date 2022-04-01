@@ -11,7 +11,6 @@ import {
   Component,
   Directive,
   ElementRef,
-  EventEmitter,
   forwardRef,
   Inject,
   Injector,
@@ -26,7 +25,7 @@ import {
   SimpleChanges,
   ViewEncapsulation
 } from '@angular/core'
-import { fromEvent, Subscription } from 'rxjs'
+import { fromEvent, Subscription, Subject } from 'rxjs'
 import { debounceTime } from 'rxjs/operators'
 
 import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator } from '@angular/forms'
@@ -114,12 +113,12 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   */
   @Input() defaultEmptyValue?: any = null
 
-  @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
-  @Output() onEditorChanged: EventEmitter<EditorChangeContent | EditorChangeSelection> = new EventEmitter()
-  @Output() onContentChanged: EventEmitter<ContentChange> = new EventEmitter()
-  @Output() onSelectionChanged: EventEmitter<SelectionChange> = new EventEmitter()
-  @Output() onFocus: EventEmitter<Focus> = new EventEmitter()
-  @Output() onBlur: EventEmitter<Blur> = new EventEmitter()
+  @Output() onEditorCreated: Subject<any> = new Subject()
+  @Output() onEditorChanged: Subject<EditorChangeContent | EditorChangeSelection> = new Subject()
+  @Output() onContentChanged: Subject<ContentChange> = new Subject()
+  @Output() onSelectionChanged: Subject<SelectionChange> = new Subject()
+  @Output() onFocus: Subject<Focus> = new Subject()
+  @Output() onBlur: Subject<Blur> = new Subject()
 
   quillEditor!: QuillType
   editorElem!: HTMLElement
@@ -345,7 +344,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         if (this.onValidatorChanged) {
           this.onValidatorChanged()
         }
-        this.onEditorCreated.emit(this.quillEditor)
+        this.onEditorCreated.next(this.quillEditor)
       })
     })
   }
@@ -363,18 +362,18 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
     this.zone.run(() => {
       if (range === null) {
-        this.onBlur.emit({
+        this.onBlur.next({
           editor: this.quillEditor,
           source
         })
       } else if (oldRange === null) {
-        this.onFocus.emit({
+        this.onFocus.next({
           editor: this.quillEditor,
           source
         })
       }
 
-      this.onSelectionChanged.emit({
+      this.onSelectionChanged.next({
         editor: this.quillEditor,
         oldRange,
         range,
@@ -414,7 +413,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         )
       }
 
-      this.onContentChanged.emit({
+      this.onContentChanged.next({
         content,
         delta,
         editor: this.quillEditor,
@@ -449,7 +448,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       }
 
       this.zone.run(() => {
-        this.onEditorChanged.emit({
+        this.onEditorChanged.next({
           content,
           delta: current,
           editor: this.quillEditor,
@@ -464,7 +463,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       })
     } else {
       this.zone.run(() => {
-        this.onEditorChanged.emit({
+        this.onEditorChanged.next({
           editor: this.quillEditor,
           event,
           oldRange: old,
