@@ -6,6 +6,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
   Inject,
   Input,
   Output,
@@ -18,7 +19,7 @@ import {
   SecurityContext,
   OnDestroy
 } from '@angular/core'
-import { Subject, Subscription } from 'rxjs'
+import { Subscription } from 'rxjs'
 
 import { CustomOption, CustomModule } from './quill-editor.interfaces'
 import {getFormat} from './helpers'
@@ -49,7 +50,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() customOptions: CustomOption[] = []
   @Input() preserveWhitespace = false
 
-  @Output() onEditorCreated: Subject<any> = new Subject()
+  @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
 
   quillEditor!: QuillType
   editorElem!: HTMLElement
@@ -165,7 +166,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
       // internally, since Angular wraps template event listeners into `listener` instruction. We're using the `requestAnimationFrame`
       // to prevent the frame drop and avoid `ExpressionChangedAfterItHasBeenCheckedError` error.
       requestAnimationFrame(() => {
-        this.onEditorCreated.next(this.quillEditor)
+        this.onEditorCreated.emit(this.quillEditor)
       })
     })
   }
