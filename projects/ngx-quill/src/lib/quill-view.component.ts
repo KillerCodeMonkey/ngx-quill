@@ -17,7 +17,8 @@ import {
   ViewEncapsulation,
   NgZone,
   SecurityContext,
-  OnDestroy
+  OnDestroy,
+  OnInit
 } from '@angular/core'
 import { Subscription } from 'rxjs'
 
@@ -35,9 +36,11 @@ import { DomSanitizer } from '@angular/platform-browser'
 }
 `],
   template: `
+<div quill-view-element *ngIf="!preserve"></div>
+<pre quill-view-element *ngIf="preserve"></pre>
 `
 })
-export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
+export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy, OnInit {
   @Input() format?: 'object' | 'html' | 'text' | 'json'
   @Input() theme?: string
   @Input() modules?: QuillModules
@@ -54,6 +57,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   quillEditor!: QuillType
   editorElem!: HTMLElement
+  public preserve = false
 
   private quillSubscription: Subscription | null = null
 
@@ -87,6 +91,10 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
       }
       quillEditor.setContents(content)
     }
+  }
+
+  ngOnInit() {
+    this.preserve = this.preserveWhitespace
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -129,11 +137,6 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
           Object.assign({}, this.service.config.formats) : (this.service.config.formats === null ? null : undefined)
       }
       const theme = this.theme || (this.service.config.theme ? this.service.config.theme : 'snow')
-
-      this.elementRef.nativeElement.insertAdjacentHTML(
-        'afterbegin',
-        this.preserveWhitespace ? '<pre quill-view-element></pre>' : '<div quill-view-element></div>'
-      )
 
       this.editorElem = this.elementRef.nativeElement.querySelector(
         '[quill-view-element]'
