@@ -19,6 +19,7 @@ import {
   NgZone,
   OnChanges,
   OnDestroy,
+  OnInit,
   Output,
   PLATFORM_ID,
   Renderer2,
@@ -72,7 +73,7 @@ export type EditorChangeSelection = SelectionChange & { event: 'selection-change
 
 @Directive()
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
-export abstract class QuillEditorBase implements AfterViewInit, ControlValueAccessor, OnChanges, OnDestroy, Validator {
+export abstract class QuillEditorBase implements AfterViewInit, ControlValueAccessor, OnChanges, OnInit, OnDestroy, Validator {
   @Input() format?: 'object' | 'html' | 'text' | 'json'
   @Input() theme?: string
   @Input() modules?: QuillModules
@@ -125,6 +126,8 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   editorElem!: HTMLElement
   content: any
   disabled = false // used to store initial value before ViewInit
+  preserve = false
+  toolbarPosition = 'top'
 
   onModelChange: (modelValue?: any) => void
   onModelTouched: () => void
@@ -203,6 +206,11 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     return value
   }
 
+  ngOnInit() {
+    this.preserve = this.preserveWhitespace
+    this.toolbarPosition = this.customToolbarPosition
+  }
+
   ngAfterViewInit() {
     if (isPlatformServer(this.platformId)) {
       return
@@ -213,11 +221,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
     // eslint-disable-next-line @typescript-eslint/naming-convention
     this.quillSubscription = this.service.getQuill().subscribe(Quill => {
-      this.elementRef.nativeElement.insertAdjacentHTML(
-        this.customToolbarPosition === 'top' ? 'beforeend' : 'afterbegin',
-        this.preserveWhitespace ? '<pre quill-editor-element></pre>' : '<div quill-editor-element></div>'
-      )
-
       this.editorElem = this.elementRef.nativeElement.querySelector(
         '[quill-editor-element]'
       )
@@ -733,7 +736,15 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   ],
   selector: 'quill-editor',
   template: `
+  <ng-container *ngIf="toolbarPosition !== 'top'">
+    <div quill-editor-element *ngIf="!preserve"></div>
+    <pre quill-editor-element *ngIf="preserve"></pre>
+  </ng-container>
   <ng-content select="[quill-editor-toolbar]"></ng-content>
+  <ng-container *ngIf="toolbarPosition === 'top'">
+    <div quill-editor-element *ngIf="!preserve"></div>
+    <pre quill-editor-element *ngIf="preserve"></pre>
+  </ng-container>
 `,
   styles: [
     `
