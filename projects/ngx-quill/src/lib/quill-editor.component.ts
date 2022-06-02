@@ -337,7 +337,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
       // The `requestAnimationFrame` triggers change detection. There's no sense to invoke the `requestAnimationFrame` if anyone is
       // listening to the `onEditorCreated` event inside the template, for instance `<quill-view (onEditorCreated)="...">`.
-      if (!this.onEditorCreated.observers.length && !this.onValidatorChanged) {
+      if (!this.onEditorCreated.observed && !this.onValidatorChanged) {
         return
       }
 
@@ -357,9 +357,9 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     const shouldTriggerOnModelTouched = !range && !!this.onModelTouched
 
     // only emit changes when there's any listener
-    if (!this.onBlur.observers.length &&
-      !this.onFocus.observers.length &&
-      !this.onSelectionChanged.observers.length &&
+    if (!this.onBlur.observed &&
+      !this.onFocus.observed &&
+      !this.onSelectionChanged.observed &&
       !shouldTriggerOnModelTouched) {
       return
     }
@@ -406,7 +406,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     const shouldTriggerOnModelChange = (source === 'user' || trackChanges && trackChanges === 'all') && !!this.onModelChange
 
     // only emit changes when there's any listener
-    if (!this.onContentChanged.observers.length && !shouldTriggerOnModelChange) {
+    if (!this.onContentChanged.observed && !shouldTriggerOnModelChange) {
       return
     }
 
@@ -437,7 +437,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     current: any | Range | null, old: any | Range | null, source: string
   ): void => {
     // only emit changes when there's any listener
-    if (!this.onEditorChanged.observers.length) {
+    if (!this.onEditorChanged.observed) {
       return
     }
 
