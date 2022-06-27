@@ -8,6 +8,18 @@ export interface CustomOption {
 }
 
 export interface CustomModule {
+  // The `implementation` may be a custom module constructor or an Observable that resolves to
+  // a custom module constructor (in case you'd want to load your custom module lazily).
+  // For instance, these options are applicable:
+  // import BlotFormatter from 'quill-blot-formatter';
+  // customModules = [
+  //   { path: 'modules/blotFormatter', implementation: BlotFormatter }
+  // ];
+  // Or:
+  // const BlotFormatter$ = defer(() => import('quill-blot-formatter').then(m => m.default))
+  // customModules = [
+  //   { path: 'modules/blotFormatter', implementation: BlotFormatter$ }
+  // ];
   implementation: any
   path: string
 }
