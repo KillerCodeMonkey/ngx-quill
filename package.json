@@ -40,24 +40,24 @@
     "text editor"
   ],
   "dependencies": {
-    "@angular/animations": "^14.0.2",
-    "@angular/common": "^14.0.2",
-    "@angular/compiler": "^14.0.2",
-    "@angular/core": "^14.0.2",
-    "@angular/forms": "^14.0.2",
-    "@angular/platform-browser": "^14.0.2",
-    "@angular/platform-browser-dynamic": "^14.0.2",
-    "@angular/router": "^14.0.2",
+    "@angular/animations": "^14.0.3",
+    "@angular/common": "^14.0.3",
+    "@angular/compiler": "^14.0.3",
+    "@angular/core": "^14.0.3",
+    "@angular/forms": "^14.0.3",
+    "@angular/platform-browser": "^14.0.3",
+    "@angular/platform-browser-dynamic": "^14.0.3",
+    "@angular/router": "^14.0.3",
     "rxjs": "^7.5.5",
     "tslib": "^2.4.0",
     "zone.js": "~0.11.6"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^14.0.2",
-    "@angular/cli": "^14.0.2",
-    "@angular/compiler-cli": "^14.0.2",
-    "@angular/language-service": "^14.0.2",
-    "@angular/localize": "^14.0.2",
+    "@angular-devkit/build-angular": "^14.0.3",
+    "@angular/cli": "^14.0.3",
+    "@angular/compiler-cli": "^14.0.3",
+    "@angular/language-service": "^14.0.3",
+    "@angular/localize": "^14.0.3",
     "@types/jasmine": "^4.0.3",
     "@types/jasminewd2": "^2.0.10",
     "@types/node": "*",
@@ -89,8 +89,8 @@
     "@angular-eslint/eslint-plugin-template": "^13.5.0",
     "@angular-eslint/schematics": "^13.5.0",
     "@angular-eslint/template-parser": "^13.5.0",
-    "@typescript-eslint/eslint-plugin": "^5.28.0",
-    "@typescript-eslint/parser": "^5.28.0"
+    "@typescript-eslint/eslint-plugin": "^5.29.0",
+    "@typescript-eslint/parser": "^5.29.0"
   },
   "contributors": [
     {
