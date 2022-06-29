@@ -21,6 +21,7 @@ import {
   OnInit
 } from '@angular/core'
 import { Subscription } from 'rxjs'
+import { mergeMap } from 'rxjs/operators'
 
 import { CustomOption, CustomModule } from './quill-editor.interfaces'
 import {getFormat} from './helpers'
@@ -111,8 +112,9 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy, 
       return
     }
 
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    this.quillSubscription = this.service.getQuill().subscribe(Quill => {
+    this.quillSubscription = this.service.getQuill().pipe(
+      mergeMap((Quill) => this.service.registerCustomModules(Quill, this.customModules))
+    ).subscribe(Quill => {
       const modules = Object.assign({}, this.modules || this.service.config.modules)
       modules.toolbar = false
 
@@ -120,10 +122,6 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy, 
         const newCustomOption = Quill.import(customOption.import)
         newCustomOption.whitelist = customOption.whitelist
         Quill.register(newCustomOption, true)
-      })
-
-      this.customModules.forEach(({implementation, path}) => {
-        Quill.register(path, implementation)
       })
 
       let debug = this.debug

@@ -1,10 +1,10 @@
 import { DOCUMENT } from '@angular/common'
 import { Injectable, Inject, Injector, Optional } from '@angular/core'
-import { defer, Observable } from 'rxjs'
+import { defer, firstValueFrom, isObservable, Observable } from 'rxjs'
 import { shareReplay } from 'rxjs/operators'
 
 import { defaultModules } from './quill-defaults'
-import { QUILL_CONFIG_TOKEN, QuillConfig } from './quill-editor.interfaces'
+import { QUILL_CONFIG_TOKEN, QuillConfig, CustomModule } from './quill-editor.interfaces'
 
 @Injectable({
   providedIn: 'root',
@@ -49,15 +49,11 @@ export class QuillService {
       )
     })
 
-    this.config.customModules?.forEach(({ implementation, path }) => {
-      this.Quill.register(
-        path,
-        implementation,
-        this.config.suppressGlobalRegisterWarning
-      )
-    })
-
-    return this.Quill
+    return await this.registerCustomModules(
+      this.Quill,
+      this.config.customModules,
+      this.config.suppressGlobalRegisterWarning
+    )
   }).pipe(shareReplay({ bufferSize: 1, refCount: true }))
 
   constructor(
@@ -73,5 +69,33 @@ export class QuillService {
 
   getQuill() {
     return this.quill$
+  }
+
+  /**
+   * Marked as internal so it won't be available for `ngx-quill` consumers, this is only
+   * internal method to be used within the library.
+   *
+   * @internal
+   */
+   async registerCustomModules(
+    Quill: any,
+    customModules: CustomModule[] | undefined,
+    suppressGlobalRegisterWarning?: boolean
+  ): Promise<any> {
+    if (Array.isArray(customModules)) {
+      // eslint-disable-next-line prefer-const
+      for (let { implementation, path } of customModules) {
+        // The `implementation` might be an observable that resolves the actual implementation,
+        // e.g. if it should be lazy loaded.
+        if (isObservable(implementation)) {
+          implementation = await firstValueFrom(implementation)
+        }
+        Quill.register(path, implementation, suppressGlobalRegisterWarning)
+      }
+    }
+
+    // Return `Quill` constructor so we'll be able to re-use its return value except of using
+    // `map` operators, etc.
+    return Quill
   }
 }

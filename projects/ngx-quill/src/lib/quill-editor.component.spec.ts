@@ -1,5 +1,6 @@
 import {Component, Renderer2, ViewChild} from '@angular/core'
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing'
+import {defer} from 'rxjs'
 
 import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms'
 
@@ -158,6 +159,21 @@ class PreserveWhitespaceTestComponent {
 class CustomModuleTestComponent {
   @ViewChild(QuillEditorComponent, { static: true }) editor!: QuillEditorComponent
   impl = CustomModule
+}
+
+@Component({
+  template: `
+    <quill-editor [modules]="{custom: true}" [customModules]="customModules"></quill-editor>
+`
+})
+class CustomAsynchronousModuleTestComponent {
+  @ViewChild(QuillEditorComponent, { static: true }) editor!: QuillEditorComponent
+  customModules = [
+    {
+      path: 'modules/custom',
+      implementation: defer(() => Promise.resolve(CustomModule))
+    }
+  ]
 }
 
 @Component({
@@ -1322,6 +1338,29 @@ describe('QuillEditor - customModules', () => {
   it('renders editor with config', async () => {
     const spy = spyOn(QuillNamespace, 'register').and.callThrough()
     fixture = TestBed.createComponent(CustomModuleTestComponent)
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    expect(spy).toHaveBeenCalled()
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    expect(fixture.componentInstance.editor.quillEditor['options'].modules.custom).toBeDefined()
+  })
+})
+
+describe('QuillEditor - customModules (asynchronous)', () => {
+  let fixture: ComponentFixture<CustomAsynchronousModuleTestComponent>
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [CustomAsynchronousModuleTestComponent],
+      imports: [FormsModule, QuillModule],
+      providers: QuillModule.forRoot().providers
+    }).compileComponents()
+  })
+
+  it('renders editor with config', async () => {
+    const spy = spyOn(QuillNamespace, 'register').and.callThrough()
+    fixture = TestBed.createComponent(CustomAsynchronousModuleTestComponent)
     fixture.detectChanges()
     await fixture.whenStable()
 

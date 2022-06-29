@@ -28,7 +28,7 @@ import {
   ViewEncapsulation
 } from '@angular/core'
 import { fromEvent, Subscription } from 'rxjs'
-import { debounceTime } from 'rxjs/operators'
+import { debounceTime, mergeMap } from 'rxjs/operators'
 
 import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator } from '@angular/forms'
 import { defaultModules } from './quill-defaults'
@@ -219,8 +219,9 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     // The `quill-editor` component might be destroyed before the `quill` chunk is loaded and its code is executed
     // this will lead to runtime exceptions, since the code will be executed on DOM nodes that don't exist within the tree.
 
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    this.quillSubscription = this.service.getQuill().subscribe(Quill => {
+    this.quillSubscription = this.service.getQuill().pipe(
+      mergeMap(Quill => this.service.registerCustomModules(Quill, this.customModules))
+    ).subscribe(Quill => {
       this.editorElem = this.elementRef.nativeElement.querySelector(
         '[quill-editor-element]'
       )
@@ -255,10 +256,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         const newCustomOption = Quill.import(customOption.import)
         newCustomOption.whitelist = customOption.whitelist
         Quill.register(newCustomOption, true)
-      })
-
-      this.customModules.forEach(({ implementation, path }) => {
-        Quill.register(path, implementation)
       })
 
       let bounds = this.bounds && this.bounds === 'self' ? this.editorElem : this.bounds

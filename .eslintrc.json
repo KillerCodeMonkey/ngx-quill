@@ -39,6 +39,17 @@
         "@typescript-eslint/semi": [
           "error",
           "never"
+        ],
+        "@typescript-eslint/naming-convention": [
+          "error",
+          {
+            "selector": "parameter",
+            "format": ["camelCase"],
+            "filter": {
+              "regex": "^Quill$",
+              "match": false
+            }
+          }
         ]
       }
     },
