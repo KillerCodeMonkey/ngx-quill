@@ -85,6 +85,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   @Input() formats?: string[] | null
   @Input() customToolbarPosition: 'top' | 'bottom' = 'top'
   @Input() sanitize?: boolean
+  @Input() beforeRender?: () => Promise<void>
   @Input() styles: any = null
   @Input() strict = true
   @Input() scrollingContainer?: HTMLElement | string | null
@@ -219,7 +220,14 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     // this will lead to runtime exceptions, since the code will be executed on DOM nodes that don't exist within the tree.
 
     this.quillSubscription = this.service.getQuill().pipe(
-      mergeMap(Quill => this.service.registerCustomModules(Quill, this.customModules))
+      mergeMap((Quill) => {
+        const promises = [this.service.registerCustomModules(Quill, this.customModules)]
+        const beforeRender = this.beforeRender ?? this.service.config.beforeRender
+        if (beforeRender) {
+          promises.push(beforeRender())
+        }
+        return Promise.all(promises).then(() => Quill)
+      })
     ).subscribe(Quill => {
       this.editorElem = this.elementRef.nativeElement.querySelector(
         '[quill-editor-element]'

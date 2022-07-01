@@ -50,6 +50,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy, 
   @Input() debug?: 'warn' | 'log' | 'error' | false
   @Input() formats?: string[] | null
   @Input() sanitize?: boolean
+  @Input() beforeRender?: () => Promise<void>
   @Input() strict = true
   @Input() content: any
   @Input() customModules: CustomModule[] = []
@@ -115,7 +116,14 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy, 
     }
 
     this.quillSubscription = this.service.getQuill().pipe(
-      mergeMap((Quill) => this.service.registerCustomModules(Quill, this.customModules))
+      mergeMap((Quill) => {
+        const promises = [this.service.registerCustomModules(Quill, this.customModules)]
+        const beforeRender = this.beforeRender ?? this.service.config.beforeRender
+        if (beforeRender) {
+          promises.push(beforeRender())
+        }
+        return Promise.all(promises).then(() => Quill)
+      })
     ).subscribe(Quill => {
       const modules = Object.assign({}, this.modules || this.service.config.modules)
       modules.toolbar = false
