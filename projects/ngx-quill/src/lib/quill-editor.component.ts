@@ -1,8 +1,6 @@
 import { DOCUMENT, isPlatformServer, CommonModule } from '@angular/common'
 import { DomSanitizer } from '@angular/platform-browser'
 
-import { QuillModules, CustomOption, CustomModule } from './quill-editor.interfaces'
-
 import QuillType, { Delta } from 'quill'
 
 import {
@@ -31,7 +29,8 @@ import { fromEvent, Subscription } from 'rxjs'
 import { debounceTime, mergeMap } from 'rxjs/operators'
 
 import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator } from '@angular/forms'
-import { defaultModules } from './quill-defaults'
+
+import { defaultModules, QuillModules, CustomOption, CustomModule } from 'ngx-quill/config'
 
 import { getFormat } from './helpers'
 import { QuillService } from './quill.service'
