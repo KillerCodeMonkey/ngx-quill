@@ -9,6 +9,7 @@ import {
   SimpleChanges,
   ViewEncapsulation
 } from '@angular/core'
+import { CommonModule } from '@angular/common'
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -23,7 +24,9 @@ import {
     <div class="ql-editor" [innerHTML]="innerHTML">
     </div>
   </div>
-`
+`,
+  standalone: true,
+  imports: [CommonModule]
 })
 export class QuillViewHTMLComponent implements OnChanges {
   @Input() content = ''
