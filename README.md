@@ -132,14 +132,16 @@ Nothing to do here :)
 
 ## Global Config
 
-It is possible to set custom default modules and Quill config options with the import of the `QuillModule.forRoot()`.
+It's possible to set custom default modules and Quill config options with the import of the `QuillConfigModule` from the `ngx-quill/config`. This module provides a global config, but eliminates the need to import the `ngx-quill` library into the vendor bundle:
 
-```TS
+```ts
+import { QuillConfigModule } from 'ngx-quill/config';
+
 @NgModule({
   imports: [
     ...,
 
-    QuillModule.forRoot({
+    QuillConfigModule.forRoot({
       modules: {
         syntax: true,
         toolbar: [...]
@@ -148,8 +150,7 @@ It is possible to set custom default modules and Quill config options with the i
   ],
   ...
 })
-class YourModule { ... }
-
+class AppModule {}
 ```
 
 If you want to use the `syntax` module follow the [Syntax Highlight Module Guide](https://quilljs.com/docs/modules/syntax/#syntax-highlighter-module).

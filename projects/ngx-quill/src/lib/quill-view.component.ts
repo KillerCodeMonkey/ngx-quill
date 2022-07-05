@@ -1,6 +1,5 @@
 import { CommonModule, isPlatformServer } from '@angular/common'
 import QuillType from 'quill'
-import { QuillModules } from './quill-editor.interfaces'
 
 import {
   AfterViewInit,
@@ -23,7 +22,8 @@ import {
 import { Subscription } from 'rxjs'
 import { mergeMap } from 'rxjs/operators'
 
-import { CustomOption, CustomModule } from './quill-editor.interfaces'
+import { CustomOption, CustomModule, QuillModules } from 'ngx-quill/config'
+
 import {getFormat} from './helpers'
 import { QuillService } from './quill.service'
 import { DomSanitizer } from '@angular/platform-browser'
