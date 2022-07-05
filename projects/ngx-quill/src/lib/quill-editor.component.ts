@@ -1,4 +1,4 @@
-import { DOCUMENT, isPlatformServer } from '@angular/common'
+import { DOCUMENT, isPlatformServer, CommonModule } from '@angular/common'
 import { DomSanitizer } from '@angular/platform-browser'
 
 import { QuillModules, CustomOption, CustomModule } from './quill-editor.interfaces'
@@ -749,7 +749,9 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       display: inline-block;
     }
     `
-  ]
+  ],
+  standalone: true,
+  imports: [CommonModule]
 })
 export class QuillEditorComponent extends QuillEditorBase {
 

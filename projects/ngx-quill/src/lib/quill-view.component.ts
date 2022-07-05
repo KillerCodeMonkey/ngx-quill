@@ -1,4 +1,4 @@
-import { isPlatformServer } from '@angular/common'
+import { CommonModule, isPlatformServer } from '@angular/common'
 import QuillType from 'quill'
 import { QuillModules } from './quill-editor.interfaces'
 
@@ -39,7 +39,9 @@ import { DomSanitizer } from '@angular/platform-browser'
   template: `
 <div quill-view-element *ngIf="!preserve"></div>
 <pre quill-view-element *ngIf="preserve"></pre>
-`
+`,
+  standalone: true,
+  imports: [CommonModule]
 })
 export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy, OnInit {
   @Input() format?: 'object' | 'html' | 'text' | 'json'
