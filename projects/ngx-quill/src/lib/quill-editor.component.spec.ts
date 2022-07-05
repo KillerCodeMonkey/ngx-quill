@@ -1399,3 +1399,55 @@ describe('QuillEditor - defaultEmptyValue', () => {
     expect(fixture.componentInstance.editor.defaultEmptyValue).toBeDefined()
   })
 })
+
+describe('QuillEditor - beforeRender', () => {
+  @Component({
+    template: `
+      <quill-editor [beforeRender]="beforeRender"></quill-editor>
+  `
+  })
+  class BeforeRenderTestComponent {
+    @ViewChild(QuillEditorComponent, { static: true }) editor!: QuillEditorComponent
+
+    beforeRender?: () => Promise<void>
+  }
+
+  let fixture: ComponentFixture<BeforeRenderTestComponent>
+
+  it('should call beforeRender provided on the config level', async () => {
+    const config = { beforeRender: () => Promise.resolve() }
+
+    TestBed.configureTestingModule({
+      declarations: [BeforeRenderTestComponent],
+      imports: [QuillModule.forRoot(config)],
+    })
+
+    spyOn(config, 'beforeRender')
+
+    fixture = TestBed.createComponent(BeforeRenderTestComponent)
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    expect(config.beforeRender).toHaveBeenCalled()
+  })
+
+  it('should call beforeRender provided on the component level and should not call beforeRender on the config level', async () => {
+    const config = { beforeRender: () => Promise.resolve() }
+
+    TestBed.configureTestingModule({
+      declarations: [BeforeRenderTestComponent],
+      imports: [QuillModule.forRoot(config)],
+    })
+
+    spyOn(config, 'beforeRender')
+
+    fixture = TestBed.createComponent(BeforeRenderTestComponent)
+    fixture.componentInstance.beforeRender = () => Promise.resolve()
+    spyOn(fixture.componentInstance, 'beforeRender')
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    expect(config.beforeRender).not.toHaveBeenCalled()
+    expect(fixture.componentInstance.beforeRender).toHaveBeenCalled()
+  })
+})

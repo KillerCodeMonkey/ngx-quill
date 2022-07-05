@@ -82,6 +82,9 @@ export interface QuillConfig {
   // provide default empty value
   defaultEmptyValue?: any
   sanitize?: boolean
+  // A function, which is executed before the Quill editor is rendered, this might be useful
+  // for lazy-loading CSS.
+  beforeRender?: () => Promise<void>
 }
 
 export const QUILL_CONFIG_TOKEN = new InjectionToken<QuillConfig>('config', {

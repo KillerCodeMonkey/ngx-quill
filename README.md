@@ -225,6 +225,30 @@ const modules = {
 - required - add validation as a required field - `[required]="true"` - default: false, boolean expected (no strings!)
 - strict - default: true, sets editor in strict mode
 - scrollingContainer - default '.ql-editor', allows to set scrolling container
+- beforeRender - a function, which is executed before the Quill editor is rendered, this might be useful for lazy-loading CSS. Given the following example:
+```ts
+// typings.d.ts
+declare module '!!raw-loader!*.css' {
+  const css: string;
+  export default css;
+}
+
+// my.component.ts
+const quillCSS$ = defer(() =>
+  import('!!raw-loader!quill/dist/quill.core.css').then((m) => {
+    const style = document.createElement('style');
+    style.innerHTML = m.default;
+    document.head.appendChild(style);
+  })
+).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+
+@Component({
+  template: '<quill-editor [beforeRender]="beforeRender"></quill-editor>',
+})
+export class MyComponent {
+  beforeRender = () => firstValueFrom(quillCSS$);
+}
+```
 - use customOptions for adding for example custom font sizes --> this overwrites this options **globally** !!!
 - use customModules for adding and overwriting modules --> this overwrites this modules **globally** !!!
 - possibility to create a custom toolbar via projection slot `[quill-editor-toolbar]`:
