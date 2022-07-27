@@ -65,7 +65,7 @@
     "bufferutil": "^4.0.6",
     "fibers": "^5.0.1",
     "html-webpack-plugin": "^5.5.0",
-    "jasmine-core": "^4.2.0",
+    "jasmine-core": "^4.3.0",
     "jasmine-spec-reporter": "^7.0.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "^3.1.1",
@@ -89,8 +89,8 @@
     "@angular-eslint/eslint-plugin-template": "^14.0.2",
     "@angular-eslint/schematics": "^14.0.2",
     "@angular-eslint/template-parser": "^14.0.2",
-    "@typescript-eslint/eslint-plugin": "^5.30.7",
-    "@typescript-eslint/parser": "^5.30.7"
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0"
   },
   "contributors": [
     {
