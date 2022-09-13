@@ -53,8 +53,8 @@
     "zone.js": "~0.11.8"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^14.2.1",
-    "@angular/cli": "^14.2.1",
+    "@angular-devkit/build-angular": "^14.2.2",
+    "@angular/cli": "^14.2.2",
     "@angular/compiler-cli": "^14.2.1",
     "@angular/language-service": "^14.2.1",
     "@angular/localize": "^14.2.1",
@@ -84,11 +84,11 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jsdoc": "^39.3.6",
     "eslint-plugin-prefer-arrow": "^1.2.3",
-    "@angular-eslint/builder": "^14.0.3",
-    "@angular-eslint/eslint-plugin": "^14.0.3",
-    "@angular-eslint/eslint-plugin-template": "^14.0.3",
-    "@angular-eslint/schematics": "^14.0.3",
-    "@angular-eslint/template-parser": "^14.0.3",
+    "@angular-eslint/builder": "^14.0.4",
+    "@angular-eslint/eslint-plugin": "^14.0.4",
+    "@angular-eslint/eslint-plugin-template": "^14.0.4",
+    "@angular-eslint/schematics": "^14.0.4",
+    "@angular-eslint/template-parser": "^14.0.4",
     "@typescript-eslint/eslint-plugin": "^5.36.2",
     "@typescript-eslint/parser": "^5.36.2"
   },
