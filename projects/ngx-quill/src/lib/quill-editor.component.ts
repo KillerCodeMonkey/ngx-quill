@@ -723,7 +723,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 }
 
 @Component({
-  encapsulation: ViewEncapsulation.None,
+  encapsulation: ViewEncapsulation.Emulated,
   providers: [
     {
       multi: true,
