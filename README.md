@@ -249,8 +249,30 @@ export class MyComponent {
   beforeRender = () => firstValueFrom(quillCSS$);
 }
 ```
-- use customOptions for adding for example custom font sizes --> this overwrites this options **globally** !!!
-- use customModules for adding and overwriting modules --> this overwrites this modules **globally** !!!
+- use customOptions for adding for example custom font sizes - array of objects `{ import: string; whitelist: any[] }` --> this overwrites this options **globally** !!!
+```TS
+// Example with registering custom fonts
+customOptions: [{
+  import: 'formats/font',
+  whitelist: ['mirza', 'roboto', 'aref', 'serif', 'sansserif', 'monospace']
+}]
+```
+- use customModules for adding and overwriting modules - an array of objects `{ implementation: any; path: string }` --> this overwrites this modules **globally** !!!
+```TS
+// The `implementation` may be a custom module constructor or an Observable that resolves to
+// a custom module constructor (in case you'd want to load your custom module lazily).
+// For instance, these options are applicable:
+// import BlotFormatter from 'quill-blot-formatter';
+customModules = [
+  { path: 'modules/blotFormatter', implementation: BlotFormatter }
+]
+// Or:
+const BlotFormatter$ = defer(() => import('quill-blot-formatter').then(m => m.default))
+customModules = [
+  { path: 'modules/blotFormatter', implementation: BlotFormatter$ }
+]
+```
+- checkout the demo repo about usage of `customOptions` and `customModules` [Demo Repo](https://github.com/KillerCodeMonkey/ngx-quill-example/blob/2e72dc75e6d9b423f67b57b17cc8fb527dd694e4/src/app/app.module.ts#L67)
 - possibility to create a custom toolbar via projection slot `[quill-editor-toolbar]`:
 
 **Try to not use much angular magic here, like `(output)` listeners. Use native EventListeners**
