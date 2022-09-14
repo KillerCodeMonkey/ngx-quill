@@ -89,8 +89,8 @@
     "@angular-eslint/eslint-plugin-template": "^14.0.4",
     "@angular-eslint/schematics": "^14.0.4",
     "@angular-eslint/template-parser": "^14.0.4",
-    "@typescript-eslint/eslint-plugin": "^5.36.2",
-    "@typescript-eslint/parser": "^5.36.2"
+    "@typescript-eslint/eslint-plugin": "^5.37.0",
+    "@typescript-eslint/parser": "^5.37.0"
   },
   "contributors": [
     {
