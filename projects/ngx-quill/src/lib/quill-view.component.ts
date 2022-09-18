@@ -178,6 +178,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy, 
       // to prevent the frame drop and avoid `ExpressionChangedAfterItHasBeenCheckedError` error.
       requestAnimationFrame(() => {
         this.onEditorCreated.emit(this.quillEditor)
+        this.onEditorCreated.complete()
       })
     })
   }
