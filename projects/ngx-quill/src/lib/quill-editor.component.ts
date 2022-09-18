@@ -353,6 +353,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
           this.onValidatorChanged()
         }
         this.onEditorCreated.emit(this.quillEditor)
+        this.onEditorCreated.complete()
       })
     })
   }
