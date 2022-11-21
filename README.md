@@ -59,7 +59,7 @@ LTC Wallet Address:
         >= 20.0.0
       </td>
       <td>
-        until Dec 02, 2023
+        until May, 2024
       </td>
     </tr>
     <tr>
