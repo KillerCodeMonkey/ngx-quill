@@ -68,7 +68,7 @@ export interface QuillConfig {
   customModules?: CustomModule[]
   customOptions?: CustomOption[]
   suppressGlobalRegisterWarning?: boolean
-  debug?: 'error' | 'warn' | 'log' | false
+  debug?: 'error' | 'warn' | 'log' | 'info' | boolean
   format?: QuillFormat
   formats?: string[]
   modules?: QuillModules
