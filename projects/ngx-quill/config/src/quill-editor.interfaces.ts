@@ -52,7 +52,7 @@ export interface QuillModules {
   keyboard?: {
     bindings?: any
   } | boolean
-  syntax?: boolean
+  syntax?: boolean | { highlight: any }
   toolbar?: QuillToolbarConfig | string | {
     container?: string | string[] | QuillToolbarConfig
     handlers?: {
