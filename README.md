@@ -67,7 +67,7 @@ LTC Wallet Address:
         v14
       </td>
       <td>
-        >= 17.0.0
+        >= 17.0.0 < 20
       </td>
       <td>
         until Dec 02, 2023
@@ -151,6 +151,23 @@ import { QuillConfigModule } from 'ngx-quill/config';
   ...
 })
 class AppModule {}
+```
+
+Registering the global configuration can be also done using the standalone function if you are bootstrapping an Angular application using standalone features:
+
+```ts
+import { provideQuillConfig } from 'ngx-quill/config';
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideQuillConfig({
+      modules: {
+        syntax: true,
+        toolbar: [...]
+      }
+    })
+  ]
+})
 ```
 
 If you want to use the `syntax` module follow the [Syntax Highlight Module Guide](https://quilljs.com/docs/modules/syntax/#syntax-highlighter-module).
