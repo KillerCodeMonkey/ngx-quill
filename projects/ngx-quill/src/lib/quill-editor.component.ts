@@ -11,8 +11,7 @@ import {
   ElementRef,
   EventEmitter,
   forwardRef,
-  Inject,
-  Injector,
+  inject,
   Input,
   NgZone,
   OnChanges,
@@ -133,22 +132,18 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   onModelTouched: () => void
   onValidatorChanged: () => void
 
-  private document: Document
   private subscription: Subscription | null = null
   private quillSubscription: Subscription | null = null
 
-  constructor(
-    injector: Injector,
-    public elementRef: ElementRef,
-    protected cd: ChangeDetectorRef,
-    protected domSanitizer: DomSanitizer,
-    @Inject(PLATFORM_ID) protected platformId: any,
-    protected renderer: Renderer2,
-    protected zone: NgZone,
-    protected service: QuillService
-  ) {
-    this.document = injector.get(DOCUMENT)
-  }
+  private elementRef = inject(ElementRef)
+  private document = inject(DOCUMENT)
+
+  private cd = inject(ChangeDetectorRef)
+  private domSanitizer = inject(DomSanitizer)
+  private platformId = inject<string>(PLATFORM_ID)
+  private renderer = inject(Renderer2)
+  private zone = inject(NgZone)
+  private service = inject(QuillService)
 
   static normalizeClassNames(classes: string): string[] {
     const classList = classes.trim().split(' ')
@@ -741,16 +736,17 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   ],
   selector: 'quill-editor',
   template: `
-  <ng-container *ngIf="toolbarPosition !== 'top'">
-    <div quill-editor-element *ngIf="!preserve"></div>
-    <pre quill-editor-element *ngIf="preserve"></pre>
-  </ng-container>
-  <ng-content select="[quill-editor-toolbar]"></ng-content>
-  <ng-container *ngIf="toolbarPosition === 'top'">
-    <div quill-editor-element *ngIf="!preserve"></div>
-    <pre quill-editor-element *ngIf="preserve"></pre>
-  </ng-container>
-`,
+    <ng-template [ngIf]="toolbarPosition !== 'top'">
+      <pre quill-editor-element *ngIf="preserve; else noPreserveTpl"></pre>
+    </ng-template>
+    <ng-content select="[quill-editor-toolbar]"></ng-content>
+    <ng-template [ngIf]="toolbarPosition === 'top'">
+      <pre quill-editor-element *ngIf="preserve; else noPreserveTpl"></pre>
+    </ng-template>
+    <ng-template #noPreserveTpl>
+      <div quill-editor-element></div>
+    </ng-template>
+  `,
   styles: [
     `
     :host {
@@ -761,28 +757,4 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   standalone: true,
   imports: [CommonModule]
 })
-export class QuillEditorComponent extends QuillEditorBase {
-
-  constructor(
-    injector: Injector,
-    @Inject(ElementRef) elementRef: ElementRef,
-    @Inject(ChangeDetectorRef) cd: ChangeDetectorRef,
-    @Inject(DomSanitizer) domSanitizer: DomSanitizer,
-    @Inject(PLATFORM_ID) platformId: any,
-    @Inject(Renderer2) renderer: Renderer2,
-    @Inject(NgZone) zone: NgZone,
-    @Inject(QuillService) service: QuillService
-  ) {
-    super(
-      injector,
-      elementRef,
-      cd,
-      domSanitizer,
-      platformId,
-      renderer,
-      zone,
-      service
-    )
-  }
-
-}
+export class QuillEditorComponent extends QuillEditorBase {}
