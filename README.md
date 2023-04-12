@@ -67,7 +67,7 @@ LTC Wallet Address:
         v14
       </td>
       <td>
-        >= 17.0.0
+        >= 17.0.0 < 20
       </td>
       <td>
         until Dec 02, 2023
