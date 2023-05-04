@@ -53,10 +53,21 @@ LTC Wallet Address:
   <tbody>
     <tr>
       <td>
+        v22
+      </td>
+      <td>
+        >= 22.0.0
+      </td>
+      <td>
+        until Dec, 2024
+      </td>
+    </tr>
+    <tr>
+      <td>
         v15
       </td>
       <td>
-        >= 20.0.0
+        >= 20.0.0 <= 22.0.0
       </td>
       <td>
         until May, 2024
@@ -70,18 +81,7 @@ LTC Wallet Address:
         >= 17.0.0 < 20
       </td>
       <td>
-        until Dec 02, 2023
-      </td>
-    </tr>
-    <tr>
-      <td>
-        v13
-      </td>
-      <td>
-        >= 15.0.0, < 17.0.0
-      </td>
-      <td>
-        until May 04, 2023
+        until Dec, 2023
       </td>
     </tr>
   </tbody>
