@@ -7,6 +7,7 @@ import {
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare const require: {
   context(path: string, deep?: boolean, filter?: RegExp): {
     <T>(id: string): T

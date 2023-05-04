@@ -14,8 +14,7 @@ window.setTimeout = ((cb) => {
   return 0
 }) as any
 
-
-// eslint-disable-next-line @typescript-eslint/naming-convention
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const QuillNamespace = require('quill')
 
 class CustomModule {
@@ -126,8 +125,8 @@ class TestToolbarComponent {
   maxLength = 0
   toolbarPosition = 'top'
 
-  handleEditorCreated() {}
-  handleChange() {}
+  handleEditorCreated() {return}
+  handleChange() {return}
 }
 
 @Component({
@@ -840,7 +839,7 @@ describe('Advanced QuillEditorComponent', () => {
   })
 
   it('should emit onEditorCreated with editor instance',  async () => {
-    fixture.componentInstance.editorComponent.onValidatorChanged = () => {}
+    fixture.componentInstance.editorComponent.onValidatorChanged = () => { return }
 
     spyOn(fixture.componentInstance, 'handleEditorCreated')
 

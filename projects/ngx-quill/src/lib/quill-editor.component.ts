@@ -276,6 +276,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       }
 
       let defaultEmptyValue = this.defaultEmptyValue
+      // eslint-disable-next-line no-prototype-builtins
       if (this.service.config.hasOwnProperty('defaultEmptyValue')) {
         defaultEmptyValue = this.service.config.defaultEmptyValue
       }
