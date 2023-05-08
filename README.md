@@ -9,15 +9,6 @@ If you like my work, feel free to support it. Donations to the project are alway
 
 PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
 
-BTC Wallet Address:
-`3QVyr2tpRLBCw1kBQ59sTDraV6DTswq8Li`
-
-ETH Wallet Address:
-`0x394d44f3b6e3a4f7b4d44991e7654b0cab4af68f`
-
-LTC Wallet Address:
-`MFif769WSZ1g7ReAzzDE7TJVqtkFpmoTyT`
-
 ## Examples
 
 - [Advanced Demo](https://github.com/killerCodeMonkey/ngx-quill-example)
@@ -53,7 +44,7 @@ LTC Wallet Address:
   <tbody>
     <tr>
       <td>
-        v22
+        v16
       </td>
       <td>
         >= 22.0.0
