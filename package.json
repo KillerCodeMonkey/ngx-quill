@@ -86,7 +86,7 @@
     "karma-jasmine-html-reporter": "^2.0.0",
     "karma-mocha-reporter": "^2.2.5",
     "karma-spec-reporter": "0.0.34",
-    "ng-packagr": "^16.0.0",
+    "ng-packagr": "^16.0.1",
     "puppeteer": "^20.1.2",
     "ts-node": "^10.9.1",
     "typescript": "~5.0.4",
