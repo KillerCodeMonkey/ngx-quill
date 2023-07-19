@@ -58,7 +58,7 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
         v15
       </td>
       <td>
-        >= 20.0.0 <= 22.0.0
+        >= 20.0.0 < 22.0.0
       </td>
       <td>
         until May, 2024
