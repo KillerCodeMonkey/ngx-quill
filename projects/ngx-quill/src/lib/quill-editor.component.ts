@@ -120,6 +120,8 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   @Output() onSelectionChanged: EventEmitter<SelectionChange> = new EventEmitter()
   @Output() onFocus: EventEmitter<Focus> = new EventEmitter()
   @Output() onBlur: EventEmitter<Blur> = new EventEmitter()
+  @Output() onNativeFocus: EventEmitter<Focus> = new EventEmitter()
+  @Output() onNativeBlur: EventEmitter<Blur> = new EventEmitter()
 
   quillEditor!: QuillType
   editorElem!: HTMLElement
@@ -306,6 +308,23 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
           strict: this.strict,
           theme: this.theme || (this.service.config.theme ? this.service.config.theme : 'snow')
         })
+
+        if (this.onNativeBlur.observed) {
+          // https://github.com/quilljs/quill/issues/2186#issuecomment-533401328
+          this.quillEditor.scroll.domNode.addEventListener('blur', () => this.onNativeBlur.next({
+            editor: this.quillEditor,
+            source: 'dom'
+          }))
+          // https://github.com/quilljs/quill/issues/2186#issuecomment-803257538
+          this.quillEditor.getModule('toolbar').container.addEventListener('mousedown', (e) =>  e.preventDefault())
+        }
+
+        if (this.onNativeFocus.observed) {
+          this.quillEditor.scroll.domNode.addEventListener('focus', () => this.onNativeFocus.next({
+            editor: this.quillEditor,
+            source: 'dom'
+          }))
+        }
 
         // Set optional link placeholder, Quill has no native API for it so using workaround
         if (this.linkPlaceholder) {

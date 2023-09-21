@@ -32,6 +32,8 @@ class CustomModule {
 <quill-editor
   (onBlur)="blured = true"
   (onFocus)="focused = true"
+  (onNativeBlur)="bluredNative = true"
+  (onNativeFocus)="focusedNative = true"
   [(ngModel)]="title"
   [customOptions]="[{import: 'attributors/style/size', whitelist: ['14']}]"
   [styles]="style"
@@ -55,6 +57,8 @@ class TestComponent {
   minLength = 0
   focused = false
   blured = false
+  focusedNative = false
+  bluredNative = false
   maxLength = 0
   style: {
     backgroundColor?: string
@@ -1005,6 +1009,18 @@ describe('Advanced QuillEditorComponent', () => {
     expect(fixture.componentInstance.focused).toBe(true)
   })
 
+  it('should emit onNativeFocus when scroll container receives focus', async () => {
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    const editorFixture = fixture.debugElement.children[0]
+
+    editorFixture.componentInstance.quillEditor.scroll.domNode.focus()
+    fixture.detectChanges()
+
+    expect(fixture.componentInstance.focusedNative).toBe(true)
+  })
+
   it('should emit onBlur when blured', async () => {
     fixture.detectChanges()
     await fixture.whenStable()
@@ -1016,6 +1032,19 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.detectChanges()
 
     expect(fixture.componentInstance.blured).toBe(true)
+  })
+
+  it('should emit onNativeBlur when scroll container receives blur', async () => {
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    const editorFixture = fixture.debugElement.children[0]
+
+    editorFixture.componentInstance.quillEditor.scroll.domNode.focus()
+    editorFixture.componentInstance.quillEditor.scroll.domNode.blur()
+    fixture.detectChanges()
+
+    expect(fixture.componentInstance.bluredNative).toBe(true)
   })
 
   it('should validate minlength', async () => {

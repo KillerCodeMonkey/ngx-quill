@@ -388,6 +388,21 @@ or
 }
 ```
 
+- onNativeFocus - editor is focused, based on native focus event
+```TS
+{
+  editor: editorInstance, // Quill
+  source: source // ('dom')
+}
+```
+- onNativeBlur - editor is blured, based on native blur event
+```TS
+{
+  editor: editorInstance, // Quill
+  source: source // ('dom')
+}
+```
+
 ## QuillViewComponent, QuillViewHTMLComponent & How to present the editor content
 
 In most cases a wysiwyg editor is used in backoffice to store the content to the database. On the other side this value should be used, to show the content to the enduser.
