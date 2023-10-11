@@ -374,7 +374,8 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   }
 
   selectionChangeHandler = (range: Range | null, oldRange: Range | null, source: string) => {
-    const shouldTriggerOnModelTouched = !range && !!this.onModelTouched
+    const trackChanges = this.trackChanges || this.service.config.trackChanges
+    const shouldTriggerOnModelTouched = !range && !!this.onModelTouched && (source === 'user' || trackChanges && trackChanges === 'all')
 
     // only emit changes when there's any listener
     if (!this.onBlur.observed &&

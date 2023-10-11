@@ -826,6 +826,15 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.detectChanges()
     await fixture.whenStable()
 
+    expect(editorFixture.nativeElement.className).toMatch('ng-untouched')
+
+    editorFixture.componentInstance.quillEditor.setSelection(0, 5, 'user')
+    fixture.detectChanges()
+    await fixture.whenStable()
+    editorFixture.componentInstance.quillEditor.setSelection(null, 'user')
+    fixture.detectChanges()
+    await fixture.whenStable()
+
     expect(editorFixture.nativeElement.className).toMatch('ng-touched')
   })
 
