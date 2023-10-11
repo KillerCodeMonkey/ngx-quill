@@ -23,7 +23,7 @@
   },
   "engines": {
     "node": ">=18",
-    "npm": ">=8"
+    "npm": ">=9"
   },
   "keywords": [
     "editor",
@@ -54,13 +54,13 @@
     "zone.js": "^0.13.3"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^16.2.5",
+    "@angular-devkit/build-angular": "^16.2.6",
     "@angular-eslint/builder": "^16.2.0",
     "@angular-eslint/eslint-plugin": "^16.2.0",
     "@angular-eslint/eslint-plugin-template": "^16.2.0",
     "@angular-eslint/schematics": "^16.2.0",
     "@angular-eslint/template-parser": "^16.2.0",
-    "@angular/cli": "^16.2.5",
+    "@angular/cli": "^16.2.6",
     "@angular/compiler-cli": "^16.2.8",
     "@angular/language-service": "^16.2.8",
     "@angular/localize": "^16.2.8",
