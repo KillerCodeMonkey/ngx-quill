@@ -760,10 +760,15 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     <ng-template [ngIf]="toolbarPosition !== 'top'">
       <pre quill-editor-element *ngIf="preserve; else noPreserveTpl"></pre>
     </ng-template>
+
+    <ng-content select="[above-quill-editor-toolbar]"></ng-content>
     <ng-content select="[quill-editor-toolbar]"></ng-content>
+    <ng-content select="[below-quill-editor-toolbar]"></ng-content>
+
     <ng-template [ngIf]="toolbarPosition === 'top'">
-      <pre quill-editor-element *ngIf="preserve; else noPreserveTpl"></pre>
+      <pre quill-editor-element *ngIf="preserve; else noPreserveTpl"></pre>  
     </ng-template>
+
     <ng-template #noPreserveTpl>
       <div quill-editor-element></div>
     </ng-template>
