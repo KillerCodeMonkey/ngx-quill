@@ -281,12 +281,15 @@ customModules = [
 ]
 ```
 - checkout the demo repo about usage of `customOptions` and `customModules` [Demo Repo](https://github.com/KillerCodeMonkey/ngx-quill-example/blob/2e72dc75e6d9b423f67b57b17cc8fb527dd694e4/src/app/app.module.ts#L67)
-- possibility to create a custom toolbar via projection slot `[quill-editor-toolbar]`:
+- possibility to create a custom toolbar via projection slot `[quill-editor-toolbar]` and add content above `[above-quill-editor-toolbar]` and below `[below-quill-editor-toolbar]` the toolbar:
 
 **Try to not use much angular magic here, like `(output)` listeners. Use native EventListeners**
 
 ```HTML
 <quill-editor>
+  <div above-quill-editor-toolbar>
+    above
+  </div>
   <div quill-editor-toolbar>
     <span class="ql-formats">
       <button class="ql-bold" [title]="'Bold'"></button>
@@ -305,6 +308,9 @@ customModules = [
         <option value="justify"></option>
       </select>
     </span>
+  </div>
+  <div below-quill-editor-toolbar>
+    below
   </div>
 </quill-editor>
 ```
