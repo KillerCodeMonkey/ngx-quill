@@ -44,10 +44,21 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
   <tbody>
     <tr>
       <td>
+        v17
+      </td>
+      <td>
+        >= 24.0.0
+      </td>
+      <td>
+        until Dec, 2024
+      </td>
+    </tr>
+    <tr>
+      <td>
         v16
       </td>
       <td>
-        >= 22.0.0
+        >= 22.0.0 < 24.0.0
       </td>
       <td>
         until Dec, 2024
@@ -62,17 +73,6 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
       </td>
       <td>
         until May, 2024
-      </td>
-    </tr>
-    <tr>
-      <td>
-        v14
-      </td>
-      <td>
-        >= 17.0.0 < 20
-      </td>
-      <td>
-        until Dec, 2023
       </td>
     </tr>
   </tbody>
