@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DOCUMENT, isPlatformServer, CommonModule } from '@angular/common'
 import { DomSanitizer } from '@angular/platform-browser'
 

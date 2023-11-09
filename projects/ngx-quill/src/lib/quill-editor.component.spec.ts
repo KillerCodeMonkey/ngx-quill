@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {Component, Renderer2, ViewChild} from '@angular/core'
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing'
 import {defer} from 'rxjs'

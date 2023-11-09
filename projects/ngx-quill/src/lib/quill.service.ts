@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DOCUMENT } from '@angular/common'
 import { Injectable, Inject, Injector, Optional } from '@angular/core'
 import { defer, firstValueFrom, isObservable, Observable } from 'rxjs'

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable max-classes-per-file */
 import { Component, ViewChild } from '@angular/core'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 
@@ -6,7 +8,6 @@ import { QuillViewComponent } from './quill-view.component'
 import { QuillModule } from './quill.module'
 import Quill from 'quill'
 
-/* eslint-disable max-classes-per-file */
 
 class CustomModule {
   quill: Quill
