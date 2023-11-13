@@ -44,6 +44,5 @@
   },
   "cli": {
     "analytics": false
-  },
-  "defaultProject": "ngx-quill"
+  }
 }
