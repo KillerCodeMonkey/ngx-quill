@@ -38,8 +38,11 @@ import { DomSanitizer } from '@angular/platform-browser'
 }
 `],
   template: `
-<div quill-view-element *ngIf="!preserve"></div>
-<pre quill-view-element *ngIf="preserve"></pre>
+@if (preserve) {
+  <pre quill-view-element></pre>
+} @else {
+  <div quill-view-element></div>
+}
 `,
   standalone: true,
   imports: [CommonModule]
