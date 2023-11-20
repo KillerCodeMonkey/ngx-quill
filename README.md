@@ -50,7 +50,7 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
         >= 24.0.0
       </td>
       <td>
-        until Dec, 2024
+        until May, 2025
       </td>
     </tr>
     <tr>
