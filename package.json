@@ -49,12 +49,13 @@
     "@angular/platform-browser": "^17.0.0",
     "@angular/platform-browser-dynamic": "^17.0.2",
     "@angular/router": "^17.0.2",
-    "quill": "^2.0.0-beta.0",
+    "quill": "2.0.0-beta.0",
     "rxjs": "^7.8.1",
     "tslib": "^2.6.2",
     "zone.js": "^0.14.2"
   },
   "devDependencies": {
+    "@angular-builders/custom-webpack": "^17.0.0",
     "@angular-devkit/build-angular": "^17.0.0",
     "@angular-eslint/builder": "^17.0.1",
     "@angular-eslint/eslint-plugin": "^17.0.0",
@@ -89,6 +90,7 @@
     "karma-spec-reporter": "0.0.36",
     "ng-packagr": "^17.0.0",
     "puppeteer": "^21.5.1",
+    "svg-inline-loader": "^0.8.2",
     "ts-node": "^10.9.1",
     "typescript": "~5.2.2",
     "utf-8-validate": "^6.0.3"

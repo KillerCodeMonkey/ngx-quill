@@ -54,6 +54,7 @@ export interface QuillModules {
     bindings?: any
   } | boolean
   syntax?: boolean | { highlight: any }
+  table?: boolean | Record<string, unknown>
   toolbar?: QuillToolbarConfig | string | {
     container?: string | string[] | QuillToolbarConfig
     handlers?: {

@@ -35,6 +35,8 @@ import { defaultModules, QuillModules, CustomOption, CustomModule } from 'ngx-qu
 
 import { getFormat } from './helpers'
 import { QuillService } from './quill.service'
+import Toolbar from 'quill/modules/toolbar'
+import History from 'quill/modules/history'
 
 export interface Range {
   index: number
@@ -193,7 +195,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       if (sanitize) {
         value = this.domSanitizer.sanitize(SecurityContext.HTML, value)
       }
-      return quillEditor.clipboard.convert(value)
+      return quillEditor.clipboard.convert({ html: value })
     } else if (format === 'json') {
       try {
         return JSON.parse(value)
@@ -318,7 +320,8 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
             source: 'dom'
           }))
           // https://github.com/quilljs/quill/issues/2186#issuecomment-803257538
-          this.quillEditor.getModule('toolbar').container.addEventListener('mousedown', (e) =>  e.preventDefault())
+          const toolbar = this.quillEditor.getModule('toolbar') as Toolbar
+          toolbar.container?.addEventListener('mousedown', (e) =>  e.preventDefault())
         }
 
         if (this.onNativeFocus.observed) {
@@ -348,7 +351,8 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
           this.quillEditor.setContents(newValue, 'silent')
         }
 
-        this.quillEditor.getModule('history').clear()
+        const history  = this.quillEditor.getModule('history') as History
+        history.clear()
       }
 
       // initialize disabled status based on this.disabled as default value
