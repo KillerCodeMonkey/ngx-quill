@@ -69,7 +69,6 @@
     "@types/jasmine": "^5.1.2",
     "@types/jasminewd2": "^2.0.13",
     "@types/node": "^18.18.9",
-    "@types/quill": "^2.0.14",
     "@typescript-eslint/eslint-plugin": "^6.11.0",
     "@typescript-eslint/parser": "^6.11.0",
     "bufferutil": "^4.0.8",
