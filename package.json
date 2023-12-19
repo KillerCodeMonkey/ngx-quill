@@ -90,7 +90,7 @@
     "puppeteer": "^21.5.1",
     "ts-node": "^10.9.1",
     "typescript": "~5.2.2",
-    "utf-8-validate": "^6.0.3"
+    "utf-8-validate": "^5.0.10"
   },
   "contributors": [
     {
