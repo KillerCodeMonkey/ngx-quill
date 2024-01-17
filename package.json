@@ -23,8 +23,7 @@
     "url": "https://github.com/KillerCodeMonkey/ngx-quill"
   },
   "engines": {
-    "node": "18",
-    "npm": "9"
+    "node": "18"
   },
   "keywords": [
     "editor",
@@ -41,43 +40,43 @@
     "text editor"
   ],
   "dependencies": {
-    "@angular/animations": "^17.0.0",
-    "@angular/common": "^17.0.0",
-    "@angular/compiler": "^17.0.0",
-    "@angular/core": "^17.0.0",
-    "@angular/forms": "^17.0.2",
-    "@angular/platform-browser": "^17.0.0",
-    "@angular/platform-browser-dynamic": "^17.0.2",
-    "@angular/router": "^17.0.2",
-    "quill": "2.0.0-beta.0",
+    "@angular/animations": "^17.0.9",
+    "@angular/common": "^17.0.9",
+    "@angular/compiler": "^17.0.9",
+    "@angular/core": "^17.0.9",
+    "@angular/forms": "^17.0.9",
+    "@angular/platform-browser": "^17.0.9",
+    "@angular/platform-browser-dynamic": "^17.0.9",
+    "@angular/router": "^17.0.9",
+    "quill": "^0.0.0-experimental-fdd181b39-20240117",
     "rxjs": "^7.8.1",
     "tslib": "^2.6.2",
-    "zone.js": "^0.14.2"
+    "zone.js": "^0.14.3"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^17.0.0",
-    "@angular-devkit/build-angular": "^17.0.0",
-    "@angular-eslint/builder": "^17.0.1",
-    "@angular-eslint/eslint-plugin": "^17.0.0",
-    "@angular-eslint/eslint-plugin-template": "^17.0.0",
-    "@angular-eslint/schematics": "^17.0.1",
-    "@angular-eslint/template-parser": "^17.0.1",
-    "@angular/cli": "^17.0.0",
-    "@angular/compiler-cli": "^17.0.0",
-    "@angular/language-service": "^17.0.2",
-    "@angular/localize": "^17.0.2",
-    "@types/jasmine": "^5.1.2",
+    "@angular-devkit/build-angular": "^17.0.10",
+    "@angular-eslint/builder": "^17.2.0",
+    "@angular-eslint/eslint-plugin": "^17.2.0",
+    "@angular-eslint/eslint-plugin-template": "^17.2.0",
+    "@angular-eslint/schematics": "^17.2.0",
+    "@angular-eslint/template-parser": "^17.2.0",
+    "@angular/cli": "^17.0.10",
+    "@angular/compiler-cli": "^17.0.9",
+    "@angular/language-service": "^17.0.9",
+    "@angular/localize": "^17.0.9",
+    "@types/jasmine": "^5.1.4",
     "@types/jasminewd2": "^2.0.13",
-    "@types/node": "^18.18.9",
-    "@typescript-eslint/eslint-plugin": "^6.11.0",
-    "@typescript-eslint/parser": "^6.11.0",
+    "@types/node": "^18.19.8",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
     "bufferutil": "^4.0.8",
-    "eslint": "^8.53.0",
-    "eslint-plugin-import": "^2.29.0",
-    "eslint-plugin-jsdoc": "^46.9.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsdoc": "^47.0.2",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "fibers": "^5.0.3",
-    "html-webpack-plugin": "^5.5.3",
+    "html-webpack-plugin": "^5.6.0",
     "jasmine-core": "^5.1.1",
     "jasmine-spec-reporter": "^7.0.0",
     "karma": "~6.4.2",
@@ -87,17 +86,19 @@
     "karma-jasmine-html-reporter": "^2.1.0",
     "karma-mocha-reporter": "^2.2.5",
     "karma-spec-reporter": "0.0.36",
-    "ng-packagr": "^17.0.0",
-    "puppeteer": "^21.5.1",
-    "svg-inline-loader": "^0.8.2",
-    "ts-node": "^10.9.1",
+    "ng-packagr": "^17.0.3",
+    "puppeteer": "^21.7.0",
+    "ts-node": "^10.9.2",
     "typescript": "~5.2.2",
-    "utf-8-validate": "^6.0.3"
+    "utf-8-validate": "^5.0.10"
   },
   "contributors": [
     {
       "name": "Bengt Weiße"
     }
   ],
-  "version": "0.0.0"
+  "version": "0.0.0",
+  "volta": {
+    "node": "18.19.0"
+  }
 }

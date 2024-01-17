@@ -37,7 +37,7 @@ export class QuillService {
         // eslint-disable-next-line @typescript-eslint/dot-notation
         this.document['__zone_symbol__addEventListener'] ||
         this.document.addEventListener
-      const quillImport = await import('quill/dist/quill.js')
+      const quillImport = await import('quill')
       this.document.addEventListener = maybePatchedAddEventListener
 
       this.Quill = (

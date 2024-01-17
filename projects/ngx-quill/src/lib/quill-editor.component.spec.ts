@@ -7,7 +7,7 @@ import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms'
 
 import {QuillEditorComponent} from './quill-editor.component'
 
-import Quill from 'quill/dist/quill'
+import Quill from 'quill'
 import {QuillModule} from './quill.module'
 
 window.setTimeout = ((cb) => {
