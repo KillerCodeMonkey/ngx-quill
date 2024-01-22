@@ -231,9 +231,9 @@ const modules = {
 - minLength - add validation for minlength - set model state to `invalid` and add `ng-invalid` class, only set invalid if editor text not empty --> if you want to check if text is required --> use the required attribute
 - trimOnValidation - trim trailing|leading newlines on validation run for required, min- and maxLength, default `false`
 - required - add validation as a required field - `[required]="true"` - default: false, boolean expected (no strings!)
-- strict - default: true, sets editor in strict mode
-- scrollingContainer - default '.ql-editor', allows to set scrolling container
+- registry - custom parchment registry to not change things globally
 - beforeRender - a function, which is executed before the Quill editor is rendered, this might be useful for lazy-loading CSS. Given the following example:
+
 ```ts
 // typings.d.ts
 declare module '!!raw-loader!*.css' {

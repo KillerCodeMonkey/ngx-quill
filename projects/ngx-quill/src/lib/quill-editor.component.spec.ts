@@ -1313,7 +1313,6 @@ describe('QuillEditor - base config', () => {
         },
         placeholder: 'placeholder',
         readOnly: true,
-        scrollingContainer: null,
         theme: 'snow',
         trackChanges: 'all'
       }).providers

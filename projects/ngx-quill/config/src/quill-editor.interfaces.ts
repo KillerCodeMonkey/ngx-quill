@@ -76,9 +76,10 @@ export interface QuillConfig {
   modules?: QuillModules
   placeholder?: string
   readOnly?: boolean
-  scrollingContainer?: HTMLElement | string | null
+  registry?: Record<string, unknown> // added in quill2 result of const registry = new Parchment.Registry(); 
+  // scrollingContainer?: HTMLElement | string | null -->  removed in quill2
   theme?: string
-  strict?: boolean
+  // strict?: boolean --> removed in quill2
   // Custom Config to track all changes or only changes by 'user'
   trackChanges?: 'user' | 'all'
   // provide default empty value

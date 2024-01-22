@@ -90,8 +90,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   @Input() sanitize?: boolean
   @Input() beforeRender?: () => Promise<void>
   @Input() styles: any = null
-  @Input() strict = true
-  @Input() scrollingContainer?: HTMLElement | string | null
+  @Input() registry?: Record<string, unknown> | null
   @Input() bounds?: HTMLElement | string
   @Input() customOptions: CustomOption[] = []
   @Input() customModules: CustomModule[] = []
@@ -287,13 +286,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         defaultEmptyValue = this.service.config.defaultEmptyValue
       }
 
-      let scrollingContainer = this.scrollingContainer
-      if (!scrollingContainer && this.scrollingContainer !== null) {
-        scrollingContainer =
-          this.service.config.scrollingContainer === null
-            || this.service.config.scrollingContainer ? this.service.config.scrollingContainer : null
-      }
-
       let formats = this.formats
       if (!formats && formats === undefined) {
         formats = this.service.config.formats ? [...this.service.config.formats] : (this.service.config.formats === null ? null : undefined)
@@ -308,8 +300,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
           placeholder,
           readOnly,
           defaultEmptyValue,
-          scrollingContainer: scrollingContainer as any,
-          strict: this.strict,
+          registry: this.registry,
           theme: this.theme || (this.service.config.theme ? this.service.config.theme : 'snow')
         })
 
