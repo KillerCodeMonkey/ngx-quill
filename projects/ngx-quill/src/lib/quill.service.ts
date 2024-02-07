@@ -41,7 +41,8 @@ export class QuillService {
       this.document.addEventListener = maybePatchedAddEventListener
 
       this.Quill = (
-        quillImport.default ? quillImport.default : quillImport
+        // seems like esmodules have nested "default"
+        (quillImport.default as any)?.default ?? quillImport.default ?? quillImport
       ) as any
     }
 
