@@ -12,9 +12,6 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
 ## Examples
 
 - [Advanced Demo](https://github.com/killerCodeMonkey/ngx-quill-example)
-  - integration of [quill-emoji](https://github.com/contentco/quill-emoji)
-  - integration of [quill-mention](https://github.com/afconsult/quill-mention)
-  - integration of [quill-image-resize](https://github.com/kensnyder/quill-image-resize-module)
   - custom word count module
   - custom toolbar with custom fonts and formats, toolbar position
   - show the differences between sanitizing and not sanitizing your content if your content format is html
@@ -47,32 +44,10 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
         v17
       </td>
       <td>
-        >= 24.0.0
+        >= 25.0.0
       </td>
       <td>
         until May, 2025
-      </td>
-    </tr>
-    <tr>
-      <td>
-        v16
-      </td>
-      <td>
-        >= 22.0.0 < 24.0.0
-      </td>
-      <td>
-        until Dec, 2024
-      </td>
-    </tr>
-    <tr>
-      <td>
-        v15
-      </td>
-      <td>
-        >= 20.0.0 < 22.0.0
-      </td>
-      <td>
-        until May, 2024
       </td>
     </tr>
   </tbody>
@@ -81,15 +56,15 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
 ## Installation
 
 - `npm install ngx-quill`
-- for projects using Angular < v5.0.0 install `npm install ngx-quill@1.6.0`
-- install `@angular/core`, `@angular/common`, `@angular/forms`, `@angular/platform-browser`, `quill` v1.x, `@types/quill` v1.x  and `rxjs` - peer dependencies of ngx-quill
+- install `@angular/core`, `@angular/common`, `@angular/forms`, `@angular/platform-browser`, `quill` exact version `2.0.0-rc.0` and `rxjs` - peer dependencies of ngx-quill
 - include theme styling: 	**bubble.css or snow.css of quilljs** in your index.html (you can find them in `node_modules/quill/dist`), or add them in your css/scss files  with `@import` statements, or add them external stylings in your build process.
-  - Example at the beginning of your style.(s)css:
-   ```TS
-    @import '~quill/dist/quill.bubble.css'; 
-    // or
-    @import '~quill/dist/quill.snow.css';
-   ```
+- Example at the beginning of your style.(s)css:
+
+```TS
+@import '~quill/dist/quill.bubble.css';
+// or
+@import '~quill/dist/quill.snow.css';
+```
 
 ### For standard webpack, angular-cli and tsc builds
 
@@ -99,6 +74,7 @@ import { QuillModule } from 'ngx-quill'
 ```
 - add `QuillModule` to the imports of your NgModule:
 ```TS
+
 @NgModule({
   imports: [
     ...,
@@ -231,9 +207,9 @@ const modules = {
 - minLength - add validation for minlength - set model state to `invalid` and add `ng-invalid` class, only set invalid if editor text not empty --> if you want to check if text is required --> use the required attribute
 - trimOnValidation - trim trailing|leading newlines on validation run for required, min- and maxLength, default `false`
 - required - add validation as a required field - `[required]="true"` - default: false, boolean expected (no strings!)
-- strict - default: true, sets editor in strict mode
-- scrollingContainer - default '.ql-editor', allows to set scrolling container
+- registry - custom parchment registry to not change things globally
 - beforeRender - a function, which is executed before the Quill editor is rendered, this might be useful for lazy-loading CSS. Given the following example:
+
 ```ts
 // typings.d.ts
 declare module '!!raw-loader!*.css' {
@@ -314,6 +290,7 @@ customModules = [
   </div>
 </quill-editor>
 ```
+
 - customToolbarPosition - if you are working with a custom toolbar you can switch the position :). - default: `top`, possible values `top`, `bottom`
 - debug - set log level `warn`, `error`, `log` or `false` to deactivate logging, default: `warn`
 - trackChanges - check if only `user` (quill source user) or `all` content/selection changes should be trigger model update, default `user`. Using `all` is not recommended, it cause some unexpected sideeffects.

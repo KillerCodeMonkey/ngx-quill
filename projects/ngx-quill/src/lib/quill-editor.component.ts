@@ -2,7 +2,8 @@
 import { DOCUMENT, isPlatformServer, CommonModule } from '@angular/common'
 import { DomSanitizer } from '@angular/platform-browser'
 
-import QuillType, { Delta } from 'quill'
+import QuillType from 'quill'
+import Delta from 'quill-delta'
 
 import {
   AfterViewInit,
@@ -34,6 +35,8 @@ import { defaultModules, QuillModules, CustomOption, CustomModule } from 'ngx-qu
 
 import { getFormat } from './helpers'
 import { QuillService } from './quill.service'
+import Toolbar from 'quill/modules/toolbar'
+import History from 'quill/modules/history'
 
 export interface Range {
   index: number
@@ -87,8 +90,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   @Input() sanitize?: boolean
   @Input() beforeRender?: () => Promise<void>
   @Input() styles: any = null
-  @Input() strict = true
-  @Input() scrollingContainer?: HTMLElement | string | null
+  @Input() registry?: Record<string, unknown> | null
   @Input() bounds?: HTMLElement | string
   @Input() customOptions: CustomOption[] = []
   @Input() customModules: CustomModule[] = []
@@ -192,7 +194,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       if (sanitize) {
         value = this.domSanitizer.sanitize(SecurityContext.HTML, value)
       }
-      return quillEditor.clipboard.convert(value)
+      return quillEditor.clipboard.convert({ html: value })
     } else if (format === 'json') {
       try {
         return JSON.parse(value)
@@ -284,13 +286,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         defaultEmptyValue = this.service.config.defaultEmptyValue
       }
 
-      let scrollingContainer = this.scrollingContainer
-      if (!scrollingContainer && this.scrollingContainer !== null) {
-        scrollingContainer =
-          this.service.config.scrollingContainer === null
-            || this.service.config.scrollingContainer ? this.service.config.scrollingContainer : null
-      }
-
       let formats = this.formats
       if (!formats && formats === undefined) {
         formats = this.service.config.formats ? [...this.service.config.formats] : (this.service.config.formats === null ? null : undefined)
@@ -305,8 +300,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
           placeholder,
           readOnly,
           defaultEmptyValue,
-          scrollingContainer: scrollingContainer as any,
-          strict: this.strict,
+          registry: this.registry,
           theme: this.theme || (this.service.config.theme ? this.service.config.theme : 'snow')
         })
 
@@ -317,7 +311,8 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
             source: 'dom'
           }))
           // https://github.com/quilljs/quill/issues/2186#issuecomment-803257538
-          this.quillEditor.getModule('toolbar').container.addEventListener('mousedown', (e) =>  e.preventDefault())
+          const toolbar = this.quillEditor.getModule('toolbar') as Toolbar
+          toolbar.container?.addEventListener('mousedown', (e) =>  e.preventDefault())
         }
 
         if (this.onNativeFocus.observed) {
@@ -347,7 +342,8 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
           this.quillEditor.setContents(newValue, 'silent')
         }
 
-        this.quillEditor.getModule('history').clear()
+        const history  = this.quillEditor.getModule('history') as History
+        history.clear()
       }
 
       // initialize disabled status based on this.disabled as default value
@@ -657,7 +653,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     // trim text if wanted + handle special case that an empty editor contains a new line
     const textLength = this.trimOnValidation ? text.trim().length : (text.length === 1 && text.trim().length === 0 ? 0 : text.length - 1)
     const deltaOperations = this.quillEditor.getContents().ops
-    const onlyEmptyOperation = deltaOperations && deltaOperations.length === 1 && ['\n', ''].includes(deltaOperations[0].insert)
+    const onlyEmptyOperation = !!deltaOperations && deltaOperations.length === 1 && ['\n', ''].includes(deltaOperations[0].insert?.toString())
 
     if (this.minLength && textLength && textLength < this.minLength) {
       err.minLengthError = {

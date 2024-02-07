@@ -16,7 +16,7 @@ window.setTimeout = ((cb) => {
 }) as any
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const QuillNamespace = require('quill')
+// const Quill = require('quill')
 
 class CustomModule {
   quill: Quill
@@ -29,6 +29,7 @@ class CustomModule {
 }
 
 @Component({
+  selector: 'quill-test',
   template: `
 <quill-editor
   (onBlur)="blured = true"
@@ -91,6 +92,7 @@ class TestComponent {
 }
 
 @Component({
+  selector: 'quill-toolbar-test',
   template: `
 <quill-editor
   [customToolbarPosition]="toolbarPosition"
@@ -141,6 +143,7 @@ class TestToolbarComponent {
 }
 
 @Component({
+  selector: 'quill-reactive-test',
   template: `
     <quill-editor [formControl]='formControl' [minLength]='minLength'></quill-editor>
 `
@@ -152,6 +155,7 @@ class ReactiveFormTestComponent {
 }
 
 @Component({
+  selector: 'quill-preserve-test',
   template: `
     <quill-editor [ngModel]="content" [preserveWhitespace]="true"></quill-editor>
 `
@@ -162,6 +166,7 @@ class PreserveWhitespaceTestComponent {
 }
 
 @Component({
+  selector: 'quill-module-test',
   template: `
     <quill-editor [modules]="{custom: true}" [customModules]="[{path: 'modules/custom', implementation: impl}]"></quill-editor>
 `
@@ -172,6 +177,7 @@ class CustomModuleTestComponent {
 }
 
 @Component({
+  selector: 'quill-async-module-test',
   template: `
     <quill-editor [modules]="{custom: true}" [customModules]="customModules"></quill-editor>
 `
@@ -187,6 +193,7 @@ class CustomAsynchronousModuleTestComponent {
 }
 
 @Component({
+  selector: 'quill-link-placeholder-test',
   template: `
     <quill-editor [ngModel]="content" [linkPlaceholder]="'https://test.de'"></quill-editor>
 `
@@ -220,7 +227,7 @@ describe('Basic QuillEditorComponent', () => {
     expect(spy).toHaveBeenCalledTimes(3)
     const quillEditor: any = fixture.componentInstance.quillEditor
     /* eslint-disable no-underscore-dangle */
-    expect(quillEditor.emitter._events['editor-change']).toHaveSize(5)
+    expect(quillEditor.emitter._events['editor-change'].length).toBe(4)
     expect(quillEditor.emitter._events['selection-change']).toBeInstanceOf(Object)
     expect(quillEditor.emitter._events['text-change']).toBeFalsy()
     /* eslint-enable no-underscore-dangle */
@@ -451,6 +458,7 @@ describe('Formats', () => {
 
   describe('json', () => {
     @Component({
+      selector: 'json-valid',
       template: `
     <quill-editor [(ngModel)]="title" format="json" (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
     `
@@ -467,6 +475,7 @@ describe('Formats', () => {
     }
 
     @Component({
+      selector: 'quill-json-invalid',
       template: `
     <quill-editor [(ngModel)]="title" format="json" (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
     `
@@ -752,8 +761,8 @@ describe('Advanced QuillEditorComponent', () => {
 
     fixture = TestBed.createComponent(TestComponent) as ComponentFixture<TestComponent>
 
-    spyOn(QuillNamespace, 'import').and.callThrough()
-    spyOn(QuillNamespace, 'register').and.callThrough()
+    spyOn(Quill, 'import').and.callThrough()
+    spyOn(Quill, 'register').and.callThrough()
   })
 
   it('should set editor settings', async () => {
@@ -767,8 +776,8 @@ describe('Advanced QuillEditorComponent', () => {
 
     fixture.componentInstance.isReadOnly = true
 
-    expect(QuillNamespace.import).toHaveBeenCalledWith('attributors/style/size')
-    expect(QuillNamespace.register).toHaveBeenCalled()
+    expect(Quill.import).toHaveBeenCalledWith('attributors/style/size')
+    expect(Quill.register).toHaveBeenCalled()
 
     fixture.detectChanges()
     await fixture.whenStable()
@@ -1274,8 +1283,8 @@ describe('QuillEditor - base config', () => {
   let importSpy: jasmine.Spy
 
   beforeAll(() => {
-    importSpy = spyOn(QuillNamespace, 'import').and.callThrough()
-    registerSpy = spyOn(QuillNamespace, 'register').and.callThrough()
+    importSpy = spyOn(Quill, 'import').and.callThrough()
+    registerSpy = spyOn(Quill, 'register').and.callThrough()
   })
 
   beforeEach(async () => {
@@ -1304,7 +1313,6 @@ describe('QuillEditor - base config', () => {
         },
         placeholder: 'placeholder',
         readOnly: true,
-        scrollingContainer: null,
         theme: 'snow',
         trackChanges: 'all'
       }).providers
@@ -1335,7 +1343,7 @@ describe('QuillEditor - base config', () => {
     fixture.detectChanges()
 
     expect(JSON.stringify(fixture.componentInstance.title))
-      .toEqual(JSON.stringify({ ops: [{ attributes: { bold: true }, insert: 'content'}, {insert: '\n'}] }))
+      .toEqual(JSON.stringify({ ops: [{ attributes: { italic: true, bold: true }, insert: 'content'}, {insert: '\n'}] }))
     expect(editor.root.dataset.placeholder).toEqual('placeholder')
     expect(registerSpy).toHaveBeenCalledWith(
       jasmine.objectContaining({attrName: 'size', keyName: 'font-size', scope: 5, whitelist: ['14']}), true, true
@@ -1384,7 +1392,7 @@ describe('QuillEditor - customModules', () => {
   })
 
   it('renders editor with config', async () => {
-    const spy = spyOn(QuillNamespace, 'register').and.callThrough()
+    const spy = spyOn(Quill, 'register').and.callThrough()
     fixture = TestBed.createComponent(CustomModuleTestComponent)
     fixture.detectChanges()
     await fixture.whenStable()
@@ -1407,7 +1415,7 @@ describe('QuillEditor - customModules (asynchronous)', () => {
   })
 
   it('renders editor with config', async () => {
-    const spy = spyOn(QuillNamespace, 'register').and.callThrough()
+    const spy = spyOn(Quill, 'register').and.callThrough()
     fixture = TestBed.createComponent(CustomAsynchronousModuleTestComponent)
     fixture.detectChanges()
     await fixture.whenStable()

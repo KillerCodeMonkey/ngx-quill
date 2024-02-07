@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
@@ -10,6 +11,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "importHelpers": true,
+    "skipLibCheck": true,
     "target": "es2022",
     "useDefineForClassFields": false,
     "lib": [

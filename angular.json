@@ -22,9 +22,12 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-builders/custom-webpack:karma",
           "options": {
             "main": "projects/ngx-quill/src/test.ts",
+            "customWebpackConfig": {
+              "path": "./projects/ngx-quill/custom-karma-webpack.config.ts"
+            },
             "tsConfig": "projects/ngx-quill/tsconfig.spec.json",
             "karmaConfig": "projects/ngx-quill/karma.conf.js",
             "codeCoverage": true
