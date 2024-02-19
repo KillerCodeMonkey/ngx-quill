@@ -87,7 +87,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-spec-reporter": "0.0.36",
     "ng-packagr": "^17.2.0",
-    "puppeteer": "^22.0.0",
+    "puppeteer": "^22.1.0",
     "ts-node": "^10.9.2",
     "typescript": "~5.2.2",
     "utf-8-validate": "^5.0.10"
