@@ -67,7 +67,7 @@
     "@angular/localize": "^17.2.2",
     "@types/jasmine": "^5.1.4",
     "@types/jasminewd2": "^2.0.13",
-    "@types/node": "^18.19.18",
+    "@types/node": "^18.19.19",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "bufferutil": "^4.0.8",
@@ -87,7 +87,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-spec-reporter": "0.0.36",
     "ng-packagr": "^17.2.0",
-    "puppeteer": "^22.2.0",
+    "puppeteer": "^22.3.0",
     "ts-node": "^10.9.2",
     "typescript": "~5.2.2",
     "utf-8-validate": "^5.0.10"
