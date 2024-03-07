@@ -155,17 +155,6 @@ class ReactiveFormTestComponent {
 }
 
 @Component({
-  selector: 'quill-preserve-test',
-  template: `
-    <quill-editor [ngModel]="content" [preserveWhitespace]="true"></quill-editor>
-`
-})
-class PreserveWhitespaceTestComponent {
-  @ViewChild(QuillEditorComponent, { static: true }) editor!: QuillEditorComponent
-  content = '<p>test     test   </p>'
-}
-
-@Component({
   selector: 'quill-module-test',
   template: `
     <quill-editor [modules]="{custom: true}" [customModules]="[{path: 'modules/custom', implementation: impl}]"></quill-editor>
@@ -1356,27 +1345,6 @@ describe('QuillEditor - base config', () => {
           ['bold']
         ]
       }))
-  })
-})
-
-describe('QuillEditor - preserveWhitespace', () => {
-  let fixture: ComponentFixture<PreserveWhitespaceTestComponent>
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [PreserveWhitespaceTestComponent],
-      imports: [FormsModule, QuillModule],
-      providers: QuillModule.forRoot().providers
-    }).compileComponents()
-  })
-
-  it('renders editor with config', async () => {
-    fixture = TestBed.createComponent(PreserveWhitespaceTestComponent)
-    fixture.detectChanges()
-    await fixture.whenStable()
-    const editor = fixture.componentInstance.editor
-
-    expect(editor.editorElem!.tagName).toEqual('PRE')
   })
 })
 

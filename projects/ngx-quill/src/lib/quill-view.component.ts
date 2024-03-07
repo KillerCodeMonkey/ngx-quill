@@ -17,8 +17,7 @@ import {
   ViewEncapsulation,
   NgZone,
   SecurityContext,
-  OnDestroy,
-  OnInit
+  OnDestroy
 } from '@angular/core'
 import { Subscription } from 'rxjs'
 import { mergeMap } from 'rxjs/operators'
@@ -38,16 +37,12 @@ import { DomSanitizer } from '@angular/platform-browser'
 }
 `],
   template: `
-@if (preserve) {
-  <pre quill-view-element></pre>
-} @else {
   <div quill-view-element></div>
-}
 `,
   standalone: true,
   imports: [CommonModule]
 })
-export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy, OnInit {
+export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() format?: 'object' | 'html' | 'text' | 'json'
   @Input() theme?: string
   @Input() modules?: QuillModules
@@ -59,13 +54,11 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy, 
   @Input() content: any
   @Input() customModules: CustomModule[] = []
   @Input() customOptions: CustomOption[] = []
-  @Input() preserveWhitespace = false
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
 
   quillEditor!: QuillType
   editorElem!: HTMLElement
-  public preserve = false
 
   private quillSubscription: Subscription | null = null
 
@@ -99,10 +92,6 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy, 
       }
       quillEditor.setContents(content)
     }
-  }
-
-  ngOnInit() {
-    this.preserve = this.preserveWhitespace
   }
 
   ngOnChanges(changes: SimpleChanges) {

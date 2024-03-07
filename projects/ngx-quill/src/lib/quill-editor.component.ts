@@ -95,7 +95,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   @Input() customOptions: CustomOption[] = []
   @Input() customModules: CustomModule[] = []
   @Input() trackChanges?: 'user' | 'all'
-  @Input() preserveWhitespace = false
   @Input() classes?: string
   @Input() trimOnValidation = false
   @Input() linkPlaceholder?: string
@@ -130,7 +129,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   editorElem!: HTMLElement
   content: any
   disabled = false // used to store initial value before ViewInit
-  preserve = false
   toolbarPosition = 'top'
 
   onModelChange: (modelValue?: any) => void
@@ -207,7 +205,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   }
 
   ngOnInit() {
-    this.preserve = this.preserveWhitespace
     this.toolbarPosition = this.customToolbarPosition
   }
 
@@ -755,11 +752,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   selector: 'quill-editor',
   template: `
     @if (toolbarPosition !== 'top') {
-      @if (preserve) {
-        <pre quill-editor-element></pre>
-      } @else {
         <div quill-editor-element></div>
-      }
     }
 
     <ng-content select="[above-quill-editor-toolbar]"></ng-content>
@@ -767,11 +760,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     <ng-content select="[below-quill-editor-toolbar]"></ng-content>
 
     @if (toolbarPosition === 'top') {
-      @if (preserve) {
-        <pre quill-editor-element></pre>
-      } @else {
         <div quill-editor-element></div>
-      }
     }
   `,
   styles: [
