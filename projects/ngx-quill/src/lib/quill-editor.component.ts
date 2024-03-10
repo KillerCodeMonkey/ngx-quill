@@ -161,8 +161,8 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   }
 
   @Input()
-  valueGetter = (quillEditor: QuillType, editorElement: HTMLElement): string | any => {
-    let html: string | null = editorElement.querySelector('.ql-editor')!.innerHTML
+  valueGetter = (quillEditor: QuillType): string | any => {
+    let html: string | null = quillEditor.getSemanticHTML()
     if (html === '<p><br></p>' || html === '<div><br></div>') {
       html = this.defaultEmptyValue
     }
@@ -412,7 +412,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     const text = this.quillEditor.getText()
     const content = this.quillEditor.getContents()
 
-    let html: string | null = this.editorElem!.querySelector('.ql-editor')!.innerHTML
+    let html: string | null = this.quillEditor.getSemanticHTML()
     if (html === '<p><br></p>' || html === '<div><br></div>') {
       html = this.defaultEmptyValue
     }
@@ -428,7 +428,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     this.zone.run(() => {
       if (shouldTriggerOnModelChange) {
         this.onModelChange(
-          this.valueGetter(this.quillEditor, this.editorElem!)
+          this.valueGetter(this.quillEditor)
         )
       }
 
@@ -461,7 +461,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       const text = this.quillEditor.getText()
       const content = this.quillEditor.getContents()
 
-      let html: string | null = this.editorElem!.querySelector('.ql-editor')!.innerHTML
+      let html: string | null = this.quillEditor.getSemanticHTML()
       if (html === '<p><br></p>' || html === '<div><br></div>') {
         html = this.defaultEmptyValue
       }

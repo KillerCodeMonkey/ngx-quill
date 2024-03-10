@@ -311,7 +311,7 @@ describe('Formats', () => {
     `
     })
     class HTMLComponent {
-      title = '<p>Hallo</p>'
+      title = '<p>Hallo<ol><li>ordered</li></ol><ul><li>unordered</li></ul></p>'
       editor: any
 
       handleEditorCreated(event: any) {
@@ -348,7 +348,9 @@ describe('Formats', () => {
       await fixture.whenStable()
     })
     it('should be set html', async () => {
-      expect(component.editor.getText().trim()).toEqual('Hallo')
+      expect(component.editor.getText().trim()).toEqual(`Hallo
+ordered
+unordered`)
     })
 
     it('should update html', async () => {
@@ -359,7 +361,7 @@ describe('Formats', () => {
     })
 
     it('should update model if editor html changes', async () => {
-      expect(component.title.trim()).toEqual('<p>Hallo</p>')
+      expect(component.title.trim()).toEqual('<p>Hallo<ol><li>ordered</li></ol><ul><li>unordered</li></ul></p>')
       component.editor.setText('1234', 'user')
       fixture.detectChanges()
       await fixture.whenStable()
