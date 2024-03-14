@@ -67,7 +67,7 @@
     "@angular/localize": "^17.2.4",
     "@types/jasmine": "^5.1.4",
     "@types/jasminewd2": "^2.0.13",
-    "@types/node": "^18.19.23",
+    "@types/node": "^18.19.24",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "bufferutil": "^4.0.8",
