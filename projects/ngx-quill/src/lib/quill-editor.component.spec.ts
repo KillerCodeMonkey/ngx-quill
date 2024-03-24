@@ -1334,7 +1334,7 @@ describe('QuillEditor - base config', () => {
     fixture.detectChanges()
 
     expect(JSON.stringify(fixture.componentInstance.title))
-      .toEqual(JSON.stringify({ ops: [{ attributes: { italic: true, bold: true }, insert: 'content'}, {insert: '\n'}] }))
+      .toEqual(JSON.stringify({ ops: [{ attributes: { bold: true }, insert: 'content'}, {insert: '\n'}] }))
     expect(editor.root.dataset.placeholder).toEqual('placeholder')
     expect(registerSpy).toHaveBeenCalledWith(
       jasmine.objectContaining({attrName: 'size', keyName: 'font-size', scope: 5, whitelist: ['14']}), true, true
