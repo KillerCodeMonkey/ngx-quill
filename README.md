@@ -9,25 +9,6 @@ If you like my work, feel free to support it. Donations to the project are alway
 
 PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
 
-## Examples
-
-- [Advanced Demo](https://github.com/killerCodeMonkey/ngx-quill-example)
-  - custom word count module
-  - custom toolbar with custom fonts and formats, toolbar position
-  - show the differences between sanitizing and not sanitizing your content if your content format is html
-  - usage of different content formats
-  - template-driven and reactive forms
-  - code + syntax highlighting
-  - formulas
-  - custom key-bindings, e.g. shift + b for bold
-  - dynamic styles and placeholder
-  - toggle readonly
-  - bubble toolbar
-  - activate formats after editor initialisation, e.g. rtl direction
-  - present quilljs content with the `quill-view` and `quill-view-html` component
-- [Ionic Demo](https://github.com/KillerCodeMonkey/ngx-quill-ionic)
-- [Angular Universal](https://github.com/KillerCodeMonkey/ngx-quill-universal-example)
-
 ## Compatibility to Angular Versions
 
 <table>
@@ -75,6 +56,27 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
   </tbody>
 </table>
 
+
+## Examples
+
+- [Advanced Demo](https://github.com/killerCodeMonkey/ngx-quill-example)
+  - custom word count module
+  - custom toolbar with custom fonts and formats, toolbar position
+  - show the differences between sanitizing and not sanitizing your content if your content format is html
+  - usage of different content formats
+  - template-driven and reactive forms
+  - code + syntax highlighting
+  - formulas
+  - custom key-bindings, e.g. shift + b for bold
+  - dynamic styles and placeholder
+  - toggle readonly
+  - bubble toolbar
+  - activate formats after editor initialisation, e.g. rtl direction
+  - present quilljs content with the `quill-view` and `quill-view-html` component
+- [Ionic Demo](https://github.com/KillerCodeMonkey/ngx-quill-ionic)
+- [Angular Universal](https://github.com/KillerCodeMonkey/ngx-quill-universal-example)
+
+
 ## Installation
 
 - `npm install ngx-quill`
@@ -112,12 +114,6 @@ class YourModule { ... }
 - for builds with angular-cli >=6 only add quilljs to your scripts or scripts section of angular.json, if you need it as a global :)!
 
 **HINT:** *If you are using lazy loading modules, you have to add `QuillModule.forRoot()` to your imports in your root module to make sure the `Config` services is registered.*
-
-## Angular Universal
-
-### ngx-quill >= v10
-
-Nothing to do here :)
 
 ## Global Config
 
@@ -164,6 +160,11 @@ If you want to use the `syntax` module follow the [Syntax Highlight Module Guide
 See [Quill Configuration](https://quilljs.com/docs/configuration/) for a full list of config options.
 
 The `QuillModule` exports the `defaultModules` if you want to extend them :).
+
+## Known issues
+
+- IME/special characters can add some unwanted new line (https://github.com/KillerCodeMonkey/ngx-quill/issues/1821#issuecomment-2019331522) - possible solution: unpatch the `compositionend` event from zone.js (https://angular.io/guide/zone#setting-up-zonejs)
+- formControl/model change is triggered on first rendering by quill (https://github.com/KillerCodeMonkey/ngx-quill/issues/1547), because validation can only be done after quill editor is initialise - possible solution: /
 
 ### Custom Modules and options/formats
 
