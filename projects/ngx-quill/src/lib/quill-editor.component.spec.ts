@@ -44,6 +44,7 @@ class CustomModule {
   [maxLength]="maxLength"
   [readOnly]="isReadOnly"
   [debounceTime]="debounceTime"
+  [trimOnValidation]="trimOnValidation"
   (onEditorCreated)="handleEditorCreated($event)"
   (onEditorChanged)="handleEditorChange($event)"
   (onContentChanged)="handleChange($event)"
@@ -61,6 +62,7 @@ class TestComponent {
   blured = false
   focusedNative = false
   bluredNative = false
+  trimOnValidation = false
   maxLength = 0
   style: {
     backgroundColor?: string
@@ -763,7 +765,7 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.detectChanges()
     await fixture.whenStable()
 
-    expect(editorCmp.readOnly).toBe(false)
+    expect(editorCmp.readOnly()).toBe(false)
 
     fixture.componentInstance.isReadOnly = true
 
@@ -773,7 +775,7 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.detectChanges()
     await fixture.whenStable()
 
-    expect(editorCmp.readOnly).toBe(true)
+    expect(editorCmp.readOnly()).toBe(true)
     expect(editorElem.nativeElement.querySelectorAll('div.ql-container.ql-disabled').length).toBe(1)
     expect(editorElem.nativeElement.querySelector('div[quill-editor-element]').style.height).toBe('30px')
   })
@@ -1077,7 +1079,7 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.componentInstance.minLength = 8
     fixture.detectChanges()
     await fixture.whenStable()
-    expect(editorComponent.minLength).toBe(8)
+    expect(editorComponent.minLength()).toBe(8)
 
     fixture.componentInstance.title = 'Hallo1'
     fixture.detectChanges()
@@ -1097,7 +1099,7 @@ describe('Advanced QuillEditorComponent', () => {
     const editorElement = fixture.debugElement.children[0].nativeElement
 
     // set min length
-    editorComponent.minLength = 2
+    fixture.componentInstance.minLength = 2
     // change text
     editorComponent.quillEditor.setText('', 'user')
 
@@ -1125,7 +1127,7 @@ describe('Advanced QuillEditorComponent', () => {
     await fixture.whenStable()
     fixture.detectChanges()
 
-    expect(editorComponent.maxLength).toBe(3)
+    expect(editorComponent.maxLength()).toBe(3)
     expect(editorElement.className).toMatch('ng-invalid')
   })
 
@@ -1159,7 +1161,7 @@ describe('Advanced QuillEditorComponent', () => {
   it('should validate maxlength and minlength with trimming white spaces', async () => {
     // get editor component
     const editorElement = fixture.debugElement.children[0].nativeElement
-    fixture.componentInstance.editorComponent.trimOnValidation = true
+    fixture.componentInstance.trimOnValidation = true
 
     fixture.detectChanges()
     await fixture.whenStable()
@@ -1194,7 +1196,7 @@ describe('Advanced QuillEditorComponent', () => {
     await fixture.whenStable()
 
     expect(fixture.debugElement.children[0].nativeElement.className).toMatch('ng-valid')
-    expect(editorComponent.required).toBeFalsy()
+    expect(editorComponent.required()).toBeFalsy()
 
     fixture.componentInstance.required = true
     fixture.componentInstance.title = ''
@@ -1203,7 +1205,7 @@ describe('Advanced QuillEditorComponent', () => {
     await fixture.whenStable()
     fixture.detectChanges()
 
-    expect(editorComponent.required).toBeTruthy()
+    expect(editorComponent.required()).toBeTruthy()
     expect(editorElement.className).toMatch('ng-invalid')
 
     fixture.componentInstance.title = '1'
@@ -1235,8 +1237,8 @@ describe('Advanced QuillEditorComponent', () => {
     expect(toolbarFixture.debugElement.children[0].nativeElement.children[3].attributes['quill-editor-element']).toBeDefined()
 
     const editorComponent = toolbarFixture.debugElement.children[0].componentInstance
-    expect(editorComponent.required).toBe(true)
-    expect(editorComponent.customToolbarPosition).toEqual('top')
+    expect(editorComponent.required()).toBe(true)
+    expect(editorComponent.customToolbarPosition()).toEqual('top')
   })
 
   it('should add custom toolbar at the end', async () => {
@@ -1253,7 +1255,7 @@ describe('Advanced QuillEditorComponent', () => {
     expect(toolbarFixture.debugElement.children[0].nativeElement.children[3].attributes['below-quill-editor-toolbar']).toBeDefined()
 
     const editorComponent = toolbarFixture.debugElement.children[0].componentInstance
-    expect(editorComponent.customToolbarPosition).toEqual('bottom')
+    expect(editorComponent.customToolbarPosition()).toEqual('bottom')
   })
 
   it('should render custom link placeholder', async () => {
