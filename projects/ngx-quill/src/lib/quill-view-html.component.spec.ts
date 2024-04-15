@@ -3,8 +3,6 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { QuillViewHTMLComponent } from './quill-view-html.component'
 import { QuillModule } from './quill.module'
 
-
-
 describe('Basic QuillViewHTMLComponent', () => {
   let fixture: ComponentFixture<QuillViewHTMLComponent>
 
@@ -34,7 +32,7 @@ describe('Basic QuillViewHTMLComponent', () => {
 describe('QuillViewHTMLComponent - content', () => {
   @Component({
     template: `
-  <quill-view-html [content]="content" theme="snow"></quill-view-html>
+  <quill-view-html [content]="content" [theme]="theme"></quill-view-html>
   `
   })
   class HTMLComponent {
@@ -42,6 +40,8 @@ describe('QuillViewHTMLComponent - content', () => {
       static: true
     }) view: QuillViewHTMLComponent | undefined
     content = '<p>Hallo</p>'
+    theme = 'snow'
+
   }
 
   let fixture: ComponentFixture<HTMLComponent>
@@ -74,6 +74,30 @@ describe('QuillViewHTMLComponent - content', () => {
     const element = fixture.nativeElement
     const viewElement = element.querySelector('.ql-container.ql-snow.ngx-quill-view-html > .ql-editor')
     expect(viewElement.innerHTML).toEqual('<p>test</p>')
+  }))
+
+  it('should set default theme when not set', waitForAsync(async () => {
+    const component = fixture.componentInstance
+    await fixture.whenStable()
+    component.theme = undefined
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    const element = fixture.nativeElement
+    const viewElement = element.querySelector('.ql-container.ql-snow.ngx-quill-view-html > .ql-editor')
+    expect(viewElement.innerHTML).toEqual('<p>Hallo</p>')
+  }))
+
+  it('should update theme', waitForAsync(async () => {
+    const component = fixture.componentInstance
+    await fixture.whenStable()
+    component.theme = 'bubble'
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    const element = fixture.nativeElement
+    const viewElement = element.querySelector('.ql-container.ql-bubble.ngx-quill-view-html > .ql-editor')
+    expect(viewElement.innerHTML).toEqual('<p>Hallo</p>')
   }))
 })
 
@@ -116,5 +140,15 @@ describe('QuillViewHTMLComponent - sanitize', () => {
     const element = fixture.nativeElement
     const viewElement = element.querySelector('.ql-container.ql-snow.ngx-quill-view-html > .ql-editor')
     expect(viewElement.innerHTML).toEqual('<p>Hallo <img src="wroooong.jpg"></p>')
+  })
+
+  it('should use default sanatize when not set', () => {
+    const component = fixture.componentInstance
+    component.sanitize = undefined
+    fixture.detectChanges()
+
+    const element = fixture.nativeElement
+    const viewElement = element.querySelector('.ql-container.ql-snow.ngx-quill-view-html > .ql-editor')
+    expect(viewElement.innerHTML).toEqual('<p>Hallo <img src="wroooong.jpg" onerror="window.alert(\'sanitize me\')"></p>')
   })
 })
