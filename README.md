@@ -435,7 +435,6 @@ As a helper `ngx-quill` provides a component where you can pass many options of 
 - debug - set log level `warn`, `error`, `log` or `false` to deactivate logging, default: `warn`
 - use customOptions for adding for example custom font sizes --> this overwrites this options **globally** !!!
 - use customModules for adding and overwriting modules --> this overwrites this modules **globally** !!!
-- strict - default: true, sets editor in strict mode
 - sanitize - uses angulars DomSanitizer to sanitize html values - default: `false`, boolean (only for format="html")
 
 ### Outputs
