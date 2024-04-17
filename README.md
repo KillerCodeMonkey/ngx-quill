@@ -80,7 +80,7 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
 ## Installation
 
 - `npm install ngx-quill`
-- install `@angular/core`, `@angular/common`, `@angular/forms`, `@angular/platform-browser`, `quill` exact version `2.0.0-rc.0` and `rxjs` - peer dependencies of ngx-quill
+- install `@angular/core`, `@angular/common`, `@angular/forms`, `@angular/platform-browser`, `quill` version `^2.0.0` and `rxjs` - peer dependencies of ngx-quill
 - include theme styling: 	**bubble.css or snow.css of quilljs** in your index.html (you can find them in `node_modules/quill/dist`), or add them in your css/scss files  with `@import` statements, or add them external stylings in your build process.
 - Example at the beginning of your style.(s)css:
 
