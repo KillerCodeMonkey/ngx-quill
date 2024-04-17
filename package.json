@@ -48,7 +48,7 @@
     "@angular/platform-browser": "^17.3.4",
     "@angular/platform-browser-dynamic": "^17.3.4",
     "@angular/router": "^17.3.4",
-    "quill": "2.0.0-rc.5",
+    "quill": "^2.0.0",
     "rxjs": "^7.8.1",
     "save": "^2.9.0",
     "tslib": "^2.6.2",
