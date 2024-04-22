@@ -171,7 +171,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
   valueGetter = input((quillEditor: QuillType): string | any => {
     let html: string | null = quillEditor.getSemanticHTML()
-    if (html === '<p><br></p>' || html === '<div><br></div>') {
+    if (this.isEmptyValue(html)) {
       html = this.defaultEmptyValue()
     }
     let modelValue: string | Delta | null = html
@@ -421,7 +421,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     const content = this.quillEditor.getContents()
 
     let html: string | null = this.quillEditor.getSemanticHTML()
-    if (html === '<p><br></p>' || html === '<div><br></div>') {
+    if (this.isEmptyValue(html)) {
       html = this.defaultEmptyValue()
     }
 
@@ -471,7 +471,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       const content = this.quillEditor.getContents()
 
       let html: string | null = this.quillEditor.getSemanticHTML()
-      if (html === '<p><br></p>' || html === '<div><br></div>') {
+      if (this.isEmptyValue(html)) {
         html = this.defaultEmptyValue()
       }
 
@@ -740,6 +740,10 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       this.subscription.unsubscribe()
       this.subscription = null
     }
+  }
+
+  private isEmptyValue(html: string | null) {
+    return html === '<p></p>' || html === '<div></div>' || html === '<p><br></p>' || html === '<div><br></div>'
   }
 }
 
