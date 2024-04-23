@@ -740,6 +740,19 @@ describe('Reactive forms integration', () => {
     expect(fixture.componentInstance.formControl.value).toEqual('a')
     expect(fixture.componentInstance.formControl.invalid).toBeTruthy()
   })
+
+  it('should write the defaultEmptyValue when editor is emptied', async () => {
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+
+    fixture.componentInstance.editor.quillEditor.setText('', 'user')
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    // default empty value is null
+    expect(fixture.componentInstance.formControl.value).toEqual(null)
+  })
 })
 
 describe('Advanced QuillEditorComponent', () => {
