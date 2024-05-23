@@ -36,7 +36,7 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
         v17
       </td>
       <td>
-        >= 25.0.0 (quill v2)
+        25.x (quill v2)
       </td>
       <td>
         until May, 2025
