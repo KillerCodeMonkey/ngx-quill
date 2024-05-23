@@ -1,6 +1,6 @@
 {
   "name": "ngx-quill",
-  "version": "25.3.2",
+  "version": "26.0.0",
   "license": "MIT",
   "author": {
     "name": "Bengt Weiße"
@@ -13,7 +13,7 @@
     "url": "https://github.com/KillerCodeMonkey/ngx-quill"
   },
   "engines": {
-    "node": ">=18"
+    "node": "^18.19.1 || ^20.11.1 || >=22.0.0"
   },
   "keywords": [
     "editor",
@@ -31,7 +31,7 @@
   ],
   "sideEffects": false,
   "peerDependencies": {
-    "@angular/core": "^17.0.0",
+    "@angular/core": "^18.0.0",
     "quill": "^2.0.0",
     "rxjs": "^7.0.0"
   },
