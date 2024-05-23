@@ -91,10 +91,6 @@
   "overrides": {
     "@angular-eslint/schematics": {
       "@angular/cli": "$@angular/cli"
-    },
-    "@angular-builders/custom-webpack": {
-      "@angular/cli": "$@angular/cli",
-      "@angular/compiler-cli": "$@angular/compiler-cli"
     }
   },
   "contributors": [
