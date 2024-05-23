@@ -22,6 +22,17 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
   <tbody>
     <tr>
       <td>
+        v18
+      </td>
+      <td>
+        >= 26.0.0 (quill v2)
+      </td>
+      <td>
+        until Nov, 2025
+      </td>
+    </tr>
+    <tr>
+      <td>
         v17
       </td>
       <td>
