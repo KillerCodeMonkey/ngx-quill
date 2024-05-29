@@ -78,6 +78,7 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
   - template-driven and reactive forms
   - code + syntax highlighting
   - formulas
+  - image resizing
   - custom key-bindings, e.g. shift + b for bold
   - dynamic styles and placeholder
   - toggle readonly
