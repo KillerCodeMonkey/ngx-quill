@@ -2,8 +2,8 @@
 import { DOCUMENT, isPlatformServer } from '@angular/common'
 import { DomSanitizer } from '@angular/platform-browser'
 
-import QuillType from 'quill'
-import Delta from 'quill-delta'
+import type QuillType from 'quill'
+import type DeltaType from 'quill-delta'
 
 import {
   AfterViewInit,
@@ -47,11 +47,11 @@ export interface Range {
 }
 
 export interface ContentChange {
-  content: any
-  delta: Delta
+  content: DeltaType
+  delta: DeltaType
   editor: QuillType
   html: string | null
-  oldDelta: Delta
+  oldDelta: DeltaType
   source: string
   text: string
 }
@@ -174,7 +174,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     if (this.isEmptyValue(html)) {
       html = this.defaultEmptyValue()
     }
-    let modelValue: string | Delta | null = html
+    let modelValue: string | DeltaType | null = html
     const format = getFormat(this.format(), this.service.config.format)
 
     if (format === 'text') {
@@ -415,7 +415,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     })
   }
 
-  textChangeHandler = (delta: Delta, oldDelta: Delta, source: string): void => {
+  textChangeHandler = (delta: DeltaType, oldDelta: DeltaType, source: string): void => {
     // only emit changes emitted by user interactions
     const text = this.quillEditor.getText()
     const content = this.quillEditor.getContents()
