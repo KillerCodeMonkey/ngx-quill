@@ -23,14 +23,24 @@ import {
   Renderer2,
   SecurityContext,
   SimpleChanges,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core'
 import { fromEvent, Subscription } from 'rxjs'
 import { debounceTime, mergeMap } from 'rxjs/operators'
 
-import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator } from '@angular/forms'
+import {
+  ControlValueAccessor,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  Validator,
+} from '@angular/forms'
 
-import { defaultModules, QuillModules, CustomOption, CustomModule } from 'ngx-quill/config'
+import {
+  defaultModules,
+  QuillModules,
+  CustomOption,
+  CustomModule,
+} from 'itopplus-ngx-quill/config'
 
 import { getFormat } from './helpers'
 import { QuillService } from './quill.service'
@@ -68,11 +78,21 @@ export interface Focus {
 }
 
 export type EditorChangeContent = ContentChange & { event: 'text-change' }
-export type EditorChangeSelection = SelectionChange & { event: 'selection-change' }
+export type EditorChangeSelection = SelectionChange & {
+  event: 'selection-change'
+}
 
 @Directive()
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
-export abstract class QuillEditorBase implements AfterViewInit, ControlValueAccessor, OnChanges, OnInit, OnDestroy, Validator {
+export abstract class QuillEditorBase
+  implements
+    AfterViewInit,
+    ControlValueAccessor,
+    OnChanges,
+    OnInit,
+    OnDestroy,
+    Validator
+{
   @Input() format?: 'object' | 'html' | 'text' | 'json'
   @Input() theme?: string
   @Input() modules?: QuillModules
@@ -116,9 +136,12 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   @Input() defaultEmptyValue?: any = null
 
   @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
-  @Output() onEditorChanged: EventEmitter<EditorChangeContent | EditorChangeSelection> = new EventEmitter()
+  @Output() onEditorChanged: EventEmitter<
+    EditorChangeContent | EditorChangeSelection
+  > = new EventEmitter()
   @Output() onContentChanged: EventEmitter<ContentChange> = new EventEmitter()
-  @Output() onSelectionChanged: EventEmitter<SelectionChange> = new EventEmitter()
+  @Output() onSelectionChanged: EventEmitter<SelectionChange> =
+    new EventEmitter()
   @Output() onFocus: EventEmitter<Focus> = new EventEmitter()
   @Output() onBlur: EventEmitter<Blur> = new EventEmitter()
   @Output() onNativeFocus: EventEmitter<Focus> = new EventEmitter()
@@ -161,8 +184,12 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   }
 
   @Input()
-  valueGetter = (quillEditor: QuillType, editorElement: HTMLElement): string | any => {
-    let html: string | null = editorElement.querySelector('.ql-editor')!.innerHTML
+  valueGetter = (
+    quillEditor: QuillType,
+    editorElement: HTMLElement
+  ): string | any => {
+    let html: string | null =
+      editorElement.querySelector('.ql-editor')!.innerHTML
     if (html === '<p><br></p>' || html === '<div><br></div>') {
       html = this.defaultEmptyValue
     }
@@ -188,7 +215,9 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   valueSetter = (quillEditor: QuillType, value: any): any => {
     const format = getFormat(this.format, this.service.config.format)
     if (format === 'html') {
-      const sanitize = [true, false].includes(this.sanitize) ? this.sanitize : (this.service.config.sanitize || false)
+      const sanitize = [true, false].includes(this.sanitize)
+        ? this.sanitize
+        : this.service.config.sanitize || false
       if (sanitize) {
         value = this.domSanitizer.sanitize(SecurityContext.HTML, value)
       }
@@ -217,172 +246,215 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     // The `quill-editor` component might be destroyed before the `quill` chunk is loaded and its code is executed
     // this will lead to runtime exceptions, since the code will be executed on DOM nodes that don't exist within the tree.
 
-    this.quillSubscription = this.service.getQuill().pipe(
-      mergeMap((Quill) => {
-        const promises = [this.service.registerCustomModules(Quill, this.customModules)]
-        const beforeRender = this.beforeRender ?? this.service.config.beforeRender
-        if (beforeRender) {
-          promises.push(beforeRender())
-        }
-        return Promise.all(promises).then(() => Quill)
-      })
-    ).subscribe(Quill => {
-      this.editorElem = this.elementRef.nativeElement.querySelector(
-        '[quill-editor-element]'
-      )
-
-      const toolbarElem = this.elementRef.nativeElement.querySelector(
-        '[quill-editor-toolbar]'
-      )
-      const modules = Object.assign({}, this.modules || this.service.config.modules)
-
-      if (toolbarElem) {
-        modules.toolbar = toolbarElem
-      } else if (modules.toolbar === undefined) {
-        modules.toolbar = defaultModules.toolbar
-      }
-
-      let placeholder = this.placeholder !== undefined ? this.placeholder : this.service.config.placeholder
-      if (placeholder === undefined) {
-        placeholder = 'Insert text here ...'
-      }
-
-      if (this.styles) {
-        Object.keys(this.styles).forEach((key: string) => {
-          this.renderer.setStyle(this.editorElem, key, this.styles[key])
-        })
-      }
-
-      if (this.classes) {
-        this.addClasses(this.classes)
-      }
-
-      this.customOptions.forEach((customOption) => {
-        const newCustomOption = Quill.import(customOption.import)
-        newCustomOption.whitelist = customOption.whitelist
-        Quill.register(newCustomOption, true)
-      })
-
-      let bounds = this.bounds && this.bounds === 'self' ? this.editorElem : this.bounds
-      if (!bounds) {
-        bounds = this.service.config.bounds ? this.service.config.bounds : this.document.body
-      }
-
-      let debug = this.debug
-      if (!debug && debug !== false && this.service.config.debug) {
-        debug = this.service.config.debug
-      }
-
-      let readOnly = this.readOnly
-      if (!readOnly && this.readOnly !== false) {
-        readOnly = this.service.config.readOnly !== undefined ? this.service.config.readOnly : false
-      }
-
-      let defaultEmptyValue = this.defaultEmptyValue
-      // eslint-disable-next-line no-prototype-builtins
-      if (this.service.config.hasOwnProperty('defaultEmptyValue')) {
-        defaultEmptyValue = this.service.config.defaultEmptyValue
-      }
-
-      let scrollingContainer = this.scrollingContainer
-      if (!scrollingContainer && this.scrollingContainer !== null) {
-        scrollingContainer =
-          this.service.config.scrollingContainer === null
-            || this.service.config.scrollingContainer ? this.service.config.scrollingContainer : null
-      }
-
-      let formats = this.formats
-      if (!formats && formats === undefined) {
-        formats = this.service.config.formats ? [...this.service.config.formats] : (this.service.config.formats === null ? null : undefined)
-      }
-
-      this.zone.runOutsideAngular(() => {
-        this.quillEditor = new Quill(this.editorElem, {
-          bounds,
-          debug: debug as any,
-          formats: formats as any,
-          modules,
-          placeholder,
-          readOnly,
-          defaultEmptyValue,
-          scrollingContainer: scrollingContainer as any,
-          strict: this.strict,
-          theme: this.theme || (this.service.config.theme ? this.service.config.theme : 'snow')
-        })
-
-        if (this.onNativeBlur.observed) {
-          // https://github.com/quilljs/quill/issues/2186#issuecomment-533401328
-          this.quillEditor.scroll.domNode.addEventListener('blur', () => this.onNativeBlur.next({
-            editor: this.quillEditor,
-            source: 'dom'
-          }))
-          // https://github.com/quilljs/quill/issues/2186#issuecomment-803257538
-          this.quillEditor.getModule('toolbar').container.addEventListener('mousedown', (e) =>  e.preventDefault())
-        }
-
-        if (this.onNativeFocus.observed) {
-          this.quillEditor.scroll.domNode.addEventListener('focus', () => this.onNativeFocus.next({
-            editor: this.quillEditor,
-            source: 'dom'
-          }))
-        }
-
-        // Set optional link placeholder, Quill has no native API for it so using workaround
-        if (this.linkPlaceholder) {
-          const tooltip = (this.quillEditor as any)?.theme?.tooltip
-          const input = tooltip?.root?.querySelector('input[data-link]')
-          if (input?.dataset) {
-            input.dataset.link = this.linkPlaceholder
+    this.quillSubscription = this.service
+      .getQuill()
+      .pipe(
+        mergeMap((Quill) => {
+          const promises = [
+            this.service.registerCustomModules(Quill, this.customModules),
+          ]
+          const beforeRender =
+            this.beforeRender ?? this.service.config.beforeRender
+          if (beforeRender) {
+            promises.push(beforeRender())
           }
+          return Promise.all(promises).then(() => Quill)
+        })
+      )
+      .subscribe((Quill) => {
+        this.editorElem = this.elementRef.nativeElement.querySelector(
+          '[quill-editor-element]'
+        )
+
+        const toolbarElem = this.elementRef.nativeElement.querySelector(
+          '[quill-editor-toolbar]'
+        )
+        const modules = Object.assign(
+          {},
+          this.modules || this.service.config.modules
+        )
+
+        if (toolbarElem) {
+          modules.toolbar = toolbarElem
+        } else if (modules.toolbar === undefined) {
+          modules.toolbar = defaultModules.toolbar
         }
+
+        let placeholder =
+          this.placeholder !== undefined
+            ? this.placeholder
+            : this.service.config.placeholder
+        if (placeholder === undefined) {
+          placeholder = 'Insert text here ...'
+        }
+
+        if (this.styles) {
+          Object.keys(this.styles).forEach((key: string) => {
+            this.renderer.setStyle(this.editorElem, key, this.styles[key])
+          })
+        }
+
+        if (this.classes) {
+          this.addClasses(this.classes)
+        }
+
+        this.customOptions.forEach((customOption) => {
+          const newCustomOption = Quill.import(customOption.import)
+          newCustomOption.whitelist = customOption.whitelist
+          Quill.register(newCustomOption, true)
+        })
+
+        let bounds =
+          this.bounds && this.bounds === 'self' ? this.editorElem : this.bounds
+        if (!bounds) {
+          bounds = this.service.config.bounds
+            ? this.service.config.bounds
+            : this.document.body
+        }
+
+        let debug = this.debug
+        if (!debug && debug !== false && this.service.config.debug) {
+          debug = this.service.config.debug
+        }
+
+        let readOnly = this.readOnly
+        if (!readOnly && this.readOnly !== false) {
+          readOnly =
+            this.service.config.readOnly !== undefined
+              ? this.service.config.readOnly
+              : false
+        }
+
+        let defaultEmptyValue = this.defaultEmptyValue
+        // eslint-disable-next-line no-prototype-builtins
+        if (this.service.config.hasOwnProperty('defaultEmptyValue')) {
+          defaultEmptyValue = this.service.config.defaultEmptyValue
+        }
+
+        let scrollingContainer = this.scrollingContainer
+        if (!scrollingContainer && this.scrollingContainer !== null) {
+          scrollingContainer =
+            this.service.config.scrollingContainer === null ||
+            this.service.config.scrollingContainer
+              ? this.service.config.scrollingContainer
+              : null
+        }
+
+        let formats = this.formats
+        if (!formats && formats === undefined) {
+          formats = this.service.config.formats
+            ? [...this.service.config.formats]
+            : this.service.config.formats === null
+            ? null
+            : undefined
+        }
+
+        this.zone.runOutsideAngular(() => {
+          this.quillEditor = new Quill(this.editorElem, {
+            bounds,
+            debug: debug as any,
+            formats: formats as any,
+            modules,
+            placeholder,
+            readOnly,
+            defaultEmptyValue,
+            scrollingContainer: scrollingContainer as any,
+            strict: this.strict,
+            theme:
+              this.theme ||
+              (this.service.config.theme ? this.service.config.theme : 'snow'),
+          })
+
+          if (this.onNativeBlur.observed) {
+            // https://github.com/quilljs/quill/issues/2186#issuecomment-533401328
+            this.quillEditor.scroll.domNode.addEventListener('blur', () =>
+              this.onNativeBlur.next({
+                editor: this.quillEditor,
+                source: 'dom',
+              })
+            )
+            // https://github.com/quilljs/quill/issues/2186#issuecomment-803257538
+            this.quillEditor
+              .getModule('toolbar')
+              .container.addEventListener('mousedown', (e) =>
+                e.preventDefault()
+              )
+          }
+
+          if (this.onNativeFocus.observed) {
+            this.quillEditor.scroll.domNode.addEventListener('focus', () =>
+              this.onNativeFocus.next({
+                editor: this.quillEditor,
+                source: 'dom',
+              })
+            )
+          }
+
+          // Set optional link placeholder, Quill has no native API for it so using workaround
+          if (this.linkPlaceholder) {
+            const tooltip = (this.quillEditor as any)?.theme?.tooltip
+            const input = tooltip?.root?.querySelector('input[data-link]')
+            if (input?.dataset) {
+              input.dataset.link = this.linkPlaceholder
+            }
+          }
+        })
+
+        if (this.content) {
+          const format = getFormat(this.format, this.service.config.format)
+
+          if (format === 'text') {
+            this.quillEditor.setText(this.content, 'silent')
+          } else {
+            const newValue = this.valueSetter(this.quillEditor, this.content)
+            this.quillEditor.setContents(newValue, 'silent')
+          }
+
+          this.quillEditor.getModule('history').clear()
+        }
+
+        // initialize disabled status based on this.disabled as default value
+        this.setDisabledState()
+
+        this.addQuillEventListeners()
+
+        // The `requestAnimationFrame` triggers change detection. There's no sense to invoke the `requestAnimationFrame` if anyone is
+        // listening to the `onEditorCreated` event inside the template, for instance `<quill-view (onEditorCreated)="...">`.
+        if (!this.onEditorCreated.observed && !this.onValidatorChanged) {
+          return
+        }
+
+        // The `requestAnimationFrame` will trigger change detection and `onEditorCreated` will also call `markDirty()`
+        // internally, since Angular wraps template event listeners into `listener` instruction. We're using the `requestAnimationFrame`
+        // to prevent the frame drop and avoid `ExpressionChangedAfterItHasBeenCheckedError` error.
+        requestAnimationFrame(() => {
+          if (this.onValidatorChanged) {
+            this.onValidatorChanged()
+          }
+          this.onEditorCreated.emit(this.quillEditor)
+          this.onEditorCreated.complete()
+        })
       })
-
-      if (this.content) {
-        const format = getFormat(this.format, this.service.config.format)
-
-        if (format === 'text') {
-          this.quillEditor.setText(this.content, 'silent')
-        } else {
-          const newValue = this.valueSetter(this.quillEditor, this.content)
-          this.quillEditor.setContents(newValue, 'silent')
-        }
-
-        this.quillEditor.getModule('history').clear()
-      }
-
-      // initialize disabled status based on this.disabled as default value
-      this.setDisabledState()
-
-      this.addQuillEventListeners()
-
-      // The `requestAnimationFrame` triggers change detection. There's no sense to invoke the `requestAnimationFrame` if anyone is
-      // listening to the `onEditorCreated` event inside the template, for instance `<quill-view (onEditorCreated)="...">`.
-      if (!this.onEditorCreated.observed && !this.onValidatorChanged) {
-        return
-      }
-
-      // The `requestAnimationFrame` will trigger change detection and `onEditorCreated` will also call `markDirty()`
-      // internally, since Angular wraps template event listeners into `listener` instruction. We're using the `requestAnimationFrame`
-      // to prevent the frame drop and avoid `ExpressionChangedAfterItHasBeenCheckedError` error.
-      requestAnimationFrame(() => {
-        if (this.onValidatorChanged) {
-          this.onValidatorChanged()
-        }
-        this.onEditorCreated.emit(this.quillEditor)
-        this.onEditorCreated.complete()
-      })
-    })
   }
 
-  selectionChangeHandler = (range: Range | null, oldRange: Range | null, source: string) => {
+  selectionChangeHandler = (
+    range: Range | null,
+    oldRange: Range | null,
+    source: string
+  ) => {
     const trackChanges = this.trackChanges || this.service.config.trackChanges
-    const shouldTriggerOnModelTouched = !range && !!this.onModelTouched && (source === 'user' || trackChanges && trackChanges === 'all')
+    const shouldTriggerOnModelTouched =
+      !range &&
+      !!this.onModelTouched &&
+      (source === 'user' || (trackChanges && trackChanges === 'all'))
 
     // only emit changes when there's any listener
-    if (!this.onBlur.observed &&
+    if (
+      !this.onBlur.observed &&
       !this.onFocus.observed &&
       !this.onSelectionChanged.observed &&
-      !shouldTriggerOnModelTouched) {
+      !shouldTriggerOnModelTouched
+    ) {
       return
     }
 
@@ -390,12 +462,12 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       if (range === null) {
         this.onBlur.emit({
           editor: this.quillEditor,
-          source
+          source,
         })
       } else if (oldRange === null) {
         this.onFocus.emit({
           editor: this.quillEditor,
-          source
+          source,
         })
       }
 
@@ -403,7 +475,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         editor: this.quillEditor,
         oldRange,
         range,
-        source
+        source,
       })
 
       if (shouldTriggerOnModelTouched) {
@@ -419,13 +491,16 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     const text = this.quillEditor.getText()
     const content = this.quillEditor.getContents()
 
-    let html: string | null = this.editorElem!.querySelector('.ql-editor')!.innerHTML
+    let html: string | null =
+      this.editorElem!.querySelector('.ql-editor')!.innerHTML
     if (html === '<p><br></p>' || html === '<div><br></div>') {
       html = this.defaultEmptyValue
     }
 
     const trackChanges = this.trackChanges || this.service.config.trackChanges
-    const shouldTriggerOnModelChange = (source === 'user' || trackChanges && trackChanges === 'all') && !!this.onModelChange
+    const shouldTriggerOnModelChange =
+      (source === 'user' || (trackChanges && trackChanges === 'all')) &&
+      !!this.onModelChange
 
     // only emit changes when there's any listener
     if (!this.onContentChanged.observed && !shouldTriggerOnModelChange) {
@@ -434,9 +509,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
     this.zone.run(() => {
       if (shouldTriggerOnModelChange) {
-        this.onModelChange(
-          this.valueGetter(this.quillEditor, this.editorElem!)
-        )
+        this.onModelChange(this.valueGetter(this.quillEditor, this.editorElem!))
       }
 
       this.onContentChanged.emit({
@@ -446,7 +519,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         html,
         oldDelta,
         source,
-        text
+        text,
       })
 
       this.cd.markForCheck()
@@ -456,7 +529,9 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   // eslint-disable-next-line max-len
   editorChangeHandler = (
     event: 'text-change' | 'selection-change',
-    current: any | Range | null, old: any | Range | null, source: string
+    current: any | Range | null,
+    old: any | Range | null,
+    source: string
   ): void => {
     // only emit changes when there's any listener
     if (!this.onEditorChanged.observed) {
@@ -468,7 +543,8 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       const text = this.quillEditor.getText()
       const content = this.quillEditor.getContents()
 
-      let html: string | null = this.editorElem!.querySelector('.ql-editor')!.innerHTML
+      let html: string | null =
+        this.editorElem!.querySelector('.ql-editor')!.innerHTML
       if (html === '<p><br></p>' || html === '<div><br></div>') {
         html = this.defaultEmptyValue
       }
@@ -482,7 +558,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
           html,
           oldDelta: old,
           source,
-          text
+          text,
         })
 
         this.cd.markForCheck()
@@ -494,7 +570,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
           event,
           oldRange: old,
           range: current,
-          source
+          source,
         })
 
         this.cd.markForCheck()
@@ -573,7 +649,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   }
 
   writeValue(currentValue: any) {
-
     // optional fix for https://github.com/angular/angular/issues/14988
     if (this.filterNull && currentValue === null) {
       return
@@ -604,7 +679,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       return
     }
     this.quillEditor.setText('')
-
   }
 
   setDisabledState(isDisabled: boolean = this.disabled): void {
@@ -613,7 +687,11 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     if (this.quillEditor) {
       if (isDisabled) {
         this.quillEditor.disable()
-        this.renderer.setAttribute(this.elementRef.nativeElement, 'disabled', 'disabled')
+        this.renderer.setAttribute(
+          this.elementRef.nativeElement,
+          'disabled',
+          'disabled'
+        )
       } else {
         if (!this.readOnly) {
           this.quillEditor.enable()
@@ -655,14 +733,21 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
     const text = this.quillEditor.getText()
     // trim text if wanted + handle special case that an empty editor contains a new line
-    const textLength = this.trimOnValidation ? text.trim().length : (text.length === 1 && text.trim().length === 0 ? 0 : text.length - 1)
+    const textLength = this.trimOnValidation
+      ? text.trim().length
+      : text.length === 1 && text.trim().length === 0
+      ? 0
+      : text.length - 1
     const deltaOperations = this.quillEditor.getContents().ops
-    const onlyEmptyOperation = deltaOperations && deltaOperations.length === 1 && ['\n', ''].includes(deltaOperations[0].insert)
+    const onlyEmptyOperation =
+      deltaOperations &&
+      deltaOperations.length === 1 &&
+      ['\n', ''].includes(deltaOperations[0].insert)
 
     if (this.minLength && textLength && textLength < this.minLength) {
       err.minLengthError = {
         given: textLength,
-        minLength: this.minLength
+        minLength: this.minLength,
       }
 
       valid = false
@@ -671,7 +756,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     if (this.maxLength && textLength > this.maxLength) {
       err.maxLengthError = {
         given: textLength,
-        maxLength: this.maxLength
+        maxLength: this.maxLength,
       }
 
       valid = false
@@ -679,7 +764,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
     if (this.required && !textLength && onlyEmptyOperation) {
       err.requiredError = {
-        empty: true
+        empty: true,
       }
 
       valid = false
@@ -726,7 +811,12 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       this.subscription.add(
         // triggered if selection or text changed
         editorChange$.subscribe(([event, current, old, source]) => {
-          this.editorChangeHandler(event as 'text-change' | 'selection-change', current, old, source)
+          this.editorChangeHandler(
+            event as 'text-change' | 'selection-change',
+            current,
+            old,
+            source
+          )
         })
       )
     })
@@ -747,45 +837,41 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       multi: true,
       provide: NG_VALUE_ACCESSOR,
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      useExisting: forwardRef(() => QuillEditorComponent)
+      useExisting: forwardRef(() => QuillEditorComponent),
     },
     {
       multi: true,
       provide: NG_VALIDATORS,
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      useExisting: forwardRef(() => QuillEditorComponent)
-    }
+      useExisting: forwardRef(() => QuillEditorComponent),
+    },
   ],
   selector: 'quill-editor',
   template: `
-    @if (toolbarPosition !== 'top') {
-      @if (preserve) {
-        <pre quill-editor-element></pre>
-      } @else {
-        <div quill-editor-element></div>
-      }
-    }
+    @if (toolbarPosition !== 'top') { @if (preserve) {
+    <pre quill-editor-element></pre>
+    } @else {
+    <div quill-editor-element></div>
+    } }
 
     <ng-content select="[above-quill-editor-toolbar]"></ng-content>
     <ng-content select="[quill-editor-toolbar]"></ng-content>
     <ng-content select="[below-quill-editor-toolbar]"></ng-content>
 
-    @if (toolbarPosition === 'top') {
-      @if (preserve) {
-        <pre quill-editor-element></pre>
-      } @else {
-        <div quill-editor-element></div>
-      }
-    }
+    @if (toolbarPosition === 'top') { @if (preserve) {
+    <pre quill-editor-element></pre>
+    } @else {
+    <div quill-editor-element></div>
+    } }
   `,
   styles: [
     `
-    :host {
-      display: inline-block;
-    }
-    `
+      :host {
+        display: inline-block;
+      }
+    `,
   ],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule],
 })
 export class QuillEditorComponent extends QuillEditorBase {}

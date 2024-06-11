@@ -3,30 +3,30 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ngx-quill": {
+    "itopplus-ngx-quill": {
       "projectType": "library",
-      "root": "projects/ngx-quill",
-      "sourceRoot": "projects/ngx-quill/src",
+      "root": "projects/itopplus-ngx-quill",
+      "sourceRoot": "projects/itopplus-ngx-quill/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "tsConfig": "projects/ngx-quill/tsconfig.lib.json",
-            "project": "projects/ngx-quill/ng-package.json"
+            "tsConfig": "projects/itopplus-ngx-quill/tsconfig.lib.json",
+            "project": "projects/itopplus-ngx-quill/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/ngx-quill/tsconfig.lib.prod.json"
+              "tsConfig": "projects/itopplus-ngx-quill/tsconfig.lib.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ngx-quill/src/test.ts",
-            "tsConfig": "projects/ngx-quill/tsconfig.spec.json",
-            "karmaConfig": "projects/ngx-quill/karma.conf.js",
+            "main": "projects/itopplus-ngx-quill/src/test.ts",
+            "tsConfig": "projects/itopplus-ngx-quill/tsconfig.spec.json",
+            "karmaConfig": "projects/itopplus-ngx-quill/karma.conf.js",
             "codeCoverage": true
           }
         },
@@ -34,8 +34,8 @@
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "projects/ngx-quill/**/*.ts",
-              "projects/ngx-quill/**/*.html"
+              "projects/itopplus-ngx-quill/**/*.ts",
+              "projects/itopplus-ngx-quill/**/*.html"
             ]
           }
         }

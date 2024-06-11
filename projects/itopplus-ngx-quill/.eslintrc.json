@@ -1,17 +1,13 @@
 {
   "extends": "../../.eslintrc.json",
-  "ignorePatterns": [
-    "!**/*"
-  ],
+  "ignorePatterns": ["!**/*"],
   "overrides": [
     {
-      "files": [
-        "*.ts"
-      ],
+      "files": ["*.ts"],
       "parserOptions": {
         "project": [
-          "projects/ngx-quill/tsconfig.lib.json",
-          "projects/ngx-quill/tsconfig.spec.json"
+          "projects/itopplus-ngx-quill/tsconfig.lib.json",
+          "projects/itopplus-ngx-quill/tsconfig.spec.json"
         ],
         "createDefaultProgram": true
       },
@@ -47,16 +43,11 @@
           }
         ],
         "@typescript-eslint/no-non-null-assertion": "off",
-        "@typescript-eslint/semi": [
-          "error",
-          "never"
-        ]
+        "@typescript-eslint/semi": ["error", "never"]
       }
     },
     {
-      "files": [
-        "*.html"
-      ],
+      "files": ["*.html"],
       "rules": {}
     }
   ]

@@ -11,16 +11,16 @@ module.exports = function (config) {
       require('karma-coverage'),
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
-      require('@angular-devkit/build-angular/plugins/karma')
+      require('@angular-devkit/build-angular/plugins/karma'),
     ],
     client: {
-      clearContext: false // leave Jasmine Spec Runner output visible in browser
+      clearContext: false, // leave Jasmine Spec Runner output visible in browser
     },
     preprocessors: {
-      'src/**/*.ts': ['coverage']
+      'src/**/*.ts': ['coverage'],
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, '../../coverage/ngx-quill'),
+      dir: require('path').join(__dirname, '../../coverage/itopplus-ngx-quill'),
       reporters: [
         { type: 'html', subdir: 'report-html' },
         { type: 'lcovonly', subdir: '.', file: 'report-lcovonly.txt' },
@@ -31,9 +31,9 @@ module.exports = function (config) {
           statements: 80,
           branches: 80,
           functions: 80,
-          lines: 80
-        }
-      }
+          lines: 80,
+        },
+      },
     },
     reporters: ['mocha', 'coverage'],
     port: 9876,
@@ -42,6 +42,6 @@ module.exports = function (config) {
     autoWatch: true,
     browsers: ['ChromeHeadless'],
     singleRun: false,
-    restartOnFileChange: true
-  });
-};
+    restartOnFileChange: true,
+  })
+}

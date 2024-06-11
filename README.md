@@ -1,4 +1,5 @@
-# ngx-quill ![Build Status](https://github.com/KillerCodeMonkey/ngx-quill/workflows/CI/badge.svg)
+# itopplus-ngx-quill ![Build Status](https://github.com/KillerCodeMonkey/ngx-quill/workflows/CI/badge.svg)
+
 <img src="https://cloud.githubusercontent.com/assets/2264672/20601381/a51753d4-b258-11e6-92c2-1d79efa5bede.png" width="200px">
 
 ngx-quill is an angular (>=2) module for the [Quill Rich Text Editor](https://quilljs.com/) containing all components you need.
@@ -80,24 +81,27 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
 
 ## Installation
 
-- `npm install ngx-quill`
+- `npm install itopplus-ngx-quill`
 - for projects using Angular < v5.0.0 install `npm install ngx-quill@1.6.0`
-- install `@angular/core`, `@angular/common`, `@angular/forms`, `@angular/platform-browser`, `quill` v1.x, `@types/quill` v1.x  and `rxjs` - peer dependencies of ngx-quill
-- include theme styling: 	**bubble.css or snow.css of quilljs** in your index.html (you can find them in `node_modules/quill/dist`), or add them in your css/scss files  with `@import` statements, or add them external stylings in your build process.
+- install `@angular/core`, `@angular/common`, `@angular/forms`, `@angular/platform-browser`, `quill` v1.x, `@types/quill` v1.x and `rxjs` - peer dependencies of ngx-quill
+- include theme styling: **bubble.css or snow.css of quilljs** in your index.html (you can find them in `node_modules/quill/dist`), or add them in your css/scss files with `@import` statements, or add them external stylings in your build process.
   - Example at the beginning of your style.(s)css:
-   ```TS
-    @import '~quill/dist/quill.bubble.css'; 
-    // or
-    @import '~quill/dist/quill.snow.css';
-   ```
+  ```TS
+   @import '~quill/dist/quill.bubble.css';
+   // or
+   @import '~quill/dist/quill.snow.css';
+  ```
 
 ### For standard webpack, angular-cli and tsc builds
 
 - import `QuillModule` from `ngx-quill`:
+
 ```TS
 import { QuillModule } from 'ngx-quill'
 ```
+
 - add `QuillModule` to the imports of your NgModule:
+
 ```TS
 @NgModule({
   imports: [
@@ -109,11 +113,12 @@ import { QuillModule } from 'ngx-quill'
 })
 class YourModule { ... }
 ```
+
 - use `<quill-editor></quill-editor>` in your templates to add a default quill editor
 - do not forget to include quill + theme css in your buildprocess, module or index.html!
 - for builds with angular-cli >=6 only add quilljs to your scripts or scripts section of angular.json, if you need it as a global :)!
 
-**HINT:** *If you are using lazy loading modules, you have to add `QuillModule.forRoot()` to your imports in your root module to make sure the `Config` services is registered.*
+**HINT:** _If you are using lazy loading modules, you have to add `QuillModule.forRoot()` to your imports in your root module to make sure the `Config` services is registered._
 
 ## Angular Universal
 
@@ -197,6 +202,7 @@ If you are using the editor reference to directly manipulate the editor content 
 - formats - array of allowed formats/groupings
 - format - model format - default: `html`, values: `html | object | text | json`, sets the model value type - html = html string, object = quill operation object, json = quill operation json, text = plain text
 - modules - configure/disable quill modules, e.g toolbar or add custom toolbar via html element default is
+
 ```TS
 const modules = {
   toolbar: [
@@ -222,6 +228,7 @@ const modules = {
   ]
 };
 ```
+
 - theme - bubble/snow, default is `snow`
 - sanitize - uses angulars DomSanitizer to sanitize html values - default: `false`, boolean (only for format="html")
 - styles - set a styles object, e.g. `[styles]="{height: '250px'}"`
@@ -234,30 +241,33 @@ const modules = {
 - strict - default: true, sets editor in strict mode
 - scrollingContainer - default '.ql-editor', allows to set scrolling container
 - beforeRender - a function, which is executed before the Quill editor is rendered, this might be useful for lazy-loading CSS. Given the following example:
+
 ```ts
 // typings.d.ts
 declare module '!!raw-loader!*.css' {
-  const css: string;
-  export default css;
+  const css: string
+  export default css
 }
 
 // my.component.ts
 const quillCSS$ = defer(() =>
   import('!!raw-loader!quill/dist/quill.core.css').then((m) => {
-    const style = document.createElement('style');
-    style.innerHTML = m.default;
-    document.head.appendChild(style);
+    const style = document.createElement('style')
+    style.innerHTML = m.default
+    document.head.appendChild(style)
   })
-).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+).pipe(shareReplay({ bufferSize: 1, refCount: true }))
 
 @Component({
   template: '<quill-editor [beforeRender]="beforeRender"></quill-editor>',
 })
 export class MyComponent {
-  beforeRender = () => firstValueFrom(quillCSS$);
+  beforeRender = () => firstValueFrom(quillCSS$)
 }
 ```
+
 - use customOptions for adding for example custom font sizes - array of objects `{ import: string; whitelist: any[] }` --> this overwrites this options **globally** !!!
+
 ```TS
 // Example with registering custom fonts
 customOptions: [{
@@ -265,7 +275,9 @@ customOptions: [{
   whitelist: ['mirza', 'roboto', 'aref', 'serif', 'sansserif', 'monospace']
 }]
 ```
+
 - use customModules for adding and overwriting modules - an array of objects `{ implementation: any; path: string }` --> this overwrites this modules **globally** !!!
+
 ```TS
 // The `implementation` may be a custom module constructor or an Observable that resolves to
 // a custom module constructor (in case you'd want to load your custom module lazily).
@@ -280,6 +292,7 @@ customModules = [
   { path: 'modules/blotFormatter', implementation: BlotFormatter$ }
 ]
 ```
+
 - checkout the demo repo about usage of `customOptions` and `customModules` [Demo Repo](https://github.com/KillerCodeMonkey/ngx-quill-example/blob/2e72dc75e6d9b423f67b57b17cc8fb527dd694e4/src/app/app.module.ts#L67)
 - possibility to create a custom toolbar via projection slot `[quill-editor-toolbar]` and add content above `[above-quill-editor-toolbar]` and below `[below-quill-editor-toolbar]` the toolbar:
 
@@ -314,6 +327,7 @@ customModules = [
   </div>
 </quill-editor>
 ```
+
 - customToolbarPosition - if you are working with a custom toolbar you can switch the position :). - default: `top`, possible values `top`, `bottom`
 - debug - set log level `warn`, `error`, `log` or `false` to deactivate logging, default: `warn`
 - trackChanges - check if only `user` (quill source user) or `all` content/selection changes should be trigger model update, default `user`. Using `all` is not recommended, it cause some unexpected sideeffects.
@@ -329,10 +343,13 @@ customModules = [
 
 - onEditorCreated - editor instance
 - Use this output to get the editor instance and use it directly. After this output has called the component is stable and all listeners are binded
+
 ```
 editor // Quill
 ```
+
 - onContentChanged - text is updated
+
 ```TS
 {
   editor: editorInstance, // Quill
@@ -344,7 +361,9 @@ editor // Quill
   source: source // ('user', 'api', 'silent' , undefined)
 }
 ```
+
 - onSelectionChanged - selection is updated, also triggered for onBlur and onFocus, because the selection changed
+
 ```TS
 {
   editor: editorInstance, // Quill
@@ -353,7 +372,9 @@ editor // Quill
   source: source // ('user', 'api', 'silent' , undefined)
 }
 ```
+
 - onEditorChanged - text or selection is updated - independent of the source
+
 ```TS
 {
   editor: editorInstance, // Quill
@@ -380,13 +401,16 @@ or
 ```
 
 - onFocus - editor is focused
+
 ```TS
 {
   editor: editorInstance, // Quill
   source: source // ('user', 'api', 'silent' , undefined)
 }
 ```
+
 - onBlur - editor is blured
+
 ```TS
 {
   editor: editorInstance, // Quill
@@ -395,13 +419,16 @@ or
 ```
 
 - onNativeFocus - editor is focused, based on native focus event
+
 ```TS
 {
   editor: editorInstance, // Quill
   source: source // ('dom')
 }
 ```
+
 - onNativeBlur - editor is blured, based on native blur event
+
 ```TS
 {
   editor: editorInstance, // Quill
@@ -483,7 +510,7 @@ As a helper `ngx-quill` provides a component where you can simply pass your html
 
 - content - html string to be presented
 - theme - bubble/snow, default is `snow`
-- sanitize - default: `false`, boolean (uses [DomSanitizer](https://angular.io/api/platform-browser/DomSanitizer#bypasssecuritytrusthtml) to bypass angular html sanitation when set to false) 
+- sanitize - default: `false`, boolean (uses [DomSanitizer](https://angular.io/api/platform-browser/DomSanitizer#bypasssecuritytrusthtml) to bypass angular html sanitation when set to false)
 
 ## Security Hint
 

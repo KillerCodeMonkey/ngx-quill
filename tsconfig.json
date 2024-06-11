@@ -12,13 +12,12 @@
     "importHelpers": true,
     "target": "es2022",
     "useDefineForClassFields": false,
-    "lib": [
-      "es2018",
-      "dom"
-    ],
+    "lib": ["es2018", "dom"],
     "paths": {
-      "ngx-quill/config": ["projects/ngx-quill/config/src/public_api.ts"],
-      "ngx-quill": ["projects/ngx-quill/src/public_api.ts"]
+      "itopplus-ngx-quill/config": [
+        "projects/itopplus-ngx-quill/config/src/public_api.ts"
+      ],
+      "itopplus-ngx-quill": ["projects/itopplus-ngx-quill/src/public_api.ts"]
     }
   },
   "angularCompilerOptions": {

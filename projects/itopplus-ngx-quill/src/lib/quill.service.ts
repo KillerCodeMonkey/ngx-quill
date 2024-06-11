@@ -9,7 +9,7 @@ import {
   QUILL_CONFIG_TOKEN,
   QuillConfig,
   CustomModule,
-} from 'ngx-quill/config'
+} from 'itopplus-ngx-quill/config'
 
 @Injectable({
   providedIn: 'root',
