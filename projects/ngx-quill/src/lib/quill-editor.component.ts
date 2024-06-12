@@ -123,7 +123,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   */
   readonly defaultEmptyValue = input<any>(null)
 
-  @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
+  @Output() onEditorCreated: EventEmitter<QuillType> = new EventEmitter()
   @Output() onEditorChanged: EventEmitter<EditorChangeContent | EditorChangeSelection> = new EventEmitter()
   @Output() onContentChanged: EventEmitter<ContentChange> = new EventEmitter()
   @Output() onSelectionChanged: EventEmitter<SelectionChange> = new EventEmitter()
