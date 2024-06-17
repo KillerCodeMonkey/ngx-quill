@@ -47,3 +47,4 @@ testem.log
 Thumbs.db
 
 .angular
+.nx

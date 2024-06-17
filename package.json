@@ -23,8 +23,7 @@
     "url": "https://github.com/KillerCodeMonkey/ngx-quill"
   },
   "engines": {
-    "node": "18",
-    "npm": "9"
+    "node": "^16.14.0 || >=18.10.0"
   },
   "keywords": [
     "editor",
@@ -98,5 +97,8 @@
       "name": "Bengt Weiße"
     }
   ],
-  "version": "0.0.0"
+  "version": "0.0.0",
+  "volta": {
+    "node": "18.20.3"
+  }
 }
