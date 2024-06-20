@@ -2,6 +2,7 @@
 import { InjectionToken } from '@angular/core'
 
 import { defaultModules } from './quill-defaults'
+import type { QuillOptions } from 'quill'
 
 export interface CustomOption {
   import: string
@@ -76,10 +77,8 @@ export interface QuillConfig {
   modules?: QuillModules
   placeholder?: string
   readOnly?: boolean
-  registry?: Record<string, unknown> // added in quill2 result of const registry = new Parchment.Registry(); 
-  // scrollingContainer?: HTMLElement | string | null -->  removed in quill2
+  registry?: QuillOptions['registry'] // added in quill2 result of const registry = new Parchment.Registry(); 
   theme?: string
-  // strict?: boolean --> removed in quill2
   // Custom Config to track all changes or only changes by 'user'
   trackChanges?: 'user' | 'all'
   // provide default empty value

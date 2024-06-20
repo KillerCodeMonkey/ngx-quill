@@ -3,6 +3,7 @@ import { DOCUMENT, isPlatformServer } from '@angular/common'
 import { DomSanitizer } from '@angular/platform-browser'
 
 import type QuillType from 'quill'
+import type { QuillOptions } from 'quill'
 import type DeltaType from 'quill-delta'
 
 import {
@@ -95,7 +96,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   readonly sanitize = input<boolean | undefined>(false)
   readonly beforeRender = input<() => Promise<void> | undefined>(undefined)
   readonly styles = input<any>(null)
-  readonly registry = input<Record<string, unknown> | null | undefined>(
+  readonly registry = input<QuillOptions['registry']>(
     undefined
   )
   readonly bounds = input<HTMLElement | string | undefined>(undefined)
