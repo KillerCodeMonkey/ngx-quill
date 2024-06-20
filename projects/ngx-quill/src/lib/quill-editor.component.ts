@@ -286,12 +286,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         readOnly = this.service.config.readOnly !== undefined ? this.service.config.readOnly : false
       }
 
-      let defaultEmptyValue = this.defaultEmptyValue
-      // eslint-disable-next-line no-prototype-builtins
-      if (this.service.config.hasOwnProperty('defaultEmptyValue')) {
-        defaultEmptyValue = this.service.config.defaultEmptyValue
-      }
-
       let formats = this.formats()
       if (!formats && formats === undefined) {
         formats = this.service.config.formats ? [...this.service.config.formats] : (this.service.config.formats === null ? null : undefined)
@@ -305,7 +299,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
           modules,
           placeholder,
           readOnly,
-          defaultEmptyValue,
           registry: this.registry(),
           theme: this.theme() || (this.service.config.theme ? this.service.config.theme : 'snow')
         })
@@ -523,10 +516,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     if (changes.placeholder) {
       this.quillEditor.root.dataset.placeholder =
         changes.placeholder.currentValue
-    }
-    if (changes.defaultEmptyValue) {
-      this.quillEditor.root.dataset.defaultEmptyValue =
-        changes.defaultEmptyValue.currentValue
     }
     if (changes.styles) {
       const currentStyling = changes.styles.currentValue
