@@ -299,8 +299,8 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       this.zone.runOutsideAngular(() => {
         this.quillEditor = new Quill(this.editorElem, {
           bounds,
-          debug: debug as any,
-          formats: formats as any,
+          debug,
+          formats,
           modules,
           placeholder,
           readOnly,

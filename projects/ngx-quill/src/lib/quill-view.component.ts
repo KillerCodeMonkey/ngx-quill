@@ -140,8 +140,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
 
       let formats = this.formats()
       if (!formats && formats === undefined) {
-        formats = this.service.config.formats ?
-          Object.assign({}, this.service.config.formats) : (this.service.config.formats === null ? null : undefined)
+        formats = this.service.config.formats ? [...this.service.config.formats] : (this.service.config.formats === null ? null : undefined)
       }
       const theme = this.theme() || (this.service.config.theme ? this.service.config.theme : 'snow')
 
@@ -151,8 +150,8 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
 
       this.zone.runOutsideAngular(() => {
         this.quillEditor = new Quill(this.editorElem, {
-          debug: debug as any,
-          formats: formats as any,
+          debug,
+          formats,
           modules,
           readOnly: true,
           strict: this.strict(),
