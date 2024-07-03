@@ -93,7 +93,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   readonly required = input(false)
   readonly formats = input<string[] | null | undefined>(undefined)
   readonly customToolbarPosition = input<'top' | 'bottom'>('top')
-  readonly sanitize = input<boolean | undefined>(false)
+  readonly sanitize = input<boolean | undefined>(undefined)
   readonly beforeRender = input<() => Promise<void> | undefined>(undefined)
   readonly styles = input<any>(null)
   readonly registry = input<QuillOptions['registry']>(

@@ -31,7 +31,7 @@ import { NgClass } from '@angular/common'
 export class QuillViewHTMLComponent implements OnChanges {
   readonly content = input('')
   readonly theme = input<string | undefined>(undefined)
-  readonly sanitize = input<boolean | undefined>(false)
+  readonly sanitize = input<boolean | undefined>(undefined)
 
   readonly innerHTML = signal<SafeHtml>('')
   readonly themeClass = signal('ql-snow')
