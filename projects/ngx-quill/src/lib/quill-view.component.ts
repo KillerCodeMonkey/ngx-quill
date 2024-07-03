@@ -52,7 +52,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
   readonly modules = input<QuillModules | undefined>(undefined)
   readonly debug = input<'warn' | 'log' | 'error' | false>(false)
   readonly formats = input<string[] | null | undefined>(undefined)
-  readonly sanitize = input<boolean | undefined>(false)
+  readonly sanitize = input<boolean | undefined>(undefined)
   readonly beforeRender = input<() => Promise<void> | undefined>(undefined)
   readonly strict = input(true)
   readonly content = input<any>()
