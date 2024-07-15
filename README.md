@@ -457,7 +457,7 @@ As a helper `ngx-quill` provides a component where you can pass many options of 
 <quill-view [content]="content" format="text" theme="snow"></quill-view>
 ```
 
-### QuillViewHTMLComponent - Using angular [innerHTML]
+### QuillViewHTMLComponent - Using angular [innerHTML] (DEPRECATED with quill v2)
 
 Most of you will use the `html` format (even it is not recommended). To render custom html with angular you should use the `[innerHTML]` attribute.
 
@@ -465,6 +465,7 @@ But there are some pitfalls:
 
 1. You need to have the quill css files loaded, when using classes and not inline styling (https://quilljs.com/guides/how-to-customize-quill/#class-vs-inline)
 2. When using classes use a `div`-tag that has the `innerHTML` attribute and add the `ql-editor` class. Wrap your div in another `div`-tag with css classes `ql-container` and your theme, e.g. `ql-snow`.:
+3. With quill v2 ngx-quill is using `quill.getSemanticHTML()` to get html content. There some list tag information are stripped. (https://github.com/slab/quill/issues/4103) (https://github.com/KillerCodeMonkey/ngx-quill/issues/1888)
 
 ```HTML
 <div class="ql-container ql-snow" style="border-width: 0;">
