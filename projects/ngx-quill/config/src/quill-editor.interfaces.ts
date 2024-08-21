@@ -57,7 +57,7 @@ export interface QuillModules {
   syntax?: boolean | { hljs: any }
   table?: boolean | Record<string, unknown>
   toolbar?: QuillToolbarConfig | string | {
-    container?: string | string[] | QuillToolbarConfig
+    container?: string | string[] | Record<string, string[] | string>[] | QuillToolbarConfig
     handlers?: {
       [key: string]: any
     }
