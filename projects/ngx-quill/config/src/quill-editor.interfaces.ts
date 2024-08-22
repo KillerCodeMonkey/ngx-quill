@@ -77,7 +77,7 @@ export interface QuillConfig {
   modules?: QuillModules
   placeholder?: string
   readOnly?: boolean
-  registry?: QuillOptions['registry'] // added in quill2 result of const registry = new Parchment.Registry(); 
+  registry?: QuillOptions['registry'] // added in quill2 result of const registry = new Parchment.Registry();
   theme?: string
   // Custom Config to track all changes or only changes by 'user'
   trackChanges?: 'user' | 'all'
@@ -86,7 +86,7 @@ export interface QuillConfig {
   sanitize?: boolean
   // A function, which is executed before the Quill editor is rendered, this might be useful
   // for lazy-loading CSS.
-  beforeRender?: () => Promise<void>
+  beforeRender?: () => Promise<any>
 }
 
 export const QUILL_CONFIG_TOKEN = new InjectionToken<QuillConfig>('config', {
