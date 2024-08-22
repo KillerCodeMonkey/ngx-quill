@@ -1450,7 +1450,7 @@ describe('QuillEditor - beforeRender', () => {
   class BeforeRenderTestComponent {
     @ViewChild(QuillEditorComponent, { static: true }) editor!: QuillEditorComponent
 
-    beforeRender?: () => Promise<void>
+    beforeRender?: () => Promise<any>
   }
 
   let fixture: ComponentFixture<BeforeRenderTestComponent>
