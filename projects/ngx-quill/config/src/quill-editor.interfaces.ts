@@ -27,6 +27,7 @@ export interface CustomModule {
 }
 
 export type QuillToolbarConfig = Array<Array< string | {
+  [index: string]: string | number | boolean | Array<boolean | string | number>
   indent?: string
   list?: string
   direction?: string
@@ -57,7 +58,7 @@ export interface QuillModules {
   syntax?: boolean | { hljs: any }
   table?: boolean | Record<string, unknown>
   toolbar?: QuillToolbarConfig | string | {
-    container?: string | string[] | Record<string, string[] | string>[] | QuillToolbarConfig
+    container?: string | string[] | QuillToolbarConfig
     handlers?: {
       [key: string]: any
     }
