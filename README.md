@@ -33,7 +33,7 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
     </tr>
     <tr>
       <td>
-        v17
+        v17.1
       </td>
       <td>
         25.x (quill v2)
