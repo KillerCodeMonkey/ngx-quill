@@ -3,6 +3,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { includeIgnoreFile } from '@eslint/compat'
 
+import eslint from '@eslint/js'
 import angular from 'angular-eslint'
 import tseslint from 'typescript-eslint'
 import stylistic from '@stylistic/eslint-plugin'
@@ -27,13 +28,20 @@ export default tseslint.config(
   },
 
   {
-    name: 'global ts file rules',
+    name: 'angular ts recommended rules',
     files: ['**/*.ts'],
     plugins: {
       '@stylistic': stylistic,
     },
-    extends: [...tseslint.configs.recommended],
+    extends: [
+      eslint.configs.recommended,
+      ...tseslint.configs.recommended,
+      ...tseslint.configs.stylistic,
+      ...angular.configs.tsRecommended,
+    ],
     rules: {
+      '@angular-eslint/no-output-on-prefix': 'off',
+
       '@stylistic/no-multiple-empty-lines': [
         'error',
         {
@@ -57,6 +65,7 @@ export default tseslint.config(
           multilineDetection: 'brackets',
         },
       ],
+
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/naming-convention': [
@@ -70,19 +79,6 @@ export default tseslint.config(
           },
         },
       ],
-    },
-  },
-
-  {
-    name: 'angular ts recommended rules',
-    files: ['**/*.ts'],
-    extends: [...angular.configs.tsRecommended],
-    processor: angular.processInlineTemplates,
-    plugins: {
-      '@typescript-eslint': tseslint.plugin,
-    },
-    rules: {
-      '@angular-eslint/no-output-on-prefix': 'off',
     },
   },
 
