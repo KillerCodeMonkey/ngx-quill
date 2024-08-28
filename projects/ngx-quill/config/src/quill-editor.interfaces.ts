@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { InjectionToken } from '@angular/core'
 
 import { defaultModules } from './quill-defaults'

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DOCUMENT, isPlatformServer } from '@angular/common'
 import { DomSanitizer } from '@angular/platform-browser'
 
@@ -78,7 +77,6 @@ export type EditorChangeContent = ContentChange & { event: 'text-change' }
 export type EditorChangeSelection = SelectionChange & { event: 'selection-change' }
 
 @Directive()
-// eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class QuillEditorBase implements AfterViewInit, ControlValueAccessor, OnChanges, OnInit, OnDestroy, Validator {
   readonly format = input<'object' | 'html' | 'text' | 'json' | undefined>(
     undefined
@@ -185,7 +183,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     } else if (format === 'json') {
       try {
         modelValue = JSON.stringify(quillEditor.getContents())
-      } catch (e) {
+      } catch {
         modelValue = quillEditor.getText()
       }
     }
@@ -204,7 +202,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     } else if (format === 'json') {
       try {
         return JSON.parse(value)
-      } catch (e) {
+      } catch {
         return [{ insert: value }]
       }
     }
@@ -449,7 +447,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     })
   }
 
-  // eslint-disable-next-line max-len
   editorChangeHandler = (
     event: 'text-change' | 'selection-change',
     current: any | Range | null, old: any | Range | null, source: string
@@ -509,7 +506,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     if (!this.quillEditor) {
       return
     }
-    /* eslint-disable @typescript-eslint/dot-notation */
     if (changes.readOnly) {
       this.quillEditor.enable(!changes.readOnly.currentValue)
     }
@@ -549,7 +545,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     if (changes.debounceTime) {
       this.addQuillEventListeners()
     }
-    /* eslint-enable @typescript-eslint/dot-notation */
   }
 
   addClasses(classList: string): void {
@@ -743,13 +738,11 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     {
       multi: true,
       provide: NG_VALUE_ACCESSOR,
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       useExisting: forwardRef(() => QuillEditorComponent)
     },
     {
       multi: true,
       provide: NG_VALIDATORS,
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       useExisting: forwardRef(() => QuillEditorComponent)
     }
   ],
