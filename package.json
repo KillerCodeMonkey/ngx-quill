@@ -60,7 +60,6 @@
     "@angular/language-service": "^18.2.1",
     "@angular/localize": "^18.2.1",
     "@eslint/compat": "^1.1.1",
-    "@eslint/js": "^9.9.1",
     "@stylistic/eslint-plugin": "^2.6.4",
     "@types/jasmine": "^5.1.4",
     "@types/jasminewd2": "^2.0.13",
