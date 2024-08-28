@@ -58,7 +58,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
   readonly customModules = input<CustomModule[]>([])
   readonly customOptions = input<CustomOption[]>([])
 
-  @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
+  @Output() onEditorCreated = new EventEmitter<any>()
 
   quillEditor!: QuillType
   editorElem!: HTMLElement

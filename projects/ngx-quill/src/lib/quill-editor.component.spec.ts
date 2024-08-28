@@ -698,7 +698,7 @@ describe('Reactive forms integration', () => {
   })
 
   it('should leave form pristine when content of editor changed programmatically', async () => {
-    const values: Array<string | null> = []
+    const values: (string | null)[] = []
 
     fixture.detectChanges()
     await fixture.whenStable()

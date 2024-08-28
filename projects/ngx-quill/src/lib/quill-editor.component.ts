@@ -122,14 +122,14 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   */
   readonly defaultEmptyValue = input<any>(null)
 
-  @Output() onEditorCreated: EventEmitter<QuillType> = new EventEmitter()
-  @Output() onEditorChanged: EventEmitter<EditorChangeContent | EditorChangeSelection> = new EventEmitter()
-  @Output() onContentChanged: EventEmitter<ContentChange> = new EventEmitter()
-  @Output() onSelectionChanged: EventEmitter<SelectionChange> = new EventEmitter()
-  @Output() onFocus: EventEmitter<Focus> = new EventEmitter()
-  @Output() onBlur: EventEmitter<Blur> = new EventEmitter()
-  @Output() onNativeFocus: EventEmitter<Focus> = new EventEmitter()
-  @Output() onNativeBlur: EventEmitter<Blur> = new EventEmitter()
+  @Output() onEditorCreated = new EventEmitter<QuillType>()
+  @Output() onEditorChanged = new EventEmitter<EditorChangeContent | EditorChangeSelection>()
+  @Output() onContentChanged = new EventEmitter<ContentChange>()
+  @Output() onSelectionChanged = new EventEmitter<SelectionChange>()
+  @Output() onFocus = new EventEmitter<Focus>()
+  @Output() onBlur = new EventEmitter<Blur>()
+  @Output() onNativeFocus = new EventEmitter<Focus>()
+  @Output() onNativeBlur = new EventEmitter<Blur>()
 
   quillEditor!: QuillType
   editorElem!: HTMLElement
