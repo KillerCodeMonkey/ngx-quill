@@ -34,6 +34,14 @@ export default tseslint.config(
     },
     extends: [...tseslint.configs.recommended],
     rules: {
+      '@stylistic/no-multiple-empty-lines': [
+        'error',
+        {
+          max: 1,
+          maxBOF: 0,
+          maxEOF: 1,
+        },
+      ],
       '@stylistic/semi': ['error', 'never'],
       '@stylistic/member-delimiter-style': [
         'error',

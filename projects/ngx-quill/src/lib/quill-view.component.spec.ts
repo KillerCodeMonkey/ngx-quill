@@ -6,7 +6,6 @@ import { QuillViewComponent } from './quill-view.component'
 import { QuillModule } from './quill.module'
 import Quill from 'quill'
 
-
 class CustomModule {
   quill: Quill
   options: any

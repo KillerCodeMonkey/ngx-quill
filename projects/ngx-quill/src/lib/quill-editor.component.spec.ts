@@ -192,7 +192,6 @@ class CustomLinkPlaceholderTestComponent {
   content = ''
 }
 
-
 describe('Basic QuillEditorComponent', () => {
   let fixture: ComponentFixture<QuillEditorComponent>
 
@@ -740,7 +739,6 @@ describe('Reactive forms integration', () => {
   it('should write the defaultEmptyValue when editor is emptied', async () => {
     fixture.detectChanges()
     await fixture.whenStable()
-
 
     fixture.componentInstance.editor.quillEditor.setText('', 'user')
     fixture.detectChanges()
