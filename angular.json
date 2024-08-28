@@ -31,15 +31,6 @@
             "styles": [],
             "scripts": []
           }
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": [
-              "projects/ngx-quill/**/*.ts",
-              "projects/ngx-quill/**/*.html"
-            ]
-          }
         }
       }
     }
