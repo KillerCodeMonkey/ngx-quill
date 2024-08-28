@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { isPlatformServer } from '@angular/common'
 import type QuillType from 'quill'
 
@@ -59,7 +58,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
   readonly customModules = input<CustomModule[]>([])
   readonly customOptions = input<CustomOption[]>([])
 
-  @Output() onEditorCreated: EventEmitter<any> = new EventEmitter()
+  @Output() onEditorCreated = new EventEmitter<any>()
 
   quillEditor!: QuillType
   editorElem!: HTMLElement
@@ -92,7 +91,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
       } else if (format === 'json') {
         try {
           content = JSON.parse(value)
-        } catch (e) {
+        } catch {
           content = [{ insert: value }]
         }
       }

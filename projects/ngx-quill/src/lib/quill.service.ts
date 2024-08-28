@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DOCUMENT } from '@angular/common'
 import { Injectable, Inject, Injector, Optional } from '@angular/core'
 import { defer, firstValueFrom, isObservable, Observable } from 'rxjs'
@@ -15,7 +14,6 @@ import {
   providedIn: 'root',
 })
 export class QuillService {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   private Quill!: any
   private document: Document
   private quill$: Observable<any> = defer(async () => {
@@ -34,7 +32,6 @@ export class QuillService {
       // The `__zone_symbol__addEventListener` is basically a native DOM API, which is not patched by zone.js, thus not even going
       // through the `zone.js` task lifecycle. You can also access the native DOM API as follows `target[Zone.__symbol__('methodName')]`.
       this.document.addEventListener =
-        // eslint-disable-next-line @typescript-eslint/dot-notation
         this.document['__zone_symbol__addEventListener'] ||
         this.document.addEventListener
       const quillImport = await import('quill')

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { InjectionToken } from '@angular/core'
 
 import { defaultModules } from './quill-defaults'
@@ -26,19 +25,18 @@ export interface CustomModule {
   path: string
 }
 
-export type QuillToolbarConfig = Array<Array< string | {
+export type QuillToolbarConfig = (string | {
   indent?: string
   list?: string
   direction?: string
-  header?: number | Array<boolean | number>
+  header?: number | (boolean | number)[]
   color?: string[] | string
   background?: string[] | string
   align?: string[] | string
   script?: string
   font?: string[] | string
-  size?: Array<boolean | string>
-} | { [index: string]: string | number | boolean | Array<boolean | string | number> }
->>
+  size?: (boolean | string)[]
+} | Record<string, string | number | boolean | (boolean | string | number)[]>)[][]
 
 export interface QuillModules {
   [key: string]: any
@@ -58,9 +56,7 @@ export interface QuillModules {
   table?: boolean | Record<string, unknown>
   toolbar?: QuillToolbarConfig | string | {
     container?: string | string[] | QuillToolbarConfig
-    handlers?: {
-      [key: string]: any
-    }
+    handlers?: Record<string, any>
   } | boolean
 }
 

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {Component, Renderer2, ViewChild} from '@angular/core'
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing'
 import {defer} from 'rxjs'
@@ -15,7 +14,6 @@ window.setTimeout = ((cb) => {
   return 0
 }) as any
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 // const Quill = require('quill')
 
 class CustomModule {
@@ -194,7 +192,6 @@ class CustomLinkPlaceholderTestComponent {
   content = ''
 }
 
-
 describe('Basic QuillEditorComponent', () => {
   let fixture: ComponentFixture<QuillEditorComponent>
 
@@ -217,11 +214,9 @@ describe('Basic QuillEditorComponent', () => {
 
     expect(spy).toHaveBeenCalledTimes(3)
     const quillEditor: any = fixture.componentInstance.quillEditor
-    /* eslint-disable no-underscore-dangle */
     expect(quillEditor.emitter._events['editor-change'].length).toBe(4)
     expect(quillEditor.emitter._events['selection-change']).toBeInstanceOf(Object)
     expect(quillEditor.emitter._events['text-change']).toBeFalsy()
-    /* eslint-enable no-underscore-dangle */
   })
 
   it('should render toolbar', async () => {
@@ -703,7 +698,7 @@ describe('Reactive forms integration', () => {
   })
 
   it('should leave form pristine when content of editor changed programmatically', async () => {
-    const values: Array<string | null> = []
+    const values: (string | null)[] = []
 
     fixture.detectChanges()
     await fixture.whenStable()
@@ -744,7 +739,6 @@ describe('Reactive forms integration', () => {
   it('should write the defaultEmptyValue when editor is emptied', async () => {
     fixture.detectChanges()
     await fixture.whenStable()
-
 
     fixture.componentInstance.editor.quillEditor.setText('', 'user')
     fixture.detectChanges()
@@ -1355,7 +1349,6 @@ describe('QuillEditor - base config', () => {
       jasmine.objectContaining({attrName: 'size', keyName: 'font-size', scope: 5, whitelist: ['14']}), true, true
     )
 
-    // eslint-disable-next-line @typescript-eslint/dot-notation
     expect(fixture.componentInstance.editorComponent.quillEditor['options'].modules.toolbar)
       .toEqual(jasmine.objectContaining({
         container: [
@@ -1383,7 +1376,6 @@ describe('QuillEditor - customModules', () => {
     await fixture.whenStable()
 
     expect(spy).toHaveBeenCalled()
-    // eslint-disable-next-line @typescript-eslint/dot-notation
     expect(fixture.componentInstance.editor.quillEditor['options'].modules.custom).toBeDefined()
   })
 })
@@ -1406,7 +1398,6 @@ describe('QuillEditor - customModules (asynchronous)', () => {
     await fixture.whenStable()
 
     expect(spy).toHaveBeenCalled()
-    // eslint-disable-next-line @typescript-eslint/dot-notation
     expect(fixture.componentInstance.editor.quillEditor['options'].modules.custom).toBeDefined()
   })
 })
@@ -1436,7 +1427,6 @@ describe('QuillEditor - defaultEmptyValue', () => {
     fixture.detectChanges()
     await fixture.whenStable()
 
-    // eslint-disable-next-line @typescript-eslint/dot-notation
     expect(fixture.componentInstance.editor.defaultEmptyValue).toBeDefined()
   })
 })
