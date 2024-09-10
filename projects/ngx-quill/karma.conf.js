@@ -24,7 +24,7 @@ module.exports = function (config) {
       reporters: [
         { type: 'html', subdir: 'report-html' },
         { type: 'lcovonly', subdir: '.', file: 'report-lcovonly.txt' },
-        { type: 'text-summary', subdir: '.', file: 'text-summary.txt' },
+        { type: 'text-summary', subdir: '.', file: 'text-summary.txt' }
       ],
       check: {
         global: {
@@ -43,5 +43,5 @@ module.exports = function (config) {
     browsers: ['ChromeHeadless'],
     singleRun: false,
     restartOnFileChange: true
-  });
-};
+  })
+}

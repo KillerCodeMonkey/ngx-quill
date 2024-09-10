@@ -1,18 +1,20 @@
 // @ts-check
+import js from '@eslint/js'
+import json from '@eslint/json'
+import stylistic from '@stylistic/eslint-plugin'
+import angular from 'angular-eslint'
+import globals from 'globals'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { includeIgnoreFile } from '@eslint/compat'
-
-import angular from 'angular-eslint'
 import tseslint from 'typescript-eslint'
-import stylistic from '@stylistic/eslint-plugin'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-const gitignorePath = path.resolve(__dirname, '.gitignore')
 
 export default tseslint.config(
-  includeIgnoreFile(gitignorePath),
+  {
+    ignores: ['.nx', 'coverage', 'dist', '.angular', 'node_modules']
+  },
 
   {
     name: 'tsc options',
@@ -20,22 +22,22 @@ export default tseslint.config(
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        project: ['tsconfig.json', 'e2e/tsconfig.json'],
-        tsconfigRootDir: __dirname,
-      },
-    },
+        project: ['tsconfig.json', 'e2e/tsconfig.json', 'projects/ngx-quill/tsconfig.lib.json', 'projects/ngx-quill/tsconfig.spec.json'],
+        tsconfigRootDir: __dirname
+      }
+    }
   },
 
   {
     name: 'angular ts recommended rules',
     files: ['**/*.ts'],
     plugins: {
-      '@stylistic': stylistic,
+      '@stylistic': stylistic
     },
     extends: [
       ...tseslint.configs.recommended,
       ...tseslint.configs.stylistic,
-      ...angular.configs.tsRecommended,
+      ...angular.configs.tsRecommended
     ],
     rules: {
       '@angular-eslint/no-output-on-prefix': 'off',
@@ -45,8 +47,8 @@ export default tseslint.config(
         {
           max: 1,
           maxBOF: 0,
-          maxEOF: 1,
-        },
+          maxEOF: 1
+        }
       ],
       '@stylistic/semi': ['error', 'never'],
       '@stylistic/member-delimiter-style': [
@@ -54,14 +56,14 @@ export default tseslint.config(
         {
           multiline: {
             delimiter: 'none',
-            requireLast: true,
+            requireLast: true
           },
           singleline: {
             delimiter: 'semi',
-            requireLast: false,
+            requireLast: false
           },
-          multilineDetection: 'brackets',
-        },
+          multilineDetection: 'brackets'
+        }
       ],
 
       '@typescript-eslint/no-explicit-any': 'off',
@@ -73,11 +75,11 @@ export default tseslint.config(
           format: ['camelCase'],
           filter: {
             regex: '^Quill$',
-            match: false,
-          },
-        },
-      ],
-    },
+            match: false
+          }
+        }
+      ]
+    }
   },
 
   {
@@ -85,10 +87,85 @@ export default tseslint.config(
     files: ['**/*.html'],
     extends: [
       ...angular.configs.templateRecommended,
-      ...angular.configs.templateAccessibility,
+      ...angular.configs.templateAccessibility
     ],
     rules: {
-      '@angular-eslint/template/no-negated-async': 'off',
-    },
+      '@angular-eslint/template/no-negated-async': 'off'
+    }
   },
+
+  {
+    name: 'JS',
+    files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
+    plugins: {
+      js,
+      '@stylistic': stylistic
+    },
+    extends: [js.configs.recommended, stylistic.configs['recommended-flat']],
+    languageOptions: {
+      globals: {
+        ...globals.node
+      }
+    },
+    rules: {
+      '@stylistic/no-multiple-empty-lines': [
+        'error',
+        {
+          max: 1,
+          maxBOF: 0,
+          maxEOF: 1
+        }
+      ],
+      '@stylistic/semi': ['error', 'never'],
+      '@stylistic/member-delimiter-style': [
+        'error',
+        {
+          multiline: {
+            delimiter: 'none',
+            requireLast: true
+          },
+          singleline: {
+            delimiter: 'semi',
+            requireLast: false
+          },
+          multilineDetection: 'brackets'
+        }
+      ],
+      '@stylistic/comma-dangle': ['error', 'never']
+    }
+  },
+
+  // lint JSON files
+  {
+    files: ['**/*.json'],
+    plugins: {
+      json,
+      '@stylistic': stylistic
+    },
+    ignores: ['package-lock.json'],
+    language: 'json/json',
+    extends: [json.configs.recommended]
+  },
+
+  // lint JSONC files
+  {
+    files: ['**/*.jsonc'],
+    plugins: {
+      json,
+      '@stylistic': stylistic
+    },
+    language: 'json/jsonc',
+    extends: [json.configs.recommended]
+  },
+
+  // lint JSON5 files
+  {
+    files: ['**/*.json5'],
+    plugins: {
+      json,
+      '@stylistic': stylistic
+    },
+    language: 'json/json5',
+    extends: [json.configs.recommended]
+  }
 )

@@ -1,0 +1,14 @@
+{
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "editor.formatOnSave": true,
+  "eslint.format.enable": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit",
+    "source.fixAll.eslint": "explicit"
+  },
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": "**/.github/workflows/*.yml"
+  },
+  "prettier.enable": false
+}
