@@ -1,13 +1,13 @@
-import {Component, Renderer2, ViewChild} from '@angular/core'
-import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing'
-import {defer} from 'rxjs'
+import { Component, Renderer2, ViewChild } from '@angular/core'
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing'
+import { defer } from 'rxjs'
 
-import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms'
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms'
 
-import {QuillEditorComponent} from './quill-editor.component'
+import { QuillEditorComponent } from './quill-editor.component'
 
 import Quill from 'quill'
-import {QuillModule} from './quill.module'
+import { QuillModule } from './quill.module'
 
 window.setTimeout = ((cb) => {
   cb()
@@ -276,7 +276,7 @@ describe('Formats', () => {
 
       await fixture.whenStable()
       await fixture.whenStable()
-      expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hello\n'}]}))
+      expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ ops: [{ insert: 'Hello\n' }] }))
     })
 
     it('should update text', async () => {
@@ -286,7 +286,7 @@ describe('Formats', () => {
       fixture.detectChanges()
 
       await fixture.whenStable()
-      expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: '1234\n'}]}))
+      expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ ops: [{ insert: '1234\n' }] }))
     })
 
     it('should update model if editor text changes', async () => {
@@ -297,7 +297,7 @@ describe('Formats', () => {
       fixture.detectChanges()
 
       await fixture.whenStable()
-      expect(JSON.stringify(component.title)).toEqual(JSON.stringify({ops: [{insert: '123\n'}]}))
+      expect(JSON.stringify(component.title)).toEqual(JSON.stringify({ ops: [{ insert: '123\n' }] }))
     })
   })
 
@@ -373,13 +373,13 @@ unordered`)
       const incomponent = sanfixture.componentInstance
 
       expect(JSON.stringify(incomponent.editor.getContents()))
-      .toEqual(JSON.stringify({ops: [{insert: 'Hallo ' }, {insert: {image: 'wroooong.jpg'}}, {insert: '\n'}]}))
+      .toEqual(JSON.stringify({ ops: [{ insert: 'Hallo ' }, { insert: { image: 'wroooong.jpg' } }, { insert: '\n' }] }))
 
       incomponent.title = '<p><img src="xxxx" onerror="window.alert()"></p>'
       sanfixture.detectChanges()
 
       await sanfixture.whenStable()
-      expect(JSON.stringify(incomponent.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: {image: 'xxxx'}}, {insert: '\n'}]}))
+      expect(JSON.stringify(incomponent.editor.getContents())).toEqual(JSON.stringify({ ops: [{ insert: { image: 'xxxx' } }, { insert: '\n' }] }))
     })
   })
 
@@ -495,7 +495,7 @@ unordered`)
     })
 
     it('should set json string', async () => {
-      expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hallo\n'}]}))
+      expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ ops: [{ insert: 'Hallo\n' }] }))
     })
 
     it('should update json string', async () => {
@@ -504,7 +504,7 @@ unordered`)
       }])
       fixture.detectChanges()
       await fixture.whenStable()
-      expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hallo 123\n'}]}))
+      expect(JSON.stringify(component.editor.getContents())).toEqual(JSON.stringify({ ops: [{ insert: 'Hallo 123\n' }] }))
     })
 
     it('should update model if editor changes', async () => {
@@ -514,7 +514,7 @@ unordered`)
       fixture.detectChanges()
       await fixture.whenStable()
 
-      expect(component.title).toEqual(JSON.stringify({ops: [{insert: 'Hallo 123\n'}]}))
+      expect(component.title).toEqual(JSON.stringify({ ops: [{ insert: 'Hallo 123\n' }] }))
     })
 
     it('should set as text if invalid JSON', async () => {
@@ -1343,10 +1343,14 @@ describe('QuillEditor - base config', () => {
     fixture.detectChanges()
 
     expect(JSON.stringify(fixture.componentInstance.title))
-      .toEqual(JSON.stringify({ ops: [{ attributes: { bold: true }, insert: 'content'}, {insert: '\n'}] }))
+      .toEqual(JSON.stringify({ ops: [{ attributes: { bold: true },
+insert: 'content' }, { insert: '\n' }] }))
     expect(editor.root.dataset.placeholder).toEqual('placeholder')
     expect(registerSpy).toHaveBeenCalledWith(
-      jasmine.objectContaining({attrName: 'size', keyName: 'font-size', scope: 5, whitelist: ['14']}), true, true
+      jasmine.objectContaining({ attrName: 'size',
+keyName: 'font-size',
+scope: 5,
+whitelist: ['14'] }), true, true
     )
 
     expect(fixture.componentInstance.editorComponent.quillEditor['options'].modules.toolbar)

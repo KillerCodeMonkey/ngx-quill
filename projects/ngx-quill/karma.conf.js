@@ -22,9 +22,14 @@ module.exports = function (config) {
     coverageReporter: {
       dir: require('path').join(__dirname, '../../coverage/ngx-quill'),
       reporters: [
-        { type: 'html', subdir: 'report-html' },
-        { type: 'lcovonly', subdir: '.', file: 'report-lcovonly.txt' },
-        { type: 'text-summary', subdir: '.', file: 'text-summary.txt' }
+        { type: 'html',
+          subdir: 'report-html' },
+        { type: 'lcovonly',
+          subdir: '.',
+          file: 'report-lcovonly.txt' },
+        { type: 'text-summary',
+          subdir: '.',
+          file: 'text-summary.txt' }
       ],
       check: {
         global: {

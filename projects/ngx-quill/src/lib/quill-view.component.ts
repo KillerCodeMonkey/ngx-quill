@@ -87,7 +87,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
         if (sanitize) {
           value = this.domSanitizer.sanitize(SecurityContext.HTML, value)
         }
-        content = quillEditor.clipboard.convert({html: value})
+        content = quillEditor.clipboard.convert({ html: value })
       } else if (format === 'json') {
         try {
           content = JSON.parse(value)

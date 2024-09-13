@@ -88,7 +88,7 @@ describe('Formats', () => {
       const component = fixture.componentInstance
 
       await fixture.whenStable()
-      expect(JSON.stringify(component.view!.quillEditor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hello\n'}]}))
+      expect(JSON.stringify(component.view!.quillEditor.getContents())).toEqual(JSON.stringify({ ops: [{ insert: 'Hello\n' }] }))
     })
 
     it('should update object content', async () => {
@@ -98,7 +98,7 @@ describe('Formats', () => {
       fixture.detectChanges()
 
       await fixture.whenStable()
-      expect(JSON.stringify(component.view!.quillEditor.getContents())).toEqual(JSON.stringify({ops: [{insert: '1234\n'}]}))
+      expect(JSON.stringify(component.view!.quillEditor.getContents())).toEqual(JSON.stringify({ ops: [{ insert: '1234\n' }] }))
     })
   })
 
@@ -220,7 +220,7 @@ describe('Formats', () => {
       await fixture.whenStable()
       await fixture.whenStable()
 
-      expect(JSON.stringify(component.view!.quillEditor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hallo\n'}]}))
+      expect(JSON.stringify(component.view!.quillEditor.getContents())).toEqual(JSON.stringify({ ops: [{ insert: 'Hallo\n' }] }))
     })
 
     it('should update json string', async () => {
@@ -233,7 +233,7 @@ describe('Formats', () => {
       fixture.detectChanges()
       await fixture.whenStable()
 
-      expect(JSON.stringify(component.view!.quillEditor.getContents())).toEqual(JSON.stringify({ops: [{insert: 'Hallo 123\n'}]}))
+      expect(JSON.stringify(component.view!.quillEditor.getContents())).toEqual(JSON.stringify({ ops: [{ insert: 'Hallo 123\n' }] }))
     })
   })
 })
@@ -246,7 +246,7 @@ describe('Advanced QuillViewComponent', () => {
   `
   })
   class AdvancedComponent {
-    @ViewChild(QuillViewComponent, {static: true}) view: QuillViewComponent | undefined
+    @ViewChild(QuillViewComponent, { static: true }) view: QuillViewComponent | undefined
     content = '<p>Hallo</p>'
     quillEditor: any
 
