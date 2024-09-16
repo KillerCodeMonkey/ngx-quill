@@ -65,6 +65,9 @@ export default tseslint.config(
           multilineDetection: 'brackets'
         }
       ],
+      '@stylistic/object-property-newline': ['error'],
+      '@stylistic/object-curly-newline': ['error'],
+      '@stylistic/object-curly-spacing': ['error', 'always'],
 
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-non-null-assertion': 'off',
@@ -131,7 +134,10 @@ export default tseslint.config(
           multilineDetection: 'brackets'
         }
       ],
-      '@stylistic/comma-dangle': ['error', 'never']
+      '@stylistic/comma-dangle': ['error', 'never'],
+      '@stylistic/object-property-newline': ['error'],
+      '@stylistic/object-curly-newline': ['error'],
+      '@stylistic/object-curly-spacing': ['error', 'always']
     }
   },
 

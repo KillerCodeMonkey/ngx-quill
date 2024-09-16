@@ -13,7 +13,8 @@ export class QuillConfigModule {
   static forRoot(config: QuillConfig): ModuleWithProviders<QuillConfigModule> {
     return {
       ngModule: QuillConfigModule,
-      providers: [{ provide: QUILL_CONFIG_TOKEN, useValue: config }],
+      providers: [{ provide: QUILL_CONFIG_TOKEN,
+useValue: config }],
     }
   }
 }

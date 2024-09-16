@@ -1,13 +1,13 @@
 import { DOCUMENT } from '@angular/common'
-import { Injectable, Inject, Injector, Optional } from '@angular/core'
+import { Inject, Injectable, Injector, Optional } from '@angular/core'
 import { defer, firstValueFrom, isObservable, Observable } from 'rxjs'
 import { shareReplay } from 'rxjs/operators'
 
 import {
+  CustomModule,
   defaultModules,
   QUILL_CONFIG_TOKEN,
   QuillConfig,
-  CustomModule,
 } from 'ngx-quill/config'
 
 @Injectable({
@@ -59,7 +59,8 @@ export class QuillService {
       this.config.customModules,
       this.config.suppressGlobalRegisterWarning
     )
-  }).pipe(shareReplay({ bufferSize: 1, refCount: true }))
+  }).pipe(shareReplay({ bufferSize: 1,
+refCount: true }))
 
   constructor(
     injector: Injector,

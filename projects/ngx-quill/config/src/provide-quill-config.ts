@@ -11,4 +11,5 @@ import { QUILL_CONFIG_TOKEN, QuillConfig } from './quill-editor.interfaces'
  * ```
  */
 export const provideQuillConfig = (config: QuillConfig): EnvironmentProviders =>
-  makeEnvironmentProviders([{ provide: QUILL_CONFIG_TOKEN, useValue: config }])
+  makeEnvironmentProviders([{ provide: QUILL_CONFIG_TOKEN,
+useValue: config }])
