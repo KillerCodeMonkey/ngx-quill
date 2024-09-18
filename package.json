@@ -94,7 +94,7 @@
       "name": "Bengt Weiße"
     }
   ],
-  "version": "0.0.0",
+  "version": "1.0.0",
   "volta": {
     "node": "20.13.1"
   }
