@@ -34,12 +34,12 @@ import { debounceTime, mergeMap } from 'rxjs/operators'
 
 import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator } from '@angular/forms'
 
-import { defaultModules, QuillModules, CustomOption, CustomModule } from 'ngx-quill/config'
+import { CustomModule, CustomOption, defaultModules, QuillModules } from 'ngx-quill/config'
 
+import type History from 'quill/modules/history'
+import type Toolbar from 'quill/modules/toolbar'
 import { getFormat, raf$ } from './helpers'
 import { QuillService } from './quill.service'
-import type Toolbar from 'quill/modules/toolbar'
-import type History from 'quill/modules/history'
 
 export interface Range {
   index: number
