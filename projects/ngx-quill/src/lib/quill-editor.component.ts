@@ -303,17 +303,19 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
         if (this.onNativeBlur.observed) {
           // https://github.com/quilljs/quill/issues/2186#issuecomment-533401328
-          this.quillEditor.scroll.domNode.addEventListener('blur', () => this.onNativeBlur.next({
+          fromEvent(this.quillEditor.scroll.domNode, 'blur').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.onNativeBlur.next({
             editor: this.quillEditor,
             source: 'dom'
           }))
           // https://github.com/quilljs/quill/issues/2186#issuecomment-803257538
           const toolbar = this.quillEditor.getModule('toolbar') as Toolbar
-          toolbar.container?.addEventListener('mousedown', (e) =>  e.preventDefault())
+          if (toolbar.container) {
+            fromEvent(toolbar.container, 'mousedown').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(e => e.preventDefault())
+          }
         }
 
         if (this.onNativeFocus.observed) {
-          this.quillEditor.scroll.domNode.addEventListener('focus', () => this.onNativeFocus.next({
+          fromEvent(this.quillEditor.scroll.domNode, 'focus').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.onNativeFocus.next({
             editor: this.quillEditor,
             source: 'dom'
           }))
@@ -340,7 +342,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
           this.quillEditor.setContents(newValue, 'silent')
         }
 
-        const history  = this.quillEditor.getModule('history') as History
+        const history = this.quillEditor.getModule('history') as History
         history.clear()
       }
 
@@ -769,4 +771,4 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   ],
   standalone: true
 })
-export class QuillEditorComponent extends QuillEditorBase {}
+export class QuillEditorComponent extends QuillEditorBase { }
