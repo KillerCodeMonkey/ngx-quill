@@ -34,7 +34,7 @@ import { debounceTime, mergeMap } from 'rxjs/operators'
 
 import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator } from '@angular/forms'
 
-import { CustomModule, CustomOption, defaultModules, QuillModules } from 'ngx-quill/config'
+import { CustomModule, CustomOption, defaultModules, QuillBeforeRender, QuillModules } from 'ngx-quill/config'
 
 import type History from 'quill/modules/history'
 import type Toolbar from 'quill/modules/toolbar'
@@ -92,7 +92,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   readonly formats = input<string[] | null | undefined>(undefined)
   readonly customToolbarPosition = input<'top' | 'bottom'>('top')
   readonly sanitize = input<boolean | undefined>(undefined)
-  readonly beforeRender = input<() => Promise<any> | undefined>(undefined)
+  readonly beforeRender = input<QuillBeforeRender>(undefined)
   readonly styles = input<any>(null)
   readonly registry = input<QuillOptions['registry']>(
     undefined
@@ -223,14 +223,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     // this will lead to runtime exceptions, since the code will be executed on DOM nodes that don't exist within the tree.
 
     this.quillSubscription = this.service.getQuill().pipe(
-      mergeMap((Quill) => {
-        const promises = [this.service.registerCustomModules(Quill, this.customModules())]
-        const beforeRender = this.beforeRender() ?? this.service.config.beforeRender
-        if (beforeRender) {
-          promises.push(beforeRender())
-        }
-        return Promise.all(promises).then(() => Quill)
-      })
+      mergeMap((Quill) => this.service.beforeRender(Quill, this.customModules(), this.beforeRender()))
     ).subscribe(Quill => {
       this.editorElem = this.elementRef.nativeElement.querySelector(
         '[quill-editor-element]'

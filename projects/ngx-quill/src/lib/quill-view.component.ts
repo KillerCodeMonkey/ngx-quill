@@ -4,31 +4,31 @@ import type QuillType from 'quill'
 import {
   AfterViewInit,
   Component,
+  DestroyRef,
   ElementRef,
+  EventEmitter,
   Inject,
+  NgZone,
   OnChanges,
+  OnDestroy,
+  Output,
   PLATFORM_ID,
   Renderer2,
+  SecurityContext,
   SimpleChanges,
   ViewEncapsulation,
-  NgZone,
-  SecurityContext,
-  OnDestroy,
-  input,
-  EventEmitter,
-  Output,
   inject,
-  DestroyRef
+  input
 } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
-import { Subscription } from 'rxjs'
+import { DomSanitizer } from '@angular/platform-browser'
+import type { Subscription } from 'rxjs'
 import { mergeMap } from 'rxjs/operators'
 
-import { CustomOption, CustomModule, QuillModules } from 'ngx-quill/config'
+import { CustomModule, CustomOption, QuillBeforeRender, QuillModules } from 'ngx-quill/config'
 
 import { getFormat, raf$ } from './helpers'
 import { QuillService } from './quill.service'
-import { DomSanitizer } from '@angular/platform-browser'
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -52,7 +52,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
   readonly debug = input<'warn' | 'log' | 'error' | false>(false)
   readonly formats = input<string[] | null | undefined>(undefined)
   readonly sanitize = input<boolean | undefined>(undefined)
-  readonly beforeRender = input<() => Promise<any> | undefined>(undefined)
+  readonly beforeRender = input<QuillBeforeRender>()
   readonly strict = input(true)
   readonly content = input<any>()
   readonly customModules = input<CustomModule[]>([])
@@ -74,7 +74,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
     protected service: QuillService,
     protected domSanitizer: DomSanitizer,
     @Inject(PLATFORM_ID) protected platformId: any,
-  ) {}
+  ) { }
 
   valueSetter = (quillEditor: QuillType, value: any): any => {
     const format = getFormat(this.format(), this.service.config.format)
@@ -114,14 +114,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
     }
 
     this.quillSubscription = this.service.getQuill().pipe(
-      mergeMap((Quill) => {
-        const promises = [this.service.registerCustomModules(Quill, this.customModules())]
-        const beforeRender = this.beforeRender() ?? this.service.config.beforeRender
-        if (beforeRender) {
-          promises.push(beforeRender())
-        }
-        return Promise.all(promises).then(() => Quill)
-      })
+      mergeMap((Quill) => this.service.beforeRender(Quill, this.customModules(), this.beforeRender()))
     ).subscribe(Quill => {
       const modules = Object.assign({}, this.modules() || this.service.config.modules)
       modules.toolbar = false

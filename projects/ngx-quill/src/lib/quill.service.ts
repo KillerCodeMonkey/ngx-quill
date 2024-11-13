@@ -1,21 +1,25 @@
 import { DOCUMENT } from '@angular/common'
-import { Inject, Injectable, Injector, Optional } from '@angular/core'
-import { defer, firstValueFrom, isObservable, Observable } from 'rxjs'
-import { shareReplay } from 'rxjs/operators'
+import { inject, Injectable } from '@angular/core'
+import { defer, firstValueFrom, forkJoin, from, isObservable, Observable, of } from 'rxjs'
+import { map, shareReplay, tap } from 'rxjs/operators'
 
 import {
   CustomModule,
   defaultModules,
   QUILL_CONFIG_TOKEN,
-  QuillConfig,
+  QuillConfig
 } from 'ngx-quill/config'
 
 @Injectable({
   providedIn: 'root',
 })
 export class QuillService {
+  readonly config = inject(QUILL_CONFIG_TOKEN) || { modules:defaultModules } as QuillConfig
+
+  private document = inject(DOCUMENT)
+
   private Quill!: any
-  private document: Document
+
   private quill$: Observable<any> = defer(async () => {
     if (!this.Quill) {
       // Quill adds events listeners on import https://github.com/quilljs/quill/blob/develop/core/emitter.js#L8
@@ -54,54 +58,74 @@ export class QuillService {
       )
     })
 
-    return await this.registerCustomModules(
+    return firstValueFrom(this.registerCustomModules(
       this.Quill,
       this.config.customModules,
       this.config.suppressGlobalRegisterWarning
-    )
-  }).pipe(shareReplay({ bufferSize: 1,
-refCount: true }))
+    ))
+  }).pipe(
+    shareReplay({
+      bufferSize: 1,
+      refCount: false
+    })
+  )
 
-  constructor(
-    injector: Injector,
-    @Optional() @Inject(QUILL_CONFIG_TOKEN) public config: QuillConfig
-  ) {
-    this.document = injector.get(DOCUMENT)
-
-    if (!this.config) {
-      this.config = { modules: defaultModules }
-    }
-  }
+  // A list of custom modules that have already been registered,
+  // so we don’t need to await their implementation.
+  private registeredModules = new Set<string>()
 
   getQuill() {
     return this.quill$
   }
 
-  /**
-   * Marked as internal so it won't be available for `ngx-quill` consumers, this is only
-   * internal method to be used within the library.
-   *
-   * @internal
-   */
-  async registerCustomModules(
+  /** @internal */
+  beforeRender(Quill: any, customModules: CustomModule[] | undefined, beforeRender = this.config.beforeRender) {
+    // This function is called each time the editor needs to be rendered,
+    // so it operates individually per component. If no custom module needs to be
+    // registered and no `beforeRender` function is provided, it will emit
+    // immediately and proceed with the rendering.
+    const sources = [this.registerCustomModules(Quill, customModules)]
+    if (beforeRender) {
+      sources.push(from(beforeRender()))
+    }
+    return forkJoin(sources).pipe(map(() => Quill))
+  }
+
+  /** @internal */
+  private registerCustomModules(
     Quill: any,
     customModules: CustomModule[] | undefined,
     suppressGlobalRegisterWarning?: boolean
-  ): Promise<any> {
-    if (Array.isArray(customModules)) {
-      // eslint-disable-next-line prefer-const
-      for (let { implementation, path } of customModules) {
-        // The `implementation` might be an observable that resolves the actual implementation,
-        // e.g. if it should be lazy loaded.
-        if (isObservable(implementation)) {
-          implementation = await firstValueFrom(implementation)
-        }
-        Quill.register(path, implementation, suppressGlobalRegisterWarning)
+  ) {
+    if (!Array.isArray(customModules)) {
+      return of(Quill)
+    }
+
+    const sources: Observable<unknown>[] = []
+
+    for (const customModule of customModules) {
+      const { path, implementation: maybeImplementation } = customModule
+
+      // If the module is already registered, proceed to the next module...
+      if (this.registeredModules.has(path)) {
+        continue
+      }
+
+      this.registeredModules.add(path)
+
+      if (isObservable(maybeImplementation)) {
+        // If the implementation is an observable, we will wait for it to load and
+        // then register it with Quill. The caller will wait until the module is registered.
+        sources.push(maybeImplementation.pipe(
+          tap((implementation) => {
+            Quill.register(path, implementation, suppressGlobalRegisterWarning)
+          })
+        ))
+      } else {
+        Quill.register(path, maybeImplementation, suppressGlobalRegisterWarning)
       }
     }
 
-    // Return `Quill` constructor so we'll be able to re-use its return value except of using
-    // `map` operators, etc.
-    return Quill
+    return sources.length > 0 ? forkJoin(sources).pipe(map(() => Quill)) : of(Quill)
   }
 }

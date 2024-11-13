@@ -1,7 +1,8 @@
 import { InjectionToken } from '@angular/core'
+import type { QuillOptions } from 'quill'
+import type { Observable } from 'rxjs'
 
 import { defaultModules } from './quill-defaults'
-import type { QuillOptions } from 'quill'
 
 export interface CustomOption {
   import: string
@@ -62,6 +63,8 @@ export interface QuillModules {
 
 export type QuillFormat = 'object' | 'json' | 'html' | 'text'
 
+export type QuillBeforeRender = (() => Promise<any>) | (() => Observable<any>)
+
 export interface QuillConfig {
   bounds?: HTMLElement | string
   customModules?: CustomModule[]
@@ -82,7 +85,7 @@ export interface QuillConfig {
   sanitize?: boolean
   // A function, which is executed before the Quill editor is rendered, this might be useful
   // for lazy-loading CSS.
-  beforeRender?: () => Promise<any>
+  beforeRender?: QuillBeforeRender
 }
 
 export const QUILL_CONFIG_TOKEN = new InjectionToken<QuillConfig>('config', {
