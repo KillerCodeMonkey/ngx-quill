@@ -1457,7 +1457,7 @@ describe('QuillEditor - beforeRender', () => {
       imports: [QuillModule.forRoot(config)],
     })
 
-    spyOn(config, 'beforeRender')
+    spyOn(config, 'beforeRender').and.callThrough()
 
     fixture = TestBed.createComponent(BeforeRenderTestComponent)
     fixture.detectChanges()
@@ -1474,11 +1474,11 @@ describe('QuillEditor - beforeRender', () => {
       imports: [QuillModule.forRoot(config)],
     })
 
-    spyOn(config, 'beforeRender')
+    spyOn(config, 'beforeRender').and.callThrough()
 
     fixture = TestBed.createComponent(BeforeRenderTestComponent)
     fixture.componentInstance.beforeRender = () => Promise.resolve()
-    spyOn(fixture.componentInstance, 'beforeRender')
+    spyOn(fixture.componentInstance, 'beforeRender').and.callThrough()
     fixture.detectChanges()
     await fixture.whenStable()
 
