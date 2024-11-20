@@ -3,8 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing'
 
 import { QuillViewComponent } from './quill-view.component'
 
-import { QuillModule } from './quill.module'
 import Quill from 'quill'
+import { QuillModule } from './quill.module'
 
 class CustomModule {
   quill: Quill
@@ -56,6 +56,7 @@ describe('Basic QuillViewComponent', () => {
 describe('Formats', () => {
   describe('object', () => {
     @Component({
+      imports: [QuillModule],
       template: `
     <quill-view [content]="content" [customModules]="[{path: 'modules/test', implementation: impl}]" format="object"></quill-view>
     `
@@ -75,7 +76,7 @@ describe('Formats', () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        declarations: [ObjectComponent],
+        declarations: [],
         imports: [QuillModule],
         providers: QuillModule.forRoot().providers
       })
@@ -104,6 +105,7 @@ describe('Formats', () => {
 
   describe('html', () => {
     @Component({
+      imports: [QuillModule],
       template: `
     <quill-view [content]="content" format="html"></quill-view>
     `
@@ -119,7 +121,7 @@ describe('Formats', () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        declarations: [HTMLComponent],
+        declarations: [],
         imports: [QuillModule],
         providers: QuillModule.forRoot().providers
       })
@@ -147,6 +149,7 @@ describe('Formats', () => {
 
   describe('text', () => {
     @Component({
+      imports: [QuillModule],
       template: `
     <quill-view [content]="content" format="text"></quill-view>
     `
@@ -162,7 +165,7 @@ describe('Formats', () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        declarations: [TextComponent],
+        declarations: [],
         imports: [QuillModule],
         providers: QuillModule.forRoot().providers
       })
@@ -189,6 +192,7 @@ describe('Formats', () => {
 
   describe('json', () => {
     @Component({
+      imports: [QuillModule],
       template: `
     <quill-view [content]="content" format="json"></quill-view>
     `
@@ -206,7 +210,7 @@ describe('Formats', () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        declarations: [JSONComponent],
+        declarations: [],
         imports: [QuillModule],
         providers: QuillModule.forRoot().providers
       })
@@ -241,6 +245,7 @@ describe('Formats', () => {
 describe('Advanced QuillViewComponent', () => {
 
   @Component({
+    imports: [QuillModule],
     template: `
   <quill-view [content]="content" format="html" (onEditorCreated)="handleEditorCreated($event)"></quill-view>
   `
@@ -260,7 +265,7 @@ describe('Advanced QuillViewComponent', () => {
   beforeEach(async () => {
 
     TestBed.configureTestingModule({
-      declarations: [AdvancedComponent],
+      declarations: [],
       imports: [QuillModule],
       providers: QuillModule.forRoot().providers
     }).compileComponents()

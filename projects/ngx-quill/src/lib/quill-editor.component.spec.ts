@@ -27,6 +27,7 @@ class CustomModule {
 }
 
 @Component({
+  imports: [QuillModule, FormsModule],
   selector: 'quill-test',
   template: `
 <quill-editor
@@ -92,6 +93,7 @@ class TestComponent {
 }
 
 @Component({
+  imports: [FormsModule, QuillModule],
   selector: 'quill-toolbar-test',
   template: `
 <quill-editor
@@ -143,6 +145,7 @@ class TestToolbarComponent {
 }
 
 @Component({
+  imports: [QuillModule, ReactiveFormsModule],
   selector: 'quill-reactive-test',
   template: `
     <quill-editor [formControl]='formControl' [minLength]='minLength'></quill-editor>
@@ -155,6 +158,7 @@ class ReactiveFormTestComponent {
 }
 
 @Component({
+  imports: [QuillModule],
   selector: 'quill-module-test',
   template: `
     <quill-editor [modules]="{custom: true}" [customModules]="[{path: 'modules/custom', implementation: impl}]"></quill-editor>
@@ -166,6 +170,7 @@ class CustomModuleTestComponent {
 }
 
 @Component({
+  imports: [QuillModule],
   selector: 'quill-async-module-test',
   template: `
     <quill-editor [modules]="{custom: true}" [customModules]="customModules"></quill-editor>
@@ -182,6 +187,7 @@ class CustomAsynchronousModuleTestComponent {
 }
 
 @Component({
+  imports: [QuillModule, FormsModule],
   selector: 'quill-link-placeholder-test',
   template: `
     <quill-editor [ngModel]="content" [linkPlaceholder]="'https://test.de'"></quill-editor>
@@ -198,7 +204,7 @@ describe('Basic QuillEditorComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        QuillModule
+
       ],
       providers: QuillModule.forRoot().providers
     })
@@ -243,6 +249,7 @@ describe('Basic QuillEditorComponent', () => {
 describe('Formats', () => {
   describe('object', () => {
     @Component({
+      imports: [QuillModule, FormsModule],
       template: `
     <quill-editor [(ngModel)]="title" format="object" (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
     `
@@ -262,8 +269,8 @@ describe('Formats', () => {
 
     beforeEach(async () => {
       TestBed.configureTestingModule({
-        declarations: [ObjectComponent],
-        imports: [FormsModule, QuillModule],
+        declarations: [],
+        imports: [],
         providers: QuillModule.forRoot().providers
       })
 
@@ -303,6 +310,7 @@ describe('Formats', () => {
 
   describe('html', () => {
     @Component({
+      imports: [QuillModule, FormsModule],
       template: `
     <quill-editor [(ngModel)]="title" format="html" (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
     `
@@ -317,6 +325,7 @@ describe('Formats', () => {
     }
 
     @Component({
+      imports: [QuillModule, FormsModule],
       template: `
     <quill-editor [(ngModel)]="title" [sanitize]="true" format="html" (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
     `
@@ -335,8 +344,8 @@ describe('Formats', () => {
 
     beforeEach(async () => {
       TestBed.configureTestingModule({
-        declarations: [HTMLComponent, HTMLSanitizeComponent],
-        imports: [FormsModule, QuillModule.forRoot()]
+        declarations: [],
+        imports: [QuillModule.forRoot()]
       })
 
       fixture = TestBed.createComponent(HTMLComponent) as ComponentFixture<HTMLComponent>
@@ -385,6 +394,7 @@ unordered`)
 
   describe('text', () => {
     @Component({
+      imports: [QuillModule, FormsModule],
       template: `
     <quill-editor [(ngModel)]="title" format="text" (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
     `
@@ -402,8 +412,8 @@ unordered`)
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        declarations: [TextComponent],
-        imports: [FormsModule, QuillModule],
+        declarations: [],
+        imports: [],
         providers: QuillModule.forRoot().providers
       })
 
@@ -446,6 +456,7 @@ unordered`)
 
   describe('json', () => {
     @Component({
+      imports: [QuillModule, FormsModule],
       selector: 'json-valid',
       template: `
     <quill-editor [(ngModel)]="title" format="json" (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
@@ -463,6 +474,7 @@ unordered`)
     }
 
     @Component({
+      imports: [QuillModule, FormsModule],
       selector: 'quill-json-invalid',
       template: `
     <quill-editor [(ngModel)]="title" format="json" (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
@@ -484,8 +496,8 @@ unordered`)
 
     beforeEach(async () => {
       TestBed.configureTestingModule({
-        declarations: [JSONComponent, JSONInvalidComponent],
-        imports: [FormsModule, QuillModule.forRoot()]
+        declarations: [],
+        imports: [QuillModule.forRoot()]
       })
 
       fixture = TestBed.createComponent(JSONComponent) as ComponentFixture<JSONComponent>
@@ -540,6 +552,7 @@ unordered`)
 
 describe('Dynamic styles', () => {
   @Component({
+    imports: [QuillModule, FormsModule],
     template: `
   <quill-editor
     [bounds]="'self'"
@@ -565,7 +578,6 @@ describe('Dynamic styles', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [StylingComponent],
       imports: [FormsModule, QuillModule],
       providers: QuillModule.forRoot().providers
     })
@@ -594,6 +606,7 @@ describe('Dynamic styles', () => {
 
 describe('Dynamic classes', () => {
   @Component({
+    imports: [QuillModule, FormsModule],
     template: `
   <quill-editor
     [bounds]="'self'"
@@ -618,7 +631,7 @@ describe('Dynamic classes', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [ClassesComponent],
+      declarations: [],
       imports: [FormsModule, QuillModule.forRoot()]
     })
 
@@ -665,7 +678,7 @@ describe('Reactive forms integration', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [ReactiveFormTestComponent],
+      declarations: [],
       imports: [FormsModule, ReactiveFormsModule, QuillModule],
       providers: QuillModule.forRoot().providers
     })
@@ -754,7 +767,7 @@ describe('Advanced QuillEditorComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [TestComponent, TestToolbarComponent, CustomLinkPlaceholderTestComponent],
+      declarations: [],
       imports: [FormsModule, QuillModule],
       providers: QuillModule.forRoot().providers
     }).compileComponents()
@@ -1290,7 +1303,7 @@ describe('QuillEditor - base config', () => {
   beforeEach(async () => {
 
     TestBed.configureTestingModule({
-      declarations: [TestComponent, TestToolbarComponent],
+      declarations: [],
       imports: [FormsModule, QuillModule],
       providers: QuillModule.forRoot({
         customModules: [{
@@ -1367,7 +1380,7 @@ describe('QuillEditor - customModules', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CustomModuleTestComponent],
+      declarations: [],
       imports: [FormsModule, QuillModule],
       providers: QuillModule.forRoot().providers
     }).compileComponents()
@@ -1389,7 +1402,7 @@ describe('QuillEditor - customModules (asynchronous)', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CustomAsynchronousModuleTestComponent],
+      declarations: [],
       imports: [FormsModule, QuillModule],
       providers: QuillModule.forRoot().providers
     }).compileComponents()
@@ -1408,6 +1421,7 @@ describe('QuillEditor - customModules (asynchronous)', () => {
 
 describe('QuillEditor - defaultEmptyValue', () => {
   @Component({
+    imports: [QuillModule],
     template: `
       <quill-editor defaultEmptyValue=""></quill-editor>
   `
@@ -1420,7 +1434,7 @@ describe('QuillEditor - defaultEmptyValue', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [DefaultEmptyValueTestComponent],
+      declarations: [],
       imports: [QuillModule],
       providers: QuillModule.forRoot().providers
     }).compileComponents()
@@ -1437,6 +1451,7 @@ describe('QuillEditor - defaultEmptyValue', () => {
 
 describe('QuillEditor - beforeRender', () => {
   @Component({
+    imports: [QuillModule],
     template: `
       <quill-editor [beforeRender]="beforeRender"></quill-editor>
   `
@@ -1453,7 +1468,7 @@ describe('QuillEditor - beforeRender', () => {
     const config = { beforeRender: () => Promise.resolve() }
 
     TestBed.configureTestingModule({
-      declarations: [BeforeRenderTestComponent],
+      declarations: [],
       imports: [QuillModule.forRoot(config)],
     })
 
@@ -1470,7 +1485,7 @@ describe('QuillEditor - beforeRender', () => {
     const config = { beforeRender: () => Promise.resolve() }
 
     TestBed.configureTestingModule({
-      declarations: [BeforeRenderTestComponent],
+      declarations: [],
       imports: [QuillModule.forRoot(config)],
     })
 

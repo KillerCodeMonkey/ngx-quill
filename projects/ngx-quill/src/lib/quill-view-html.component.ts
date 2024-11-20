@@ -1,6 +1,7 @@
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
 import { QuillService } from './quill.service'
 
+import { NgClass } from '@angular/common'
 import {
   Component,
   OnChanges,
@@ -9,9 +10,9 @@ import {
   input,
   signal
 } from '@angular/core'
-import { NgClass } from '@angular/common'
 
 @Component({
+  imports: [NgClass],
   encapsulation: ViewEncapsulation.None,
   selector: 'quill-view-html',
   styles: [`
@@ -24,9 +25,7 @@ import { NgClass } from '@angular/common'
     <div class="ql-editor" [innerHTML]="innerHTML()">
     </div>
   </div>
-`,
-  standalone: true,
-  imports: [NgClass]
+`
 })
 export class QuillViewHTMLComponent implements OnChanges {
   readonly content = input('')

@@ -31,6 +31,7 @@ describe('Basic QuillViewHTMLComponent', () => {
 
 describe('QuillViewHTMLComponent - content', () => {
   @Component({
+    imports: [QuillModule],
     template: `
   <quill-view-html [content]="content" [theme]="theme"></quill-view-html>
   `
@@ -48,7 +49,7 @@ describe('QuillViewHTMLComponent - content', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HTMLComponent],
+      declarations: [],
       imports: [QuillModule],
       providers: QuillModule.forRoot().providers
     })
@@ -103,6 +104,7 @@ describe('QuillViewHTMLComponent - content', () => {
 
 describe('QuillViewHTMLComponent - sanitize', () => {
   @Component({
+    imports: [QuillModule],
     template: `
   <quill-view-html [content]="content" [sanitize]="sanitize"></quill-view-html>
   `
@@ -116,7 +118,7 @@ describe('QuillViewHTMLComponent - sanitize', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HTMLComponent],
+      declarations: [],
       imports: [QuillModule],
       providers: QuillModule.forRoot().providers
     })

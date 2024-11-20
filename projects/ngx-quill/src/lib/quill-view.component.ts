@@ -41,7 +41,6 @@ import { QuillService } from './quill.service'
   template: `
   <div quill-view-element></div>
 `,
-  standalone: true
 })
 export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
   readonly format = input<'object' | 'html' | 'text' | 'json' | undefined>(

@@ -761,7 +761,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       display: inline-block;
     }
     `
-  ],
-  standalone: true
+  ]
 })
 export class QuillEditorComponent extends QuillEditorBase { }
