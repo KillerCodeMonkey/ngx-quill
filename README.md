@@ -28,7 +28,7 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
         >= 27.0.0 (quill v2)
       </td>
       <td>
-        until May, 2025
+        until May, 2026
       </td>
     </tr>
     <tr>
