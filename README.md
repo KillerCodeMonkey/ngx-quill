@@ -1,4 +1,4 @@
-# ngx-quill ![Build Status](https://github.com/KillerCodeMonkey/ngx-quill/workflows/CI/badge.svg)
+# ngx-quill ![Build Status](https://github.com/killercodemonkey/ngx-quill/actions/workflows/push.yml/badge.svg?branch=master)
 <img src="https://raw.githubusercontent.com/KillerCodeMonkey/ngx-quill/master/ngx-quill-logo-v2.png" width="200px">
 
 ngx-quill is an angular (>=2) module for the [Quill Rich Text Editor](https://quilljs.com/) containing all components you need.
