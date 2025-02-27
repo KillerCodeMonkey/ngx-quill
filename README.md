@@ -167,6 +167,12 @@ The `QuillModule` exports the `defaultModules` if you want to extend them :).
 - IME/special characters can add some unwanted new line (https://github.com/KillerCodeMonkey/ngx-quill/issues/1821#issuecomment-2019331522) - possible solution: unpatch the `compositionend` event from zone.js (https://angular.io/guide/zone#setting-up-zonejs)
 - formControl/model change is triggered on first rendering by quill (https://github.com/KillerCodeMonkey/ngx-quill/issues/1547), because validation can only be done after quill editor is initialise - possible solution: /
 
+> [!IMPORTANT]
+> Currently there are many issues with HTML + Quill v2 (https://github.com/slab/quill/issues?q=is%3Aissue%20state%3Aopen%20getSemanticHtml especially https://github.com/slab/quill/issues/4509)
+
+> [!TIP]
+> using html format is general not the best practise, use the "Delta"-represenation as object/json to be able to correclty render it and be able to migrate to different editors or major quill version
+
 ### Custom Modules and options/formats
 
 - use customOptions for adding for example custom font sizes or other options/formats
@@ -490,6 +496,8 @@ Angular templates provide some assurance against XSS in the form of client side 
 
 Ngx-quill components provide the input paramter `sanitize` to sanitize html-strings passed as `ngModel` or `formControl` to the component.
 
-It is **deactivated per default** to avoid stripping content or styling, which is not expected.
+> [!CAUTION]
+> It is **deactivated per default** to avoid stripping content or styling, which is not expected.
 
-But it is **recommended** to activate this option, if you are working with html strings as model values.
+> [!TIP]
+> But it is **recommended** to activate this option, if you are working with html strings as model values.
