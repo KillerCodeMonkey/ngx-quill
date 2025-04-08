@@ -1,7 +1,6 @@
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
 import { QuillService } from './quill.service'
 
-import { NgClass } from '@angular/common'
 import {
   Component,
   OnChanges,
@@ -12,7 +11,6 @@ import {
 } from '@angular/core'
 
 @Component({
-  imports: [NgClass],
   encapsulation: ViewEncapsulation.None,
   selector: 'quill-view-html',
   styles: [`
@@ -21,7 +19,7 @@ import {
 }
 `],
   template: `
-  <div class="ql-container" [ngClass]="themeClass()">
+  <div class="ql-container" [class]="themeClass()">
     <div class="ql-editor" [innerHTML]="innerHTML()">
     </div>
   </div>
