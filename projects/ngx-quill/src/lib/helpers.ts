@@ -7,7 +7,7 @@ export const getFormat = (format?: QuillFormat, configFormat?: QuillFormat): Qui
 }
 
 export const raf$ = () => {
-  return new Observable(subscriber => {
+  return new Observable<void>(subscriber => {
     const rafId = requestAnimationFrame(() => {
       subscriber.next()
       subscriber.complete()
