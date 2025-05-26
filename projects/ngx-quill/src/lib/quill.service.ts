@@ -38,13 +38,9 @@ export class QuillService {
       this.document.addEventListener =
         this.document['__zone_symbol__addEventListener'] ||
         this.document.addEventListener
-      const quillImport = await import('quill')
+      const { Quill } = await import('./quill')
       this.document.addEventListener = maybePatchedAddEventListener
-
-      this.Quill = (
-        // seems like esmodules have nested "default"
-        (quillImport.default as any)?.default ?? quillImport.default ?? quillImport
-      ) as any
+      this.Quill = Quill
     }
 
     // Only register custom options and modules once
