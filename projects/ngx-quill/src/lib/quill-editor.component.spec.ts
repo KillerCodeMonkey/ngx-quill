@@ -9,11 +9,6 @@ import { QuillEditorComponent } from './quill-editor.component'
 import Quill from 'quill'
 import { QuillModule } from './quill.module'
 
-window.setTimeout = ((cb) => {
-  cb()
-  return 0
-}) as any
-
 // const Quill = require('quill')
 
 class CustomModule {
