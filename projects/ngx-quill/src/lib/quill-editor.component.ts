@@ -1,4 +1,4 @@
-import { DOCUMENT, isPlatformServer } from '@angular/common'
+import { isPlatformServer } from '@angular/common'
 import { DomSanitizer } from '@angular/platform-browser'
 
 import type QuillType from 'quill'
@@ -18,7 +18,6 @@ import {
   input,
   NgZone,
   OnChanges,
-  OnDestroy,
   OnInit,
   Output,
   PLATFORM_ID,
@@ -77,7 +76,7 @@ export type EditorChangeContent = ContentChange & { event: 'text-change' }
 export type EditorChangeSelection = SelectionChange & { event: 'selection-change' }
 
 @Directive()
-export abstract class QuillEditorBase implements AfterViewInit, ControlValueAccessor, OnChanges, OnInit, OnDestroy, Validator {
+export abstract class QuillEditorBase implements AfterViewInit, ControlValueAccessor, OnChanges, OnInit, Validator {
   readonly format = input<'object' | 'html' | 'text' | 'json' | undefined>(
     undefined
   )
@@ -142,11 +141,10 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   onModelTouched: () => void
   onValidatorChanged: () => void
 
-  private subscription: Subscription | null = null
+  private eventsSubscription: Subscription | null = null
   private quillSubscription: Subscription | null = null
 
   private elementRef = inject(ElementRef)
-  private document = inject(DOCUMENT)
 
   private cd = inject(ChangeDetectorRef)
   private domSanitizer = inject(DomSanitizer)
@@ -155,6 +153,15 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   private zone = inject(NgZone)
   private service = inject(QuillService)
   private destroyRef = inject(DestroyRef)
+
+  constructor() {
+    this.destroyRef.onDestroy(() => {
+      this.dispose()
+
+      this.quillSubscription?.unsubscribe()
+      this.quillSubscription = null
+    })
+  }
 
   static normalizeClassNames(classes: string): string[] {
     const classList = classes.trim().split(' ')
@@ -264,7 +271,8 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
       let bounds = this.bounds() && this.bounds() === 'self' ? this.editorElem : this.bounds()
       if (!bounds) {
-        bounds = this.service.config.bounds ? this.service.config.bounds : this.document.body
+        // Can use global `document` because we execute this only in the browser.
+        bounds = this.service.config.bounds ? this.service.config.bounds : document.body
       }
 
       let debug = this.debug()
@@ -490,13 +498,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     }
   }
 
-  ngOnDestroy() {
-    this.dispose()
-
-    this.quillSubscription?.unsubscribe()
-    this.quillSubscription = null
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.quillEditor) {
       return
@@ -678,9 +679,9 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     // `AsyncAction` there w/o triggering change detections. We still re-enter the Angular's zone through
     // `zone.run` when we emit an event to the parent component.
     this.zone.runOutsideAngular(() => {
-      this.subscription = new Subscription()
+      this.eventsSubscription = new Subscription()
 
-      this.subscription.add(
+      this.eventsSubscription.add(
         // mark model as touched if editor lost focus
         fromEvent(this.quillEditor, 'selection-change').subscribe(
           ([range, oldRange, source]) => {
@@ -699,14 +700,14 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
         editorChange$ = editorChange$.pipe(debounceTime(this.debounceTime()))
       }
 
-      this.subscription.add(
+      this.eventsSubscription.add(
         // update model if text changes
         textChange$.subscribe(([delta, oldDelta, source]) => {
           this.textChangeHandler(delta as any, oldDelta as any, source)
         })
       )
 
-      this.subscription.add(
+      this.eventsSubscription.add(
         // triggered if selection or text changed
         editorChange$.subscribe(([event, current, old, source]) => {
           this.editorChangeHandler(event as 'text-change' | 'selection-change', current, old, source)
@@ -716,10 +717,8 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   }
 
   private dispose(): void {
-    if (this.subscription !== null) {
-      this.subscription.unsubscribe()
-      this.subscription = null
-    }
+    this.eventsSubscription?.unsubscribe()
+    this.eventsSubscription = null
   }
 
   private isEmptyValue(html: string | null) {

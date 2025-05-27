@@ -7,10 +7,8 @@ import {
   DestroyRef,
   ElementRef,
   EventEmitter,
-  Inject,
   NgZone,
   OnChanges,
-  OnDestroy,
   Output,
   PLATFORM_ID,
   Renderer2,
@@ -22,7 +20,6 @@ import {
 } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { DomSanitizer } from '@angular/platform-browser'
-import type { Subscription } from 'rxjs'
 import { mergeMap } from 'rxjs/operators'
 
 import { CustomModule, CustomOption, QuillBeforeRender, QuillModules } from 'ngx-quill/config'
@@ -42,7 +39,7 @@ import { QuillService } from './quill.service'
   <div quill-view-element></div>
 `,
 })
-export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
+export class QuillViewComponent implements AfterViewInit, OnChanges {
   readonly format = input<'object' | 'html' | 'text' | 'json' | undefined>(
     undefined
   )
@@ -62,18 +59,13 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
   quillEditor!: QuillType
   editorElem!: HTMLElement
 
-  private quillSubscription: Subscription | null = null
-
+  private elementRef = inject(ElementRef)
+  private renderer = inject(Renderer2)
+  private ngZone = inject(NgZone)
+  private service = inject(QuillService)
+  private sanitizer = inject(DomSanitizer)
+  private platformId = inject(PLATFORM_ID)
   private destroyRef = inject(DestroyRef)
-
-  constructor(
-    public elementRef: ElementRef,
-    protected renderer: Renderer2,
-    protected zone: NgZone,
-    protected service: QuillService,
-    protected domSanitizer: DomSanitizer,
-    @Inject(PLATFORM_ID) protected platformId: any,
-  ) { }
 
   valueSetter = (quillEditor: QuillType, value: any): any => {
     const format = getFormat(this.format(), this.service.config.format)
@@ -84,7 +76,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
       if (format === 'html') {
         const sanitize = [true, false].includes(this.sanitize()) ? this.sanitize() : (this.service.config.sanitize || false)
         if (sanitize) {
-          value = this.domSanitizer.sanitize(SecurityContext.HTML, value)
+          value = this.sanitizer.sanitize(SecurityContext.HTML, value)
         }
         content = quillEditor.clipboard.convert({ html: value })
       } else if (format === 'json') {
@@ -112,7 +104,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
       return
     }
 
-    this.quillSubscription = this.service.getQuill().pipe(
+    const quillSubscription = this.service.getQuill().pipe(
       mergeMap((Quill) => this.service.beforeRender(Quill, this.customModules(), this.beforeRender()))
     ).subscribe(Quill => {
       const modules = Object.assign({}, this.modules() || this.service.config.modules)
@@ -130,7 +122,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
       }
 
       let formats = this.formats()
-      if (!formats && formats === undefined) {
+      if (formats === undefined) {
         formats = this.service.config.formats ? [...this.service.config.formats] : (this.service.config.formats === null ? null : undefined)
       }
       const theme = this.theme() || (this.service.config.theme ? this.service.config.theme : 'snow')
@@ -139,7 +131,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
         '[quill-view-element]'
       ) as HTMLElement
 
-      this.zone.runOutsideAngular(() => {
+      this.ngZone.runOutsideAngular(() => {
         this.quillEditor = new Quill(this.editorElem, {
           debug,
           formats,
@@ -169,10 +161,7 @@ export class QuillViewComponent implements AfterViewInit, OnChanges, OnDestroy {
         this.onEditorCreated.emit(this.quillEditor)
       })
     })
-  }
 
-  ngOnDestroy(): void {
-    this.quillSubscription?.unsubscribe()
-    this.quillSubscription = null
+    this.destroyRef.onDestroy(() => quillSubscription.unsubscribe())
   }
 }

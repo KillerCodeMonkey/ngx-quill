@@ -211,7 +211,7 @@ describe('Basic QuillEditorComponent', () => {
     await fixture.whenStable()
     const spy = spyOn(fixture.componentInstance.quillEditor, 'off').and.callThrough()
 
-    fixture.componentInstance.ngOnDestroy()
+    fixture.destroy()
 
     expect(spy).toHaveBeenCalledTimes(3)
     const quillEditor: any = fixture.componentInstance.quillEditor
@@ -1007,7 +1007,7 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.destroy()
 
     expect(quillOffSpy).toHaveBeenCalledTimes(3)
-    expect(editorFixture.componentInstance.subscription).toEqual(null)
+    expect(editorFixture.componentInstance.eventsSubscription).toEqual(null)
     expect(quillOffSpy).toHaveBeenCalledWith('text-change', jasmine.any(Function))
     expect(quillOffSpy).toHaveBeenCalledWith('editor-change', jasmine.any(Function))
     expect(quillOffSpy).toHaveBeenCalledWith('selection-change', jasmine.any(Function))
