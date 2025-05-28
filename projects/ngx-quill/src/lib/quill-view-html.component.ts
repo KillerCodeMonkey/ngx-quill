@@ -6,6 +6,7 @@ import {
   OnChanges,
   SimpleChanges,
   ViewEncapsulation,
+  inject,
   input,
   signal
 } from '@angular/core'
@@ -33,10 +34,8 @@ export class QuillViewHTMLComponent implements OnChanges {
   readonly innerHTML = signal<SafeHtml>('')
   readonly themeClass = signal('ql-snow')
 
-  constructor(
-    private sanitizer: DomSanitizer,
-    protected service: QuillService
-  ) {}
+  private sanitizer = inject(DomSanitizer)
+  private service = inject(QuillService)
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.theme) {
