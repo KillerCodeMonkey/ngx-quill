@@ -65,7 +65,7 @@
     "@stylistic/eslint-plugin": "^4.4.0",
     "@types/jasmine": "^5.1.8",
     "@types/jasminewd2": "^2.0.13",
-    "@types/node": "~22.15.23",
+    "@types/node": "~22.15.24",
     "angular-eslint": "^19.6.0",
     "bufferutil": "^4.0.9",
     "eslint": "^9.27.0",
