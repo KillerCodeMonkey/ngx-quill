@@ -36,7 +36,7 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
         v19
       </td>
       <td>
-        >= 27.0.0
+        27.x
       </td>
       <td>
         until May, 2026
