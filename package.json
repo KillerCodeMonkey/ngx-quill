@@ -81,7 +81,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-spec-reporter": "0.0.36",
     "ng-packagr": "^20.0.0",
-    "puppeteer": "^24.9.0",
+    "puppeteer": "^24.10.0",
     "typescript": "~5.8.3"
   },
   "contributors": [
