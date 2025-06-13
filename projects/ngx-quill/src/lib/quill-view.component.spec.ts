@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
+import { beforeEach, describe, expect, test } from 'vitest'
 
 import { QuillViewComponent } from './quill-view.component'
 
@@ -41,7 +42,7 @@ describe('Basic QuillViewComponent', () => {
     await fixture.whenStable()
   })
 
-  it('should render and set default snow theme class', async () => {
+  test('should render and set default snow theme class', async () => {
     const element = fixture.nativeElement
     fixture.detectChanges()
     await fixture.whenStable()
@@ -85,14 +86,14 @@ describe('Formats', () => {
       fixture.detectChanges()
     })
 
-    it('should be set object', async () => {
+    test('should be set object', async () => {
       const component = fixture.componentInstance
 
       await fixture.whenStable()
       expect(JSON.stringify(component.view!.quillEditor.getContents())).toEqual(JSON.stringify({ ops: [{ insert: 'Hello\n' }] }))
     })
 
-    it('should update object content', async () => {
+    test('should update object content', async () => {
       const component = fixture.componentInstance
       await fixture.whenStable()
       component.content = [{ insert: '1234' }]
@@ -129,14 +130,14 @@ describe('Formats', () => {
       fixture = TestBed.createComponent(HTMLComponent) as ComponentFixture<HTMLComponent>
       fixture.detectChanges()
     })
-    it('should be set html', async () => {
+    test('should be set html', async () => {
       const component = fixture.componentInstance
 
       await fixture.whenStable()
       expect(component.view!.quillEditor.getText().trim()).toEqual('Hallo')
     })
 
-    it('should update html', async () => {
+    test('should update html', async () => {
       const component = fixture.componentInstance
       await fixture.whenStable()
       component.content = '<p>test</p>'
@@ -173,13 +174,13 @@ describe('Formats', () => {
       fixture = TestBed.createComponent(TextComponent) as ComponentFixture<TextComponent>
       fixture.detectChanges()
     })
-    it('should be set text', async () => {
+    test('should be set text', async () => {
       const component = fixture.componentInstance
       await fixture.whenStable()
       expect(component.view!.quillEditor.getText().trim()).toEqual('Hallo')
     })
 
-    it('should update text', async () => {
+    test('should update text', async () => {
       const component = fixture.componentInstance
       await fixture.whenStable()
       component.content = 'test'
@@ -219,7 +220,7 @@ describe('Formats', () => {
       fixture.detectChanges()
     })
 
-    it('should set json string', async () => {
+    test('should set json string', async () => {
       const component = fixture.componentInstance
       await fixture.whenStable()
       await fixture.whenStable()
@@ -227,7 +228,7 @@ describe('Formats', () => {
       expect(JSON.stringify(component.view!.quillEditor.getContents())).toEqual(JSON.stringify({ ops: [{ insert: 'Hallo\n' }] }))
     })
 
-    it('should update json string', async () => {
+    test('should update json string', async () => {
       const component = fixture.componentInstance
       await fixture.whenStable()
 
@@ -273,9 +274,8 @@ describe('Advanced QuillViewComponent', () => {
     fixture = TestBed.createComponent(AdvancedComponent) as ComponentFixture<AdvancedComponent>
   })
 
-  it('should emit onEditorCreated with editor instance',  async () => {
-
-    spyOn(fixture.componentInstance, 'handleEditorCreated')
+  test('should emit onEditorCreated with editor instance',  async () => {
+    vi.spyOn(fixture.componentInstance, 'handleEditorCreated')
     fixture.detectChanges()
 
     await fixture.whenStable()
