@@ -1,4 +1,4 @@
-import { Component, Renderer2, ViewChild } from '@angular/core'
+import { Component, inject, Renderer2, ViewChild } from '@angular/core'
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing'
 import { defer } from 'rxjs'
 
@@ -615,8 +615,8 @@ describe('Dynamic classes', () => {
     title = 'Hallo'
     classes = 'test-class1 test-class2'
     editor: any
-    constructor(public renderer2: Renderer2) {
-    }
+    renderer2 = inject(Renderer2)
+
     handleEditorCreated(event: any) {
       this.editor = event
     }
