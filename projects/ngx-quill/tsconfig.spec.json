@@ -9,7 +9,7 @@
     "paths": {
       "ngx-quill/config": ["projects/ngx-quill/config/src/public_api.ts"],
       "ngx-quill": ["projects/ngx-quill/src/public_api.ts"]
-    },
+    }
   },
   "include": [
     "./test-setup.ts",
