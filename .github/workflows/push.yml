@@ -18,6 +18,9 @@ jobs:
       - name: Intall deps
         run: npm ci
 
+      - name: Install playright
+        run: npx playwright install
+
       - name: Lint
         run: npm run lint
 
