@@ -48,3 +48,5 @@ Thumbs.db
 
 .angular
 .nx
+
+projects/ngx-quill/src/lib/__screenshots__

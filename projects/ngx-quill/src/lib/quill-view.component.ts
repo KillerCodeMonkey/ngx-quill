@@ -59,13 +59,13 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
   quillEditor!: QuillType
   editorElem!: HTMLElement
 
-  private elementRef = inject(ElementRef)
-  private renderer = inject(Renderer2)
-  private ngZone = inject(NgZone)
-  private service = inject(QuillService)
-  private sanitizer = inject(DomSanitizer)
-  private platformId = inject(PLATFORM_ID)
-  private destroyRef = inject(DestroyRef)
+  private readonly elementRef = inject(ElementRef)
+  private readonly renderer = inject(Renderer2)
+  private readonly ngZone = inject(NgZone)
+  private readonly service = inject(QuillService)
+  private readonly sanitizer = inject(DomSanitizer)
+  private readonly platformId = inject(PLATFORM_ID)
+  private readonly destroyRef = inject(DestroyRef)
 
   valueSetter = (quillEditor: QuillType, value: any): any => {
     const format = getFormat(this.format(), this.service.config.format)

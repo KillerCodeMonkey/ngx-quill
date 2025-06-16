@@ -30,6 +30,14 @@ export default mergeConfig(defineConfig({
   ],
 }), testConfig({
   test: {
+    browser: {
+      provider: 'playwright',
+      enabled: true,
+      headless: true,
+      instances: [{
+        browser: 'chromium'
+      }]
+    },
     reporters: process.env.GITHUB_ACTIONS
       ? [
           'dot',
