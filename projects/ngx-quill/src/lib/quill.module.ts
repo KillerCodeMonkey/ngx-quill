@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule } from '@angular/core'
+import { ModuleWithProviders, NgModule, provideZonelessChangeDetection } from '@angular/core'
 
 import { QUILL_CONFIG_TOKEN, QuillConfig } from 'ngx-quill/config'
 
@@ -9,6 +9,7 @@ import { QuillViewComponent } from './quill-view.component'
 @NgModule({
   imports: [QuillEditorComponent, QuillViewComponent, QuillViewHTMLComponent],
   exports: [QuillEditorComponent, QuillViewComponent, QuillViewHTMLComponent],
+  providers: [provideZonelessChangeDetection()]
 })
 export class QuillModule {
   static forRoot(config?: QuillConfig): ModuleWithProviders<QuillModule> {

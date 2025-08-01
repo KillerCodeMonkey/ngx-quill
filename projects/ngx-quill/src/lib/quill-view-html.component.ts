@@ -2,6 +2,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
 import { QuillService } from './quill.service'
 
 import {
+  ChangeDetectionStrategy,
   Component,
   OnChanges,
   SimpleChanges,
@@ -12,6 +13,7 @@ import {
 } from '@angular/core'
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   selector: 'quill-view-html',
   styles: [`

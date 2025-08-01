@@ -3,11 +3,11 @@ import type QuillType from 'quill'
 
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   DestroyRef,
   ElementRef,
   EventEmitter,
-  NgZone,
   OnChanges,
   Output,
   PLATFORM_ID,
@@ -28,6 +28,7 @@ import { getFormat, raf$ } from './helpers'
 import { QuillService } from './quill.service'
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   selector: 'quill-view',
   styles: [`
@@ -61,7 +62,6 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
 
   private readonly elementRef = inject(ElementRef)
   private readonly renderer = inject(Renderer2)
-  private readonly ngZone = inject(NgZone)
   private readonly service = inject(QuillService)
   private readonly sanitizer = inject(DomSanitizer)
   private readonly platformId = inject(PLATFORM_ID)
@@ -131,15 +131,13 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
         '[quill-view-element]'
       ) as HTMLElement
 
-      this.ngZone.runOutsideAngular(() => {
-        this.quillEditor = new Quill(this.editorElem, {
-          debug,
-          formats,
-          modules,
-          readOnly: true,
-          strict: this.strict(),
-          theme
-        })
+      this.quillEditor = new Quill(this.editorElem, {
+        debug,
+        formats,
+        modules,
+        readOnly: true,
+        strict: this.strict(),
+        theme
       })
 
       this.renderer.addClass(this.editorElem, 'ngx-quill-view')
