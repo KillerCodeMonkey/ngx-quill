@@ -72,7 +72,7 @@
     "globals": "^16.2.0",
     "jsdom": "^26.1.0",
     "ng-packagr": "^20.0.0",
-    "playwright": "^1.53.0",
+    "playwright": "^1.56.1",
     "typescript": "~5.8.3",
     "vitest": "^3.2.3"
   },
