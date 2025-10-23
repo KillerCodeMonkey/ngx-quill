@@ -3,6 +3,7 @@ import js from '@eslint/js'
 import json from '@eslint/json'
 import stylistic from '@stylistic/eslint-plugin'
 import angular from 'angular-eslint'
+import { defineConfig } from 'eslint/config'
 import globals from 'globals'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -11,7 +12,7 @@ import tseslint from 'typescript-eslint'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-export default tseslint.config(
+export default defineConfig(
   {
     ignores: ['.nx', 'coverage', 'dist', '.angular', 'node_modules']
   },
@@ -104,7 +105,7 @@ export default tseslint.config(
       js,
       '@stylistic': stylistic
     },
-    extends: [js.configs.recommended, stylistic.configs['recommended-flat']],
+    extends: [js.configs.recommended, stylistic.configs['recommended']],
     languageOptions: {
       globals: {
         ...globals.node
