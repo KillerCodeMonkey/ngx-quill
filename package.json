@@ -53,8 +53,8 @@
     "zone.js": "^0.15.1"
   },
   "devDependencies": {
-    "@analogjs/vite-plugin-angular": "^1.22.1",
-    "@analogjs/vitest-angular": "^1.22.1",
+    "@analogjs/vite-plugin-angular": "^1.22.2",
+    "@analogjs/vitest-angular": "^1.22.2",
     "@angular-devkit/build-angular": "^20.3.7",
     "@angular/build": "^20.3.7",
     "@angular/cli": "^20.3.7",
@@ -65,9 +65,9 @@
     "@eslint/js": "^9.38.0",
     "@eslint/json": "^0.13.2",
     "@stylistic/eslint-plugin": "^5.5.0",
-    "@types/node": "~22.18.1",
+    "@types/node": "~22.18.13",
     "@vitest/browser": "^3.1.1",
-    "angular-eslint": "^20.4.0",
+    "angular-eslint": "^20.5.0",
     "bufferutil": "^4.0.9",
     "eslint": "^9.38.0",
     "globals": "^16.4.0",
