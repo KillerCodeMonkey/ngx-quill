@@ -1,5 +1,6 @@
 import { InjectionToken } from '@angular/core'
 import type { QuillOptions } from 'quill'
+import type Toolbar from 'quill/modules/toolbar'
 import type { Observable } from 'rxjs'
 
 import { defaultModules } from './quill-defaults'
@@ -57,7 +58,7 @@ export interface QuillModules {
   table?: boolean | Record<string, unknown>
   toolbar?: QuillToolbarConfig | string | {
     container?: string | string[] | QuillToolbarConfig
-    handlers?: Record<string, any>
+    handlers?: Record<string, (this: Toolbar, value: any) => void>
   } | boolean
 }
 
