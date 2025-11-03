@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core'
 import type { QuillOptions } from 'quill'
-import Toolbar from 'quill/modules/toolbar'
+import type Toolbar from 'quill/modules/toolbar'
 import type { Observable } from 'rxjs'
 
 import { defaultModules } from './quill-defaults'
