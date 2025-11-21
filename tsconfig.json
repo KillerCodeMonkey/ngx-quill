@@ -10,7 +10,7 @@
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "skipLibCheck": true,
     "target": "es2022",

@@ -1,6 +1,6 @@
 import { inject as aInject, Component, Renderer2, ViewChild } from '@angular/core'
 import { ComponentFixture, fakeAsync, inject, TestBed, tick } from '@angular/core/testing'
-import { defer, lastValueFrom, of } from 'rxjs'
+import { defer, lastValueFrom } from 'rxjs'
 import { beforeEach, describe, expect, MockInstance } from 'vitest'
 
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms'
@@ -1424,7 +1424,7 @@ whitelist: ['14'] }), true, true
   })
 })
 
-describe.skip('QuillEditor - customModules', () => {
+describe('QuillEditor - customModules', () => {
   let fixture: ComponentFixture<CustomModuleTestComponent>
 
   beforeEach(async () => {
@@ -1439,8 +1439,6 @@ describe.skip('QuillEditor - customModules', () => {
     const spy = vi.spyOn(Quill, 'register')
 
     fixture = TestBed.createComponent(CustomModuleTestComponent)
-    vi.spyOn(service, 'getQuill').mockReturnValueOnce(of(Quill))
-
     await vi.waitFor(() => lastValueFrom(service.getQuill()))
 
     fixture.detectChanges()
@@ -1454,9 +1452,8 @@ describe.skip('QuillEditor - customModules', () => {
   })
 })
 
-describe.skip('QuillEditor - customModules (asynchronous)', () => {
+describe('QuillEditor - customModules (asynchronous)', () => {
   let fixture: ComponentFixture<CustomAsynchronousModuleTestComponent>
-  let spy
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -1467,18 +1464,19 @@ describe.skip('QuillEditor - customModules (asynchronous)', () => {
   })
 
   beforeEach(inject([QuillService], async (service: QuillService) => {
-    fixture = TestBed.createComponent(CustomAsynchronousModuleTestComponent)
-    vi.spyOn(service, 'getQuill').mockReturnValueOnce(of(Quill))
-    spy = vi.spyOn(Quill, 'register')
 
+    const spy = vi.spyOn(Quill, 'register')
+
+    fixture = TestBed.createComponent(CustomAsynchronousModuleTestComponent)
     await vi.waitFor(() => lastValueFrom(service.getQuill()))
 
     fixture.detectChanges()
     await fixture.whenStable()
+
+    expect(spy).toHaveBeenCalled()
   }))
 
   test('renders editor with config', async () => {
-    expect(spy).toHaveBeenCalled()
     expect(fixture.componentInstance.editor.quillEditor['options'].modules.custom).toBeDefined()
   })
 })
@@ -1542,6 +1540,10 @@ describe('QuillEditor - beforeRender', () => {
       imports: [QuillModule],
       providers: QuillModule.forRoot(config).providers
     }).compileComponents()
+  })
+
+  afterEach(() => {
+    vi.clearAllMocks()
   })
 
   test('should call beforeRender provided on the config level', inject([QuillService], async (service: QuillService) => {

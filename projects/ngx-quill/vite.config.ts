@@ -1,4 +1,5 @@
 import angular from '@analogjs/vite-plugin-angular'
+import { playwright } from '@vitest/browser-playwright'
 import path from 'path'
 import { defaultClientConditions, defaultServerConditions, defineConfig } from 'vite'
 import { mergeConfig, defineConfig as testConfig } from 'vitest/config'
@@ -31,7 +32,7 @@ export default mergeConfig(defineConfig({
 }), testConfig({
   test: {
     browser: {
-      provider: 'playwright',
+      provider: playwright(),
       enabled: true,
       headless: true,
       instances: [{

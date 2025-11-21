@@ -22,6 +22,17 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
   <tbody>
     <tr>
       <td>
+        v21
+      </td>
+      <td>
+        29.x
+      </td>
+      <td>
+        until May, 2027
+      </td>
+    </tr>
+    <tr>
+      <td>
         v20
       </td>
       <td>
@@ -40,17 +51,6 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
       </td>
       <td>
         until May, 2026
-      </td>
-    </tr>
-    <tr>
-      <td>
-        v18
-      </td>
-      <td>
-        26.x
-      </td>
-      <td>
-        until Nov, 2025
       </td>
     </tr>
   </tbody>
@@ -90,6 +90,7 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
 // or
 @import '~quill/dist/quill.snow.css';
 ```
+- currently forces zone.js change detection
 
 ### For standard webpack, angular-cli and tsc builds
 
