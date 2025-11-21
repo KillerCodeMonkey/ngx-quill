@@ -19,29 +19,7 @@ export class QuillService {
 
   private quill$: Observable<any> = defer(async () => {
     if (!this.Quill) {
-      // Quill adds event listeners on import:
-      // https://github.com/quilljs/quill/blob/develop/core/emitter.js#L8
-      // We want to use the unpatched `addEventListener` method to ensure all event
-      // callbacks run outside of zone.
-      // Since we don't yet know whether `zone.js` is used, we simply save the value
-      // to restore it later.
-      // We can use global `document` because we execute it only in the browser.
-      const maybePatchedAddEventListener = document.addEventListener
-      // There are two types of Angular applications:
-      // 1) default (with zone.js)
-      // 2) zoneless
-      // Developers can avoid importing the `zone.js` package and inform Angular that
-      // they are responsible for running change detection manually.
-      // This can be done using `provideZonelessChangeDetection()`.
-      // We fall back to `document.addEventListener` if `__zone_symbol__addEventListener`
-      // is not defined, which indicates that `zone.js` is not imported.
-      // The `__zone_symbol__addEventListener` is essentially the native DOM API,
-      // unpatched by zone.js, meaning it does not go through the `zone.js` task lifecycle.
-      document.addEventListener =
-        document['__zone_symbol__addEventListener'] ||
-        document.addEventListener
       const { Quill } = await import('./quill')
-      document.addEventListener = maybePatchedAddEventListener
       this.Quill = Quill
     }
 

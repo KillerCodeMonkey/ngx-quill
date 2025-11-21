@@ -2,23 +2,20 @@ import { isPlatformServer } from '@angular/common'
 import type QuillType from 'quill'
 
 import {
-  AfterViewInit,
   Component,
   DestroyRef,
   ElementRef,
   EventEmitter,
-  NgZone,
-  OnChanges,
   Output,
   PLATFORM_ID,
   Renderer2,
   SecurityContext,
-  SimpleChanges,
   ViewEncapsulation,
+  afterNextRender,
   inject,
   input
 } from '@angular/core'
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop'
 import { DomSanitizer } from '@angular/platform-browser'
 import { mergeMap } from 'rxjs/operators'
 
@@ -39,7 +36,7 @@ import { QuillService } from './quill.service'
   <div quill-view-element></div>
 `,
 })
-export class QuillViewComponent implements AfterViewInit, OnChanges {
+export class QuillViewComponent {
   readonly format = input<'object' | 'html' | 'text' | 'json' | undefined>(
     undefined
   )
@@ -61,11 +58,86 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
 
   private readonly elementRef = inject(ElementRef)
   private readonly renderer = inject(Renderer2)
-  private readonly ngZone = inject(NgZone)
   private readonly service = inject(QuillService)
   private readonly sanitizer = inject(DomSanitizer)
   private readonly platformId = inject(PLATFORM_ID)
   private readonly destroyRef = inject(DestroyRef)
+
+  constructor() {
+    afterNextRender(() => {
+      if (isPlatformServer(this.platformId)) {
+        return
+      }
+
+      const quillSubscription = this.service.getQuill().pipe(
+        mergeMap((Quill) => this.service.beforeRender(Quill, this.customModules(), this.beforeRender()))
+      ).subscribe(Quill => {
+        const modules = Object.assign({}, this.modules() || this.service.config.modules)
+        modules.toolbar = false
+
+        this.customOptions().forEach((customOption) => {
+          const newCustomOption = Quill.import(customOption.import)
+          newCustomOption.whitelist = customOption.whitelist
+          Quill.register(newCustomOption, true)
+        })
+
+        let debug = this.debug()
+        if (!debug && debug !== false && this.service.config.debug) {
+          debug = this.service.config.debug
+        }
+
+        let formats = this.formats()
+        if (formats === undefined) {
+          formats = this.service.config.formats ? [...this.service.config.formats] : (this.service.config.formats === null ? null : undefined)
+        }
+        const theme = this.theme() || (this.service.config.theme ? this.service.config.theme : 'snow')
+
+        this.editorElem = this.elementRef.nativeElement.querySelector(
+          '[quill-view-element]'
+        ) as HTMLElement
+
+        this.quillEditor = new Quill(this.editorElem, {
+          debug,
+          formats,
+          modules,
+          readOnly: true,
+          strict: this.strict(),
+          theme
+        })
+
+        this.renderer.addClass(this.editorElem, 'ngx-quill-view')
+
+        if (this.content()) {
+          this.valueSetter(this.quillEditor, this.content())
+        }
+
+        // The `requestAnimationFrame` triggers change detection. There's no sense to invoke the `requestAnimationFrame` if anyone is
+        // listening to the `onEditorCreated` event inside the template, for instance `<quill-view (onEditorCreated)="...">`.
+        if (!this.onEditorCreated.observed) {
+          return
+        }
+
+        // The `requestAnimationFrame` will trigger change detection and `onEditorCreated` will also call `markDirty()`
+        // internally, since Angular wraps template event listeners into `listener` instruction. We're using the `requestAnimationFrame`
+        // to prevent the frame drop and avoid `ExpressionChangedAfterItHasBeenCheckedError` error.
+        raf$().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+          this.onEditorCreated.emit(this.quillEditor)
+        })
+      })
+
+      this.destroyRef.onDestroy(() => quillSubscription.unsubscribe())
+    })
+
+    toObservable(this.content).subscribe((content) => {
+      if (!this.quillEditor) {
+        return
+      }
+
+      if (content) {
+        this.valueSetter(this.quillEditor, content)
+      }
+    })
+  }
 
   valueSetter = (quillEditor: QuillType, value: any): any => {
     const format = getFormat(this.format(), this.service.config.format)
@@ -88,80 +160,5 @@ export class QuillViewComponent implements AfterViewInit, OnChanges {
       }
       quillEditor.setContents(content)
     }
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (!this.quillEditor) {
-      return
-    }
-    if (changes.content) {
-      this.valueSetter(this.quillEditor, changes.content.currentValue)
-    }
-  }
-
-  ngAfterViewInit() {
-    if (isPlatformServer(this.platformId)) {
-      return
-    }
-
-    const quillSubscription = this.service.getQuill().pipe(
-      mergeMap((Quill) => this.service.beforeRender(Quill, this.customModules(), this.beforeRender()))
-    ).subscribe(Quill => {
-      const modules = Object.assign({}, this.modules() || this.service.config.modules)
-      modules.toolbar = false
-
-      this.customOptions().forEach((customOption) => {
-        const newCustomOption = Quill.import(customOption.import)
-        newCustomOption.whitelist = customOption.whitelist
-        Quill.register(newCustomOption, true)
-      })
-
-      let debug = this.debug()
-      if (!debug && debug !== false && this.service.config.debug) {
-        debug = this.service.config.debug
-      }
-
-      let formats = this.formats()
-      if (formats === undefined) {
-        formats = this.service.config.formats ? [...this.service.config.formats] : (this.service.config.formats === null ? null : undefined)
-      }
-      const theme = this.theme() || (this.service.config.theme ? this.service.config.theme : 'snow')
-
-      this.editorElem = this.elementRef.nativeElement.querySelector(
-        '[quill-view-element]'
-      ) as HTMLElement
-
-      this.ngZone.runOutsideAngular(() => {
-        this.quillEditor = new Quill(this.editorElem, {
-          debug,
-          formats,
-          modules,
-          readOnly: true,
-          strict: this.strict(),
-          theme
-        })
-      })
-
-      this.renderer.addClass(this.editorElem, 'ngx-quill-view')
-
-      if (this.content()) {
-        this.valueSetter(this.quillEditor, this.content())
-      }
-
-      // The `requestAnimationFrame` triggers change detection. There's no sense to invoke the `requestAnimationFrame` if anyone is
-      // listening to the `onEditorCreated` event inside the template, for instance `<quill-view (onEditorCreated)="...">`.
-      if (!this.onEditorCreated.observed) {
-        return
-      }
-
-      // The `requestAnimationFrame` will trigger change detection and `onEditorCreated` will also call `markDirty()`
-      // internally, since Angular wraps template event listeners into `listener` instruction. We're using the `requestAnimationFrame`
-      // to prevent the frame drop and avoid `ExpressionChangedAfterItHasBeenCheckedError` error.
-      raf$().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-        this.onEditorCreated.emit(this.quillEditor)
-      })
-    })
-
-    this.destroyRef.onDestroy(() => quillSubscription.unsubscribe())
   }
 }
