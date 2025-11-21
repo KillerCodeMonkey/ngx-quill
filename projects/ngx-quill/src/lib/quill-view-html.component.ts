@@ -3,9 +3,8 @@ import { QuillService } from './quill.service'
 
 import {
   Component,
-  OnChanges,
-  SimpleChanges,
   ViewEncapsulation,
+  effect,
   inject,
   input,
   signal
@@ -26,7 +25,7 @@ import {
   </div>
 `
 })
-export class QuillViewHTMLComponent implements OnChanges {
+export class QuillViewHTMLComponent {
   readonly content = input('')
   readonly theme = input<string | undefined>(undefined)
   readonly sanitize = input<boolean | undefined>(undefined)
@@ -37,19 +36,21 @@ export class QuillViewHTMLComponent implements OnChanges {
   private sanitizer = inject(DomSanitizer)
   private service = inject(QuillService)
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.theme) {
-      const theme = changes.theme.currentValue || (this.service.config.theme ? this.service.config.theme : 'snow')
-      this.themeClass.set(`ql-${theme} ngx-quill-view-html`)
-    } else if (!this.theme()) {
-      const theme = this.service.config.theme ? this.service.config.theme : 'snow'
-      this.themeClass.set(`ql-${theme} ngx-quill-view-html`)
-    }
-    if (changes.content) {
-      const content = changes.content.currentValue
-      const sanitize = [true, false].includes(this.sanitize()) ? this.sanitize() : (this.service.config.sanitize || false)
-      const innerHTML = sanitize ? content : this.sanitizer.bypassSecurityTrustHtml(content)
-      this.innerHTML.set(innerHTML)
-    }
+  constructor() {
+    effect(() => {
+      if (this.theme()) {
+        const theme = this.theme() || (this.service.config.theme ? this.service.config.theme : 'snow')
+        this.themeClass.set(`ql-${theme} ngx-quill-view-html`)
+      } else if (!this.theme()) {
+        const theme = this.service.config.theme ? this.service.config.theme : 'snow'
+        this.themeClass.set(`ql-${theme} ngx-quill-view-html`)
+      }
+      if (this.content()) {
+        const content = this.content()
+        const sanitize = [true, false].includes(this.sanitize()) ? this.sanitize() : (this.service.config.sanitize || false)
+        const innerHTML = sanitize ? content : this.sanitizer.bypassSecurityTrustHtml(content)
+        this.innerHTML.set(innerHTML)
+      }
+    })
   }
 }

@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule, provideZoneChangeDetection } from '@angular/core'
+import { ModuleWithProviders, NgModule } from '@angular/core'
 
 import { QUILL_CONFIG_TOKEN, QuillConfig } from 'ngx-quill/config'
 
@@ -18,8 +18,7 @@ export class QuillModule {
         {
           provide: QUILL_CONFIG_TOKEN,
           useValue: config
-        },
-        provideZoneChangeDetection()
+        }
       ]
     }
   }
