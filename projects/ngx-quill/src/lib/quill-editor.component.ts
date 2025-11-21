@@ -7,11 +7,9 @@ import type DeltaType from 'quill-delta'
 
 import {
   afterNextRender,
-  ChangeDetectorRef,
   Component,
   DestroyRef,
   Directive,
-  effect,
   ElementRef,
   EventEmitter,
   forwardRef,
@@ -24,7 +22,7 @@ import {
   signal,
   ViewEncapsulation
 } from '@angular/core'
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop'
 import { fromEvent, Subscription } from 'rxjs'
 import { mergeMap } from 'rxjs/operators'
 
@@ -143,7 +141,6 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
 
   private elementRef = inject(ElementRef)
 
-  private cd = inject(ChangeDetectorRef)
   private domSanitizer = inject(DomSanitizer)
   private platformId = inject<string>(PLATFORM_ID)
   private renderer = inject(Renderer2)
@@ -154,52 +151,45 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
   private previousClasses: any
 
   constructor() {
-    effect(() => {
+    toObservable(this.customToolbarPosition).subscribe((customToolbarPosition) => {
+      if (this.toolbarPosition() !== customToolbarPosition) {
+        this.toolbarPosition.set(customToolbarPosition)
+      }
+    })
+    toObservable(this.readOnly).subscribe((readOnly) => this.quillEditor?.enable(readOnly))
+    toObservable(this.placeholder).subscribe((placeholder) => { if (this.quillEditor) this.quillEditor.root.dataset.placeholder = placeholder })
+    toObservable(this.styles).subscribe((styles) => {
+      const currentStyling = styles
+      const previousStyling = this.previousStyles
+
+      if (previousStyling) {
+        Object.keys(previousStyling).forEach((key: string) => {
+          this.renderer.removeStyle(this.editorElem, key)
+        })
+      }
+      if (currentStyling) {
+        Object.keys(currentStyling).forEach((key: string) => {
+          this.renderer.setStyle(this.editorElem, key, this.styles()[key])
+        })
+      }
+    })
+    toObservable(this.classes).subscribe((classes) => {
+      const currentClasses = classes
+      const previousClasses = this.previousClasses
+
+      if (previousClasses) {
+        this.removeClasses(previousClasses)
+      }
+
+      if (currentClasses) {
+        this.addClasses(currentClasses)
+      }
+    })
+    toObservable(this.debounceTime).subscribe((debounceTime) => {
       if (!this.quillEditor) {
-        return
+        return this.quillEditor
       }
-
-      if (this.toolbarPosition() !== this.customToolbarPosition()) {
-        this.toolbarPosition.set(this.customToolbarPosition())
-      }
-
-      if (this.readOnly()) {
-        this.quillEditor.enable(!this.readOnly())
-      }
-      if (this.placeholder()) {
-        this.quillEditor.root.dataset.placeholder =
-          this.placeholder()
-      }
-      if (this.styles()) {
-        const currentStyling = this.styles()
-        const previousStyling = this.previousStyles
-
-        if (previousStyling) {
-          Object.keys(previousStyling).forEach((key: string) => {
-            this.renderer.removeStyle(this.editorElem, key)
-          })
-        }
-        if (currentStyling) {
-          Object.keys(currentStyling).forEach((key: string) => {
-            this.renderer.setStyle(this.editorElem, key, this.styles()[key])
-          })
-        }
-      }
-      if (this.classes()) {
-        const currentClasses = this.classes()
-        const previousClasses = this.previousClasses
-
-        if (previousClasses) {
-          this.removeClasses(previousClasses)
-        }
-
-        if (currentClasses) {
-          this.addClasses(currentClasses)
-        }
-      }
-      // We'd want to re-apply event listeners if the `debounceTime` binding changes to apply the
-      // `debounceTime` operator or vice-versa remove it.
-      if (this.debounceTime()) {
+      if (debounceTime) {
         this.addQuillEventListeners()
       }
     })
@@ -273,46 +263,45 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
           formats = this.service.config.formats ? [...this.service.config.formats] : (this.service.config.formats === null ? null : undefined)
         }
 
-          this.quillEditor = new Quill(this.editorElem, {
-            bounds,
-            debug,
-            formats,
-            modules,
-            placeholder,
-            readOnly,
-            registry: this.registry(),
-            theme: this.theme() || (this.service.config.theme ? this.service.config.theme : 'snow')
-          })
-
-          if (this.onNativeBlur.observed) {
-            // https://github.com/quilljs/quill/issues/2186#issuecomment-533401328
-            fromEvent(this.quillEditor.scroll.domNode, 'blur').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.onNativeBlur.next({
-              editor: this.quillEditor,
-              source: 'dom'
-            }))
-            // https://github.com/quilljs/quill/issues/2186#issuecomment-803257538
-            const toolbar = this.quillEditor.getModule('toolbar') as Toolbar
-            if (toolbar.container) {
-              fromEvent(toolbar.container, 'mousedown').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(e => e.preventDefault())
-            }
-          }
-
-          if (this.onNativeFocus.observed) {
-            fromEvent(this.quillEditor.scroll.domNode, 'focus').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.onNativeFocus.next({
-              editor: this.quillEditor,
-              source: 'dom'
-            }))
-          }
-
-          // Set optional link placeholder, Quill has no native API for it so using workaround
-          if (this.linkPlaceholder()) {
-            const tooltip = (this.quillEditor as any)?.theme?.tooltip
-            const input = tooltip?.root?.querySelector('input[data-link]')
-            if (input?.dataset) {
-              input.dataset.link = this.linkPlaceholder()
-            }
-          }
+        this.quillEditor = new Quill(this.editorElem, {
+          bounds,
+          debug,
+          formats,
+          modules,
+          placeholder,
+          readOnly,
+          registry: this.registry(),
+          theme: this.theme() || (this.service.config.theme ? this.service.config.theme : 'snow')
         })
+
+        if (this.onNativeBlur.observed) {
+          // https://github.com/quilljs/quill/issues/2186#issuecomment-533401328
+          fromEvent(this.quillEditor.scroll.domNode, 'blur').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.onNativeBlur.next({
+            editor: this.quillEditor,
+            source: 'dom'
+          }))
+          // https://github.com/quilljs/quill/issues/2186#issuecomment-803257538
+          const toolbar = this.quillEditor.getModule('toolbar') as Toolbar
+          if (toolbar.container) {
+            fromEvent(toolbar.container, 'mousedown').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(e => e.preventDefault())
+          }
+        }
+
+        if (this.onNativeFocus.observed) {
+          fromEvent(this.quillEditor.scroll.domNode, 'focus').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.onNativeFocus.next({
+            editor: this.quillEditor,
+            source: 'dom'
+          }))
+        }
+
+        // Set optional link placeholder, Quill has no native API for it so using workaround
+        if (this.linkPlaceholder()) {
+          const tooltip = (this.quillEditor as any)?.theme?.tooltip
+          const input = tooltip?.root?.querySelector('input[data-link]')
+          if (input?.dataset) {
+            input.dataset.link = this.linkPlaceholder()
+          }
+        }
 
         if (this.content) {
           const format = getFormat(this.format(), this.service.config.format)
@@ -350,6 +339,7 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
           this.onEditorCreated.emit(this.quillEditor)
         })
       })
+    })
 
     this.destroyRef.onDestroy(() => {
       this.dispose()
@@ -425,31 +415,28 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
       return
     }
 
-      if (range === null) {
-        this.onBlur.emit({
-          editor: this.quillEditor,
-          source
-        })
-      } else if (oldRange === null) {
-        this.onFocus.emit({
-          editor: this.quillEditor,
-          source
-        })
-      }
-
-      this.onSelectionChanged.emit({
+    if (range === null) {
+      this.onBlur.emit({
         editor: this.quillEditor,
-        oldRange,
-        range,
         source
       })
+    } else if (oldRange === null) {
+      this.onFocus.emit({
+        editor: this.quillEditor,
+        source
+      })
+    }
 
-      if (shouldTriggerOnModelTouched) {
-        this.onModelTouched()
-      }
+    this.onSelectionChanged.emit({
+      editor: this.quillEditor,
+      oldRange,
+      range,
+      source
+    })
 
-      this.cd.markForCheck()
-
+    if (shouldTriggerOnModelTouched) {
+      this.onModelTouched()
+    }
   }
 
   textChangeHandler = (delta: DeltaType, oldDelta: DeltaType, source: string): void => {
@@ -507,27 +494,24 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
         html = this.defaultEmptyValue()
       }
 
-        this.onEditorChanged.emit({
-          content,
-          delta: current,
-          editor: this.quillEditor,
-          event,
-          html,
-          oldDelta: old,
-          source,
-          text
-        })
-
+      this.onEditorChanged.emit({
+        content,
+        delta: current,
+        editor: this.quillEditor,
+        event,
+        html,
+        oldDelta: old,
+        source,
+        text
+      })
     } else {
-        this.onEditorChanged.emit({
-          editor: this.quillEditor,
-          event,
-          oldRange: old,
-          range: current,
-          source
-        })
-
-        this.cd.markForCheck()
+      this.onEditorChanged.emit({
+        editor: this.quillEditor,
+        event,
+        oldRange: old,
+        range: current,
+        source
+      })
     }
   }
 
