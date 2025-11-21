@@ -4,11 +4,12 @@ import { QuillService } from './quill.service'
 import {
   Component,
   ViewEncapsulation,
-  effect,
   inject,
   input,
   signal
 } from '@angular/core'
+import { toObservable } from '@angular/core/rxjs-interop'
+import { combineLatest } from 'rxjs'
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -37,20 +38,20 @@ export class QuillViewHTMLComponent {
   private service = inject(QuillService)
 
   constructor() {
-    effect(() => {
-      if (this.theme()) {
-        const theme = this.theme() || (this.service.config.theme ? this.service.config.theme : 'snow')
+    toObservable(this.theme).subscribe((newTheme) => {
+      if (newTheme) {
+        const theme = newTheme || (this.service.config.theme ? this.service.config.theme : 'snow')
         this.themeClass.set(`ql-${theme} ngx-quill-view-html`)
-      } else if (!this.theme()) {
+      } else {
         const theme = this.service.config.theme ? this.service.config.theme : 'snow'
         this.themeClass.set(`ql-${theme} ngx-quill-view-html`)
       }
-      if (this.content()) {
-        const content = this.content()
-        const sanitize = [true, false].includes(this.sanitize()) ? this.sanitize() : (this.service.config.sanitize || false)
-        const innerHTML = sanitize ? content : this.sanitizer.bypassSecurityTrustHtml(content)
-        this.innerHTML.set(innerHTML)
-      }
+    })
+
+    combineLatest([toObservable(this.content), toObservable(this.sanitize)]).subscribe(([content, shouldSanitize]) => {
+      const sanitize = [true, false].includes(shouldSanitize) ? shouldSanitize : (this.service.config.sanitize || false)
+      const innerHTML = sanitize ? content : this.sanitizer.bypassSecurityTrustHtml(content)
+      this.innerHTML.set(innerHTML)
     })
   }
 }

@@ -1,12 +1,11 @@
 import { Component, inputBinding, signal, ViewChild, WritableSignal } from '@angular/core'
-import { ComponentFixture, inject, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { beforeEach, describe, expect, test } from 'vitest'
 
 import { QuillViewComponent } from './quill-view.component'
 
 import Quill from 'quill'
 import { QuillModule } from './quill.module'
-import { QuillService } from './quill.service'
 
 class CustomModule {
   quill: Quill
@@ -39,10 +38,10 @@ describe('Basic QuillViewComponent', () => {
     }).compileComponents()
   })
 
-  beforeEach(inject([QuillService], async () => {
+  beforeEach(async () => {
     fixture = TestBed.createComponent(QuillViewComponent)
     await vi.waitUntil(() => !!fixture.componentInstance.quillEditor)
-  }))
+  })
 
   test('should render and set default snow theme class', async () => {
     const element = fixture.nativeElement
@@ -65,14 +64,6 @@ describe('Formats', () => {
     const format = signal('object')
 
     beforeEach(async () => {
-      await TestBed.configureTestingModule({
-        declarations: [],
-        imports: [QuillModule],
-        providers: QuillModule.forRoot().providers
-      }).compileComponents()
-    })
-
-    beforeEach(inject([QuillService], async () => {
       content = signal([{
         insert: 'Hello'
       }])
@@ -80,7 +71,7 @@ describe('Formats', () => {
         bindings: [inputBinding('content', content), inputBinding('format', format), inputBinding('customModules', modules)]
       })
       await vi.waitUntil(() => !!fixture.componentInstance.quillEditor)
-    }))
+    })
 
     test('should be set object', () => {
       const component = fixture.componentInstance
@@ -103,20 +94,12 @@ describe('Formats', () => {
     const format = signal('html')
 
     beforeEach(async () => {
-      await TestBed.configureTestingModule({
-        declarations: [],
-        imports: [QuillModule],
-        providers: QuillModule.forRoot().providers
-      }).compileComponents()
-    })
-
-    beforeEach(inject([QuillService], async () => {
       content = signal('<p>Hallo</p>')
       fixture = TestBed.createComponent(QuillViewComponent, {
         bindings: [inputBinding('content', content), inputBinding('format', format)]
       })
       await vi.waitUntil(() => !!fixture.componentInstance.quillEditor)
-    }))
+    })
 
     test('should be set html', async () => {
       const component = fixture.componentInstance
@@ -148,13 +131,13 @@ describe('Formats', () => {
       }).compileComponents()
     })
 
-    beforeEach(inject([QuillService], async () => {
+    beforeEach(async () => {
       content = signal('Hallo')
       fixture = TestBed.createComponent(QuillViewComponent, {
         bindings: [inputBinding('content', content), inputBinding('format', format)]
       })
       await vi.waitUntil(() => !!fixture.componentInstance.quillEditor)
-    }))
+    })
 
     test('should be set text', async () => {
       const component = fixture.componentInstance
@@ -185,7 +168,7 @@ describe('Formats', () => {
       }).compileComponents()
     })
 
-    beforeEach(inject([QuillService], async () => {
+    beforeEach(async () => {
       content = signal(JSON.stringify([{
         insert: 'Hallo'
       }]))
@@ -193,7 +176,7 @@ describe('Formats', () => {
         bindings: [inputBinding('content', content), inputBinding('format', format)]
       })
       await vi.waitUntil(() => !!fixture.componentInstance.quillEditor)
-    }))
+    })
 
     test('should set json string', async () => {
       const component = fixture.componentInstance
@@ -216,7 +199,7 @@ describe('Formats', () => {
 
 describe('Advanced QuillViewComponent', () => {
   @Component({
-    imports: [QuillModule],
+    imports: [QuillViewComponent],
     template: `
   <quill-view [content]="content" format="html" (onEditorCreated)="handleEditorCreated($event)"></quill-view>
   `
@@ -234,20 +217,12 @@ describe('Advanced QuillViewComponent', () => {
   let fixture: ComponentFixture<AdvancedComponent>
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [],
-      imports: [QuillModule],
-      providers: QuillModule.forRoot().providers
-    }).compileComponents()
-  })
-
-  beforeEach(inject([QuillService], async () => {
     fixture = TestBed.createComponent(AdvancedComponent)
     vi.spyOn(fixture.componentInstance, 'handleEditorCreated')
 
     await vi.waitUntil(() => !!fixture.componentInstance.quillEditor)
     TestBed.tick()
-  }))
+  })
 
   test('should emit onEditorCreated with editor instance',  async () => {
     const viewComponent = fixture.debugElement.children[0].componentInstance
