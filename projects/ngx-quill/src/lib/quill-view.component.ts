@@ -15,7 +15,7 @@ import {
   inject,
   input
 } from '@angular/core'
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop'
 import { DomSanitizer } from '@angular/platform-browser'
 import { mergeMap } from 'rxjs/operators'
 
@@ -123,23 +123,20 @@ export class QuillViewComponent {
         raf$().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
           this.onEditorCreated.emit(this.quillEditor)
         })
-
-        console.log('editor created')
       })
 
       this.destroyRef.onDestroy(() => quillSubscription.unsubscribe())
     })
 
-    // effect(() => {
-    //   console.log('effect editor created', this.quillEditor)
-    //   if (!this.quillEditor) {
-    //     return
-    //   }
-    //   console.log('asdf')
-    //   if (this.content()) {
-    //     this.valueSetter(this.quillEditor, this.content())
-    //   }
-    // })
+    toObservable(this.content).subscribe((content) => {
+      if (!this.quillEditor) {
+        return
+      }
+
+      if (content) {
+        this.valueSetter(this.quillEditor, content)
+      }
+    })
   }
 
   valueSetter = (quillEditor: QuillType, value: any): any => {
