@@ -411,15 +411,6 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   }
 
   textChangeHandler = (delta: DeltaType, oldDelta: DeltaType, source: string): void => {
-    // only emit changes emitted by user interactions
-    const text = this.quillEditor.getText()
-    const content = this.quillEditor.getContents()
-
-    let html: string | null = this.quillEditor.getSemanticHTML()
-    if (this.isEmptyValue(html)) {
-      html = this.defaultEmptyValue()
-    }
-
     const trackChanges = this.trackChanges() || this.service.config.trackChanges
     const shouldTriggerOnModelChange = (source === 'user' || trackChanges && trackChanges === 'all') && !!this.onModelChange
 
@@ -428,11 +419,22 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       return
     }
 
+    const valueGetterValue = this.valueGetter()(this.quillEditor)
+    const format = getFormat(this.format(), this.service.config.format)
+
+    const text = this.quillEditor.getText()
+    const content = this.quillEditor.getContents()
+
+    // perf do not get html twice -> it is super slow, if format is already html
+    let html: string | null = format === 'html' ? valueGetterValue : this.quillEditor.getSemanticHTML()
+    if (this.isEmptyValue(html)) {
+      html = this.defaultEmptyValue()
+    }
+
     this.zone.run(() => {
       if (shouldTriggerOnModelChange) {
-        const valueGetter = this.valueGetter()
         this.onModelChange(
-          valueGetter(this.quillEditor)
+          valueGetterValue
         )
       }
 
