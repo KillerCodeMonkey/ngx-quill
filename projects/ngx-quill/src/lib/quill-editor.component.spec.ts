@@ -38,12 +38,14 @@ class CustomModule {
   [maxLength]="maxLength"
   [readOnly]="isReadOnly"
   [debounceTime]="debounceTime"
+  [onlyFormatEventData]="onlyFormatEventData"
   [trimOnValidation]="trimOnValidation"
   (onEditorCreated)="handleEditorCreated($event)"
   (onEditorChanged)="handleEditorChange($event)"
   (onContentChanged)="handleChange($event)"
   (onSelectionChanged)="handleSelection($event)"
   (onValidatorChanged)="handleValidatorChange($event)"
+  [format]="format"
 ></quill-editor>
 `
 })
@@ -59,6 +61,7 @@ class TestComponent {
   bluredNative = false
   trimOnValidation = false
   maxLength = 0
+  onlyFormatEventData = false
   style: {
     backgroundColor?: string
     color?: string
@@ -66,7 +69,7 @@ class TestComponent {
   } | null = { height: '30px' }
   editor: any
   debounceTime: number
-
+  format = 'html'
   changed: any
   changedEditor: any
   selected: any
@@ -977,7 +980,87 @@ describe('Advanced QuillEditorComponent', () => {
 
     expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
     expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
+    expect(fixture.componentInstance.changed).toEqual(expect.objectContaining({
+      content: expect.objectContaining({}),
+      text: 'foo\n',
+      html: '<p>foo</p>'
+    }))
   }))
+
+  test('should emit onContentChanged when content of editor changed + editor changed, but only sets format values', async () => {
+    fixture.componentInstance.onlyFormatEventData = true
+    vi.spyOn(fixture.componentInstance, 'handleChange')
+    vi.spyOn(fixture.componentInstance, 'handleEditorChange')
+
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    const editorFixture = fixture.debugElement.children[0]
+    editorFixture.componentInstance.quillEditor.setText('1234', 'user')
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
+    expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
+    expect(fixture.componentInstance.changed).toEqual(expect.objectContaining({
+      content: null,
+      text: null,
+      html: '<p>1234</p>'
+    }))
+
+    fixture.componentInstance.format = 'text'
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    editorFixture.componentInstance.quillEditor.setText('1234', 'user')
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    expect(fixture.componentInstance.changed).toEqual(expect.objectContaining({
+      content: null,
+      text: '1234\n',
+      html: null
+    }))
+
+    fixture.componentInstance.format = 'object'
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    editorFixture.componentInstance.quillEditor.setText('1234', 'user')
+    fixture.detectChanges()
+    await fixture.whenStable()
+    expect(fixture.componentInstance.changed).toEqual(expect.objectContaining({
+      content: {
+        "ops": [
+          {
+            "insert": "1234\n",
+          },
+        ],
+      },
+      text: null,
+      html: null
+    }))
+
+    fixture.componentInstance.format = 'json'
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    editorFixture.componentInstance.quillEditor.setText('1234', 'user')
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    expect(fixture.componentInstance.changed).toEqual(expect.objectContaining({
+      content: {
+        "ops": [
+          {
+            "insert": "1234\n",
+          },
+        ],
+      },
+      text: null,
+      html: null
+    }))
+  })
 
   test('should emit onContentChanged once after editor content changed twice within debounce interval + editor changed',
     fakeAsync(() => {
@@ -1379,7 +1462,7 @@ describe('QuillEditor - base config', () => {
 
   beforeEach(inject([QuillService], async (service: QuillService) => {
     fixture = TestBed.createComponent(TestComponent)
-
+    fixture.componentInstance.format = undefined
     await vi.waitFor(() => lastValueFrom(service.getQuill()))
 
     fixture.detectChanges()

@@ -240,6 +240,7 @@ const modules = {
 - required - add validation as a required field - `[required]="true"` - default: false, boolean expected (no strings!)
 - registry - custom parchment registry to not change things globally
 - compareValues - compare values in object format to avoid endless loops when setting ngModel value explicit, default `false`
+- onlyFormatEventData - flag if onContentEditorChanged/onEditorChanged only sets format fitting the editor format, default `false`, performance boost when not html format is used (avoids calling `quill.getSemanticHtml()`)
 - beforeRender - a function, which is executed before the Quill editor is rendered, this might be useful for lazy-loading CSS. Given the following example:
 
 ```ts

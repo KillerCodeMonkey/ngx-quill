@@ -106,6 +106,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   readonly compareValues = input(false)
   readonly filterNull = input(false)
   readonly debounceTime = input<number | undefined>(undefined)
+  readonly onlyFormatEventData = input<boolean>(false)
   /*
   https://github.com/KillerCodeMonkey/ngx-quill/issues/1257 - fix null value set
 
@@ -422,12 +423,11 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     const valueGetterValue = this.valueGetter()(this.quillEditor)
     const format = getFormat(this.format(), this.service.config.format)
 
-    const text = this.quillEditor.getText()
-    const content = this.quillEditor.getContents()
-
+    const text = format === 'text' || !this.onlyFormatEventData() ? this.quillEditor.getText() : null
+    const content = ['json', 'object'].includes(format) || !this.onlyFormatEventData() ? this.quillEditor.getContents() : null
     // perf do not get html twice -> it is super slow, if format is already html
-    let html: string | null = format === 'html' ? valueGetterValue : this.quillEditor.getSemanticHTML()
-    if (this.isEmptyValue(html)) {
+    let html = format === 'html' ? valueGetterValue : this.onlyFormatEventData() ? null : this.quillEditor.getSemanticHTML()
+    if ((format === 'html' || !this.onlyFormatEventData()) && this.isEmptyValue(html)) {
       html = this.defaultEmptyValue()
     }
 
@@ -463,11 +463,13 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
     // only emit changes emitted by user interactions
     if (event === 'text-change') {
-      const text = this.quillEditor.getText()
-      const content = this.quillEditor.getContents()
+      const format = getFormat(this.format(), this.service.config.format)
 
-      let html: string | null = this.quillEditor.getSemanticHTML()
-      if (this.isEmptyValue(html)) {
+      const text = format === 'text' || !this.onlyFormatEventData() ? this.quillEditor.getText() : null
+      const content = ['json', 'object'].includes(format) || !this.onlyFormatEventData() ? this.quillEditor.getContents() : null
+      // perf do not get html twice -> it is super slow, if format is already html
+      let html = format === 'html' || !this.onlyFormatEventData() ? this.quillEditor.getSemanticHTML() : null
+      if ((format === 'html' || !this.onlyFormatEventData()) && this.isEmptyValue(html)) {
         html = this.defaultEmptyValue()
       }
 
