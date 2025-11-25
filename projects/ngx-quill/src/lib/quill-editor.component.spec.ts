@@ -61,7 +61,7 @@ class TestComponent {
   bluredNative = false
   trimOnValidation = false
   maxLength = 0
-  onlyFormatEventData = false
+  onlyFormatEventData: boolean | 'none' = false
   style: {
     backgroundColor?: string
     color?: string
@@ -991,6 +991,7 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.componentInstance.onlyFormatEventData = true
     vi.spyOn(fixture.componentInstance, 'handleChange')
     vi.spyOn(fixture.componentInstance, 'handleEditorChange')
+    vi.spyOn(fixture.componentInstance.editorComponent, 'valueGetter')
 
     fixture.detectChanges()
     await fixture.whenStable()
@@ -1060,6 +1061,78 @@ describe('Advanced QuillEditorComponent', () => {
       text: null,
       html: null
     }))
+
+    // 4x for contentChange
+    // 4x for editorChange
+    // 0x for modelChange -> cause values are already there
+    expect(fixture.componentInstance.editorComponent.valueGetter).toHaveBeenCalledTimes(8)
+  })
+
+  test('should emit onContentChanged when content of editor changed + editor changed, but only sets delta', async () => {
+    fixture.componentInstance.onlyFormatEventData = 'none'
+    vi.spyOn(fixture.componentInstance, 'handleChange')
+    vi.spyOn(fixture.componentInstance, 'handleEditorChange')
+    vi.spyOn(fixture.componentInstance.editorComponent, 'valueGetter')
+
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    const editorFixture = fixture.debugElement.children[0]
+    editorFixture.componentInstance.quillEditor.setText('1234', 'user')
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
+    expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
+    expect(fixture.componentInstance.changed).toEqual(expect.objectContaining({
+      content: null,
+      text: null,
+      html: null
+    }))
+
+    fixture.componentInstance.format = 'text'
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    editorFixture.componentInstance.quillEditor.setText('1234', 'user')
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    expect(fixture.componentInstance.changed).toEqual(expect.objectContaining({
+      content: null,
+      text: null,
+      html: null
+    }))
+
+    fixture.componentInstance.format = 'object'
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    editorFixture.componentInstance.quillEditor.setText('1234', 'user')
+    fixture.detectChanges()
+    await fixture.whenStable()
+    expect(fixture.componentInstance.changed).toEqual(expect.objectContaining({
+      content: null,
+      text: null,
+      html: null
+    }))
+
+    fixture.componentInstance.format = 'json'
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    editorFixture.componentInstance.quillEditor.setText('1234', 'user')
+    fixture.detectChanges()
+    await fixture.whenStable()
+
+    expect(fixture.componentInstance.changed).toEqual(expect.objectContaining({
+      content: null,
+      text: null,
+      html: null
+    }))
+
+    // 4x for modelChange
+    expect(fixture.componentInstance.editorComponent.valueGetter).toHaveBeenCalledTimes(4)
   })
 
   test('should emit onContentChanged once after editor content changed twice within debounce interval + editor changed',

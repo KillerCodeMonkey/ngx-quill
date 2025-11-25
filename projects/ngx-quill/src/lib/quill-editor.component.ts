@@ -33,7 +33,7 @@ import { debounceTime, mergeMap } from 'rxjs/operators'
 
 import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator } from '@angular/forms'
 
-import { CustomModule, CustomOption, defaultModules, QuillBeforeRender, QuillModules } from 'ngx-quill/config'
+import { CustomModule, CustomOption, defaultModules, QuillBeforeRender, QuillFormat, QuillModules } from 'ngx-quill/config'
 
 import type History from 'quill/modules/history'
 import type Toolbar from 'quill/modules/toolbar'
@@ -77,7 +77,7 @@ export type EditorChangeSelection = SelectionChange & { event: 'selection-change
 
 @Directive()
 export abstract class QuillEditorBase implements AfterViewInit, ControlValueAccessor, OnChanges, OnInit, Validator {
-  readonly format = input<'object' | 'html' | 'text' | 'json' | undefined>(
+  readonly format = input<QuillFormat | undefined>(
     undefined
   )
   readonly theme = input<string | undefined>(undefined)
@@ -106,7 +106,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
   readonly compareValues = input(false)
   readonly filterNull = input(false)
   readonly debounceTime = input<number | undefined>(undefined)
-  readonly onlyFormatEventData = input<boolean>(false)
+  readonly onlyFormatEventData = input<boolean | 'none'>(false)
   /*
   https://github.com/KillerCodeMonkey/ngx-quill/issues/1257 - fix null value set
 
@@ -176,28 +176,7 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
     }, [])
   }
 
-  valueGetter = input((quillEditor: QuillType): string | any => {
-    let html: string | null = quillEditor.getSemanticHTML()
-    if (this.isEmptyValue(html)) {
-      html = this.defaultEmptyValue()
-    }
-    let modelValue: string | DeltaType | null = html
-    const format = getFormat(this.format(), this.service.config.format)
-
-    if (format === 'text') {
-      modelValue = quillEditor.getText()
-    } else if (format === 'object') {
-      modelValue = quillEditor.getContents()
-    } else if (format === 'json') {
-      try {
-        modelValue = JSON.stringify(quillEditor.getContents())
-      } catch {
-        modelValue = quillEditor.getText()
-      }
-    }
-
-    return modelValue
-  })
+  valueGetter = input(this.getter.bind(this))
 
   valueSetter = input((quillEditor: QuillType, value: any): any => {
     const format = getFormat(this.format(), this.service.config.format)
@@ -217,6 +196,31 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
     return value
   })
+
+  private getter(quillEditor: QuillType, forceFormat?: QuillFormat): string | any {
+    let modelValue: string | DeltaType | null = null
+    const format = forceFormat ?? getFormat(this.format(), this.service.config.format)
+
+    if (format === 'html') {
+      let html: string | null = quillEditor.getSemanticHTML()
+      if (this.isEmptyValue(html)) {
+        html = this.defaultEmptyValue()
+      }
+      modelValue = html
+    } else if (format === 'text') {
+      modelValue = quillEditor.getText()
+    } else if (format === 'object') {
+      modelValue = quillEditor.getContents()
+    } else if (format === 'json') {
+      try {
+        modelValue = JSON.stringify(quillEditor.getContents())
+      } catch {
+        modelValue = quillEditor.getText()
+      }
+    }
+
+    return modelValue
+  }
 
   ngOnInit() {
     this.toolbarPosition.set(this.customToolbarPosition())
@@ -420,32 +424,24 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
       return
     }
 
-    const valueGetterValue = this.valueGetter()(this.quillEditor)
-    const format = getFormat(this.format(), this.service.config.format)
-
-    const text = format === 'text' || !this.onlyFormatEventData() ? this.quillEditor.getText() : null
-    const content = ['json', 'object'].includes(format) || !this.onlyFormatEventData() ? this.quillEditor.getContents() : null
-    // perf do not get html twice -> it is super slow, if format is already html
-    let html = format === 'html' ? valueGetterValue : this.onlyFormatEventData() ? null : this.quillEditor.getSemanticHTML()
-    if ((format === 'html' || !this.onlyFormatEventData()) && this.isEmptyValue(html)) {
-      html = this.defaultEmptyValue()
-    }
+    const data = this.eventCallbackFormats()
 
     this.zone.run(() => {
       if (shouldTriggerOnModelChange) {
         this.onModelChange(
-          valueGetterValue
+          // only call value getter again if not already done in eventCallbackFormats
+          data.noFormat ? this.valueGetter()(this.quillEditor) : data[data.format]
         )
       }
 
       this.onContentChanged.emit({
-        content,
+        content: data.object,
         delta,
         editor: this.quillEditor,
-        html,
+        html: data.html,
         oldDelta,
         source,
-        text
+        text: data.text
       })
 
       this.cd.markForCheck()
@@ -463,26 +459,18 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
     // only emit changes emitted by user interactions
     if (event === 'text-change') {
-      const format = getFormat(this.format(), this.service.config.format)
-
-      const text = format === 'text' || !this.onlyFormatEventData() ? this.quillEditor.getText() : null
-      const content = ['json', 'object'].includes(format) || !this.onlyFormatEventData() ? this.quillEditor.getContents() : null
-      // perf do not get html twice -> it is super slow, if format is already html
-      let html = format === 'html' || !this.onlyFormatEventData() ? this.quillEditor.getSemanticHTML() : null
-      if ((format === 'html' || !this.onlyFormatEventData()) && this.isEmptyValue(html)) {
-        html = this.defaultEmptyValue()
-      }
+      const data = this.eventCallbackFormats()
 
       this.zone.run(() => {
         this.onEditorChanged.emit({
-          content,
+          content: data.object,
           delta: current,
           editor: this.quillEditor,
           event,
-          html,
+          html: data.html,
           oldDelta: old,
           source,
-          text
+          text: data.json
         })
 
         this.cd.markForCheck()
@@ -727,6 +715,70 @@ export abstract class QuillEditorBase implements AfterViewInit, ControlValueAcce
 
   private isEmptyValue(html: string | null) {
     return html === '<p></p>' || html === '<div></div>' || html === '<p><br></p>' || html === '<div><br></div>'
+  }
+
+  private eventCallbackFormats() {
+    const format = getFormat(this.format(), this.service.config.format)
+    const onlyFormat = this.onlyFormatEventData() === true
+    const noFormat = this.onlyFormatEventData() === 'none'
+    let text: string | null = null
+    let html: string | null = null
+    let object: DeltaType | null = null
+    let json: string | null = null
+
+    // do nothing if no formatted value needed
+    if (noFormat) {
+      return {
+        format,
+        onlyFormat,
+        noFormat,
+        text,
+        object,
+        json,
+        html
+      }
+    }
+
+    // use getter input to grab value
+    const value = this.valueGetter()(this.quillEditor)
+
+    if (format === 'text') {
+      text = value
+    } else if (format === 'html') {
+      html = value
+    } else if (format === 'object') {
+      object = value
+      json = JSON.stringify(value)
+    } else if (format === 'json') {
+      json = value
+      object = JSON.parse(value)
+    }
+
+    // return current values, if only the editor format is needed
+    if (onlyFormat) {
+      return {
+        format,
+        onlyFormat,
+        noFormat,
+        text,
+        json,
+        html,
+        object
+      }
+    }
+
+    // return all format values
+    return {
+      format,
+      onlyFormat,
+      noFormat,
+      // use internal getter to retrieve correct other values - this.valueGetter can be overwritten
+      text: format === 'text' ? text : this.getter(this.quillEditor, 'text'),
+      json: format === 'json' ? json : this.getter(this.quillEditor, 'json'),
+      html: format === 'html' ? html : this.getter(this.quillEditor, 'html'),
+      object: format === 'object' ? object : this.getter(this.quillEditor, 'object')
+    }
+
   }
 }
 
