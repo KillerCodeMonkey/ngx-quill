@@ -32,7 +32,7 @@ import { CustomModule, CustomOption, defaultModules, QuillBeforeRender, QuillFor
 
 import type History from 'quill/modules/history'
 import type Toolbar from 'quill/modules/toolbar'
-import { getFormat, raf$ } from './helpers'
+import { getFormat } from './helpers'
 import { QuillService } from './quill.service'
 
 export interface Range {
@@ -324,16 +324,14 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
 
         this.addQuillEventListeners()
 
-        // The `requestAnimationFrame` triggers change detection. There's no sense to invoke the `requestAnimationFrame` if anyone is
         // listening to the `onEditorCreated` event inside the template, for instance `<quill-view (onEditorCreated)="...">`.
         if (!this.onEditorCreated.observed && !this.onValidatorChanged) {
           return
         }
 
-        // The `requestAnimationFrame` will trigger change detection and `onEditorCreated` will also call `markDirty()`
-        // internally, since Angular wraps template event listeners into `listener` instruction. We're using the `requestAnimationFrame`
+        // internally, since Angular wraps template event listeners into `listener` instruction. We're using the `queueMicrotask`
         // to prevent the frame drop and avoid `ExpressionChangedAfterItHasBeenCheckedError` error.
-        raf$().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+        queueMicrotask(() => {
           if (this.onValidatorChanged) {
             this.onValidatorChanged()
           }
@@ -495,7 +493,6 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
   }
 
   writeValue(currentValue: any) {
-
     // optional fix for https://github.com/angular/angular/issues/14988
     if (this.filterNull() && currentValue === null) {
       return

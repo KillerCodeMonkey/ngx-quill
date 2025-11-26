@@ -21,7 +21,7 @@ import { mergeMap } from 'rxjs/operators'
 
 import { CustomModule, CustomOption, QuillBeforeRender, QuillModules } from 'ngx-quill/config'
 
-import { getFormat, raf$ } from './helpers'
+import { getFormat } from './helpers'
 import { QuillService } from './quill.service'
 
 @Component({
@@ -111,16 +111,14 @@ export class QuillViewComponent {
           this.valueSetter(this.quillEditor, this.content())
         }
 
-        // The `requestAnimationFrame` triggers change detection. There's no sense to invoke the `requestAnimationFrame` if anyone is
         // listening to the `onEditorCreated` event inside the template, for instance `<quill-view (onEditorCreated)="...">`.
         if (!this.onEditorCreated.observed) {
           return
         }
 
-        // The `requestAnimationFrame` will trigger change detection and `onEditorCreated` will also call `markDirty()`
-        // internally, since Angular wraps template event listeners into `listener` instruction. We're using the `requestAnimationFrame`
+        // internally, since Angular wraps template event listeners into `listener` instruction. We're using the `queueMicrotask`
         // to prevent the frame drop and avoid `ExpressionChangedAfterItHasBeenCheckedError` error.
-        raf$().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+        queueMicrotask(() => {
           this.onEditorCreated.emit(this.quillEditor)
         })
       })
