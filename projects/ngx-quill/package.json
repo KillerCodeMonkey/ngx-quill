@@ -33,8 +33,7 @@
   "peerDependencies": {
     "@angular/core": "^21.0.0",
     "quill": "^2.0.0",
-    "rxjs": "^7.0.0",
-    "zone.js": "~0.15.0"
+    "rxjs": "^7.0.0"
   },
   "contributors": [
     {

@@ -90,7 +90,6 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
 // or
 @import '~quill/dist/quill.snow.css';
 ```
-- currently forces zone.js change detection
 
 ### For standard webpack, angular-cli and tsc builds
 
