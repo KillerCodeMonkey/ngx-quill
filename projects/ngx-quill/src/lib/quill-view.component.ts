@@ -128,7 +128,7 @@ export class QuillViewComponent {
       this.destroyRef.onDestroy(() => quillSubscription.unsubscribe())
     })
 
-    toObservable(this.content).subscribe((content) => {
+    toObservable(this.content).pipe(takeUntilDestroyed()).subscribe((content) => {
       if (!this.quillEditor) {
         return
       }

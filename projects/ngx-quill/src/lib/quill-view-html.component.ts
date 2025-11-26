@@ -8,7 +8,7 @@ import {
   input,
   signal
 } from '@angular/core'
-import { toObservable } from '@angular/core/rxjs-interop'
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop'
 import { combineLatest } from 'rxjs'
 
 @Component({
@@ -48,7 +48,7 @@ export class QuillViewHTMLComponent {
       }
     })
 
-    combineLatest([toObservable(this.content), toObservable(this.sanitize)]).subscribe(([content, shouldSanitize]) => {
+    combineLatest([toObservable(this.content), toObservable(this.sanitize)]).pipe(takeUntilDestroyed()).subscribe(([content, shouldSanitize]) => {
       const sanitize = [true, false].includes(shouldSanitize) ? shouldSanitize : (this.service.config.sanitize || false)
       const innerHTML = sanitize ? content : this.sanitizer.bypassSecurityTrustHtml(content)
       this.innerHTML.set(innerHTML)
