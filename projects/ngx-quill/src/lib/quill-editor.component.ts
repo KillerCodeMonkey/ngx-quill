@@ -23,7 +23,7 @@ import {
   ViewEncapsulation
 } from '@angular/core'
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop'
-import { fromEvent, Subscription } from 'rxjs'
+import { debounceTime, fromEvent, Subscription } from 'rxjs'
 import { mergeMap } from 'rxjs/operators'
 
 import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator } from '@angular/forms'
@@ -151,50 +151,9 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
   private previousStyles: any
   private previousClasses: any
 
+  init = false
+
   constructor() {
-    toObservable(this.customToolbarPosition).pipe(takeUntilDestroyed()).subscribe((customToolbarPosition) => {
-      if (this.toolbarPosition() !== customToolbarPosition) {
-        this.toolbarPosition.set(customToolbarPosition)
-      }
-    })
-    toObservable(this.readOnly).pipe(takeUntilDestroyed()).subscribe((readOnly) => this.quillEditor?.enable(readOnly))
-    toObservable(this.placeholder).pipe(takeUntilDestroyed()).subscribe((placeholder) => { if (this.quillEditor) this.quillEditor.root.dataset.placeholder = placeholder })
-    toObservable(this.styles).pipe(takeUntilDestroyed()).subscribe((styles) => {
-      const currentStyling = styles
-      const previousStyling = this.previousStyles
-
-      if (previousStyling) {
-        Object.keys(previousStyling).forEach((key: string) => {
-          this.renderer.removeStyle(this.editorElem, key)
-        })
-      }
-      if (currentStyling) {
-        Object.keys(currentStyling).forEach((key: string) => {
-          this.renderer.setStyle(this.editorElem, key, this.styles()[key])
-        })
-      }
-    })
-    toObservable(this.classes).pipe(takeUntilDestroyed()).subscribe((classes) => {
-      const currentClasses = classes
-      const previousClasses = this.previousClasses
-
-      if (previousClasses) {
-        this.removeClasses(previousClasses)
-      }
-
-      if (currentClasses) {
-        this.addClasses(currentClasses)
-      }
-    })
-    toObservable(this.debounceTime).pipe(takeUntilDestroyed()).subscribe((debounceTime) => {
-      if (!this.quillEditor) {
-        return this.quillEditor
-      }
-      if (debounceTime) {
-        this.addQuillEventListeners()
-      }
-    })
-
     afterNextRender(() => {
       if (isPlatformServer(this.platformId)) {
         return
@@ -228,12 +187,14 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
 
         const styles = this.styles()
         if (styles) {
+          this.previousClasses = styles
           Object.keys(styles).forEach((key: string) => {
             this.renderer.setStyle(this.editorElem, key, styles[key])
           })
         }
 
         if (this.classes()) {
+          this.previousClasses = this.classes()
           this.addClasses(this.classes())
         }
 
@@ -324,6 +285,8 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
 
         this.addQuillEventListeners()
 
+        this.init = true
+
         // listening to the `onEditorCreated` event inside the template, for instance `<quill-view (onEditorCreated)="...">`.
         if (!this.onEditorCreated.observed && !this.onValidatorChanged) {
           return
@@ -338,6 +301,55 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
           this.onEditorCreated.emit(this.quillEditor)
         })
       })
+    })
+
+    toObservable(this.customToolbarPosition).pipe(takeUntilDestroyed()).subscribe((customToolbarPosition) => {
+      if (this.init && this.toolbarPosition() !== customToolbarPosition) {
+        this.toolbarPosition.set(customToolbarPosition)
+      }
+    })
+    toObservable(this.readOnly).pipe(takeUntilDestroyed()).subscribe((readOnly) => { if (this.init) this.quillEditor?.enable(readOnly) })
+    toObservable(this.placeholder).pipe(takeUntilDestroyed()).subscribe((placeholder) => { if (this.init && this.quillEditor) this.quillEditor.root.dataset.placeholder = placeholder })
+    toObservable(this.styles).pipe(takeUntilDestroyed()).subscribe((styles) => {
+      if (!this.init || !this.editorElem) {
+        return
+      }
+      const currentStyling = styles
+      const previousStyling = this.previousStyles
+
+      if (previousStyling) {
+        Object.keys(previousStyling).forEach((key: string) => {
+          this.renderer.removeStyle(this.editorElem, key)
+        })
+      }
+      if (currentStyling) {
+        Object.keys(currentStyling).forEach((key: string) => {
+          this.renderer.setStyle(this.editorElem, key, this.styles()[key])
+        })
+      }
+    })
+    toObservable(this.classes).pipe(takeUntilDestroyed()).subscribe((classes) => {
+      if (!this.init || !this.editorElem) {
+        return
+      }
+      const currentClasses = classes
+      const previousClasses = this.previousClasses
+
+      if (previousClasses) {
+        this.removeClasses(previousClasses)
+      }
+
+      if (currentClasses) {
+        this.addClasses(currentClasses)
+      }
+    })
+    toObservable(this.debounceTime).pipe(takeUntilDestroyed()).subscribe((debounceTime) => {
+      if (!this.init  || !this.quillEditor) {
+        return this.quillEditor
+      }
+      if (debounceTime) {
+        this.addQuillEventListeners()
+      }
     })
 
     this.destroyRef.onDestroy(() => {
@@ -610,6 +622,41 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
 
   private addQuillEventListeners(): void {
     this.dispose()
+
+    this.eventsSubscription = new Subscription()
+
+    this.eventsSubscription.add(
+      // mark model as touched if editor lost focus
+      fromEvent(this.quillEditor, 'selection-change').subscribe(
+        ([range, oldRange, source]) => {
+          this.selectionChangeHandler(range as any, oldRange as any, source)
+        }
+      )
+    )
+
+    // The `fromEvent` supports passing JQuery-style event targets, the editor has `on` and `off` methods which
+    // will be invoked upon subscription and teardown.
+    let textChange$ = fromEvent(this.quillEditor, 'text-change')
+    let editorChange$ = fromEvent(this.quillEditor, 'editor-change')
+
+    if (typeof this.debounceTime() === 'number') {
+      textChange$ = textChange$.pipe(debounceTime(this.debounceTime()))
+      editorChange$ = editorChange$.pipe(debounceTime(this.debounceTime()))
+    }
+
+    this.eventsSubscription.add(
+      // update model if text changes
+      textChange$.subscribe(([delta, oldDelta, source]) => {
+        this.textChangeHandler(delta as any, oldDelta as any, source)
+      })
+    )
+
+    this.eventsSubscription.add(
+      // triggered if selection or text changed
+      editorChange$.subscribe(([event, current, old, source]) => {
+        this.editorChangeHandler(event as 'text-change' | 'selection-change', current, old, source)
+      })
+    )
   }
 
   private dispose(): void {
