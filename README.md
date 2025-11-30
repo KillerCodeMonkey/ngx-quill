@@ -25,7 +25,7 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
         v21
       </td>
       <td>
-        29.x
+        >= 29.x
       </td>
       <td>
         until May, 2027
