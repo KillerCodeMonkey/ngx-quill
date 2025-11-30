@@ -38,7 +38,7 @@ export class QuillViewHTMLComponent {
   private service = inject(QuillService)
 
   constructor() {
-    toObservable(this.theme).subscribe((newTheme) => {
+    toObservable(this.theme).pipe(takeUntilDestroyed()).subscribe((newTheme) => {
       if (newTheme) {
         const theme = newTheme || (this.service.config.theme ? this.service.config.theme : 'snow')
         this.themeClass.set(`ql-${theme} ngx-quill-view-html`)

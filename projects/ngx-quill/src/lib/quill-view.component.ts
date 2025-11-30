@@ -116,11 +116,7 @@ export class QuillViewComponent {
           return
         }
 
-        // internally, since Angular wraps template event listeners into `listener` instruction. We're using the `queueMicrotask`
-        // to prevent the frame drop and avoid `ExpressionChangedAfterItHasBeenCheckedError` error.
-        queueMicrotask(() => {
-          this.onEditorCreated.emit(this.quillEditor)
-        })
+        this.onEditorCreated.emit(this.quillEditor)
       })
 
       this.destroyRef.onDestroy(() => quillSubscription.unsubscribe())

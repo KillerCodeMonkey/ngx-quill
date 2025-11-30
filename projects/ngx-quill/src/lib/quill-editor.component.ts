@@ -291,15 +291,11 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
           return
         }
 
-        // internally, since Angular wraps template event listeners into `listener` instruction. We're using the `queueMicrotask`
-        // to prevent the frame drop and avoid `ExpressionChangedAfterItHasBeenCheckedError` error.
-        queueMicrotask(() => {
-          if (this.onValidatorChanged) {
-            this.onValidatorChanged()
-          }
-          this.onEditorCreated.emit(this.quillEditor)
-          this.init = true
-        })
+        if (this.onValidatorChanged) {
+          this.onValidatorChanged()
+        }
+        this.onEditorCreated.emit(this.quillEditor)
+        this.init = true
       })
     })
 
