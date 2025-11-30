@@ -187,7 +187,7 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
 
         const styles = this.styles()
         if (styles) {
-          this.previousClasses = styles
+          this.previousStyles = styles
           Object.keys(styles).forEach((key: string) => {
             this.renderer.setStyle(this.editorElem, key, styles[key])
           })
@@ -285,10 +285,9 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
 
         this.addQuillEventListeners()
 
-        this.init = true
-
         // listening to the `onEditorCreated` event inside the template, for instance `<quill-view (onEditorCreated)="...">`.
         if (!this.onEditorCreated.observed && !this.onValidatorChanged) {
+          this.init = true
           return
         }
 
@@ -299,6 +298,7 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
             this.onValidatorChanged()
           }
           this.onEditorCreated.emit(this.quillEditor)
+          this.init = true
         })
       })
     })
@@ -308,7 +308,15 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
         this.toolbarPosition.set(customToolbarPosition)
       }
     })
-    toObservable(this.readOnly).pipe(takeUntilDestroyed()).subscribe((readOnly) => { if (this.init) this.quillEditor?.enable(readOnly) })
+    toObservable(this.readOnly).pipe(takeUntilDestroyed()).subscribe((readOnly) => {
+      if (this.init) {
+        if (readOnly) {
+          this.quillEditor?.disable()
+        } else {
+          this.quillEditor?.enable(true)
+        }
+      }
+    })
     toObservable(this.placeholder).pipe(takeUntilDestroyed()).subscribe((placeholder) => { if (this.init && this.quillEditor) this.quillEditor.root.dataset.placeholder = placeholder })
     toObservable(this.styles).pipe(takeUntilDestroyed()).subscribe((styles) => {
       if (!this.init || !this.editorElem) {
@@ -324,7 +332,7 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
       }
       if (currentStyling) {
         Object.keys(currentStyling).forEach((key: string) => {
-          this.renderer.setStyle(this.editorElem, key, this.styles()[key])
+          this.renderer.setStyle(this.editorElem, key, currentStyling[key])
         })
       }
     })
@@ -344,8 +352,8 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
       }
     })
     toObservable(this.debounceTime).pipe(takeUntilDestroyed()).subscribe((debounceTime) => {
-      if (!this.init  || !this.quillEditor) {
-        return this.quillEditor
+      if (!this.init || !this.quillEditor) {
+        return
       }
       if (debounceTime) {
         this.addQuillEventListeners()
