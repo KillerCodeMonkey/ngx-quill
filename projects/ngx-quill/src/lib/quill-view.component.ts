@@ -55,6 +55,7 @@ export class QuillViewComponent {
 
   quillEditor!: QuillType
   editorElem!: HTMLElement
+  init = false
 
   private readonly elementRef = inject(ElementRef)
   private readonly renderer = inject(Renderer2)
@@ -113,17 +114,19 @@ export class QuillViewComponent {
 
         // listening to the `onEditorCreated` event inside the template, for instance `<quill-view (onEditorCreated)="...">`.
         if (!this.onEditorCreated.observed) {
+          this.init = true
           return
         }
 
         this.onEditorCreated.emit(this.quillEditor)
+        this.init = true
       })
 
       this.destroyRef.onDestroy(() => quillSubscription.unsubscribe())
     })
 
     toObservable(this.content).pipe(takeUntilDestroyed()).subscribe((content) => {
-      if (!this.quillEditor) {
+      if (!this.quillEditor || !this.init) {
         return
       }
 
