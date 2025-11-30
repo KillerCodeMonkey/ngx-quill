@@ -828,7 +828,7 @@ describe('Advanced QuillEditorComponent', () => {
     vi.spyOn(Quill, 'register')
     vi.spyOn(fixture.componentInstance, 'handleEditorCreated')
 
-    await vi.waitUntil(() => !!fixture.componentInstance.editor)
+    await vi.waitUntil(() => !!fixture.componentInstance.editorComponent?.init && !!fixture.componentInstance.editor)
 
     fixture.detectChanges()
     await fixture.whenStable()
@@ -953,21 +953,16 @@ describe('Advanced QuillEditorComponent', () => {
     vi.spyOn(fixture.componentInstance, 'handleChange')
     vi.spyOn(fixture.componentInstance, 'handleEditorChange')
 
-    fixture.detectChanges()
-    await fixture.whenStable()
-
     const editorFixture = fixture.debugElement.children[0]
     editorFixture.componentInstance.quillEditor.setText('1234', 'user')
-    fixture.detectChanges()
-    await fixture.whenStable()
+
+    await vi.waitUntil(() => !!fixture.componentInstance.changed)
 
     expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
     expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
   })
 
   test('should emit onContentChanged with a delay after content of editor changed + editor changed', async () => {
-    fixture.detectChanges()
-    await fixture.whenStable()
     fixture.componentInstance.debounceTime.set(400)
     fixture.detectChanges()
     await fixture.whenStable()
@@ -1010,8 +1005,8 @@ describe('Advanced QuillEditorComponent', () => {
 
     const editorFixture = fixture.debugElement.children[0]
     editorFixture.componentInstance.quillEditor.setText('1234', 'user')
-    fixture.detectChanges()
-    await fixture.whenStable()
+
+    await vi.waitUntil(() => !!fixture.componentInstance.changed)
 
     expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
     expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
@@ -1091,8 +1086,8 @@ describe('Advanced QuillEditorComponent', () => {
 
     const editorFixture = fixture.debugElement.children[0]
     editorFixture.componentInstance.quillEditor.setText('1234', 'user')
-    fixture.detectChanges()
-    await fixture.whenStable()
+
+    await vi.waitUntil(() => fixture.componentInstance.changed)
 
     expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
     expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
@@ -1255,8 +1250,8 @@ describe('Advanced QuillEditorComponent', () => {
 
     editorFixture.componentInstance.quillEditor.focus()
     editorFixture.componentInstance.quillEditor.blur()
-    fixture.detectChanges()
-    await fixture.whenStable()
+
+    await vi.waitUntil(() => !!fixture.componentInstance.selected)
 
     expect(fixture.componentInstance.handleSelection).toHaveBeenCalledWith(fixture.componentInstance.selected)
     expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
@@ -1593,6 +1588,7 @@ describe('QuillEditor - base config', () => {
       }
     }] as any, 'api')
     fixture.detectChanges()
+    await fixture.whenStable()
 
     expect(JSON.stringify(fixture.componentInstance.title()))
       .toEqual(JSON.stringify({ ops: [{ attributes: { bold: true },
@@ -1715,9 +1711,10 @@ describe('QuillEditor - beforeRender', () => {
 
   let fixture: ComponentFixture<BeforeRenderTestComponent>
   const config = { beforeRender: () => Promise.resolve() }
+  let spy: MockInstance
 
   beforeEach(async () => {
-    vi.spyOn(config, 'beforeRender')
+    spy = vi.spyOn(config, 'beforeRender')
 
     await TestBed.configureTestingModule({
       declarations: [],
@@ -1732,8 +1729,10 @@ describe('QuillEditor - beforeRender', () => {
 
   test('should call beforeRender provided on the config level', inject([QuillService], async () => {
     fixture = TestBed.createComponent(BeforeRenderTestComponent)
+    fixture.detectChanges()
+    await fixture.whenStable()
 
-    await vi.waitUntil(() => !!fixture.componentInstance.editor)
+    await vi.waitUntil(() => !!spy.mock.calls.length)
 
     fixture.detectChanges()
     await fixture.whenStable()
@@ -1744,14 +1743,16 @@ describe('QuillEditor - beforeRender', () => {
   test('should call beforeRender provided on the component level and should not call beforeRender on the config level', inject([QuillService], async () => {
     fixture = TestBed.createComponent(BeforeRenderTestComponent)
     fixture.componentInstance.beforeRender = () => Promise.resolve()
-    vi.spyOn(fixture.componentInstance, 'beforeRender')
+    const spy2 = vi.spyOn(fixture.componentInstance, 'beforeRender')
+    fixture.detectChanges()
+    await fixture.whenStable()
 
-    await vi.waitUntil(() => !!fixture.componentInstance.editor)
+    await vi.waitUntil(() => !!spy2.mock.calls.length)
 
     fixture.detectChanges()
     await fixture.whenStable()
 
-    expect(config.beforeRender).not.toHaveBeenCalled()
+    expect(spy).not.toHaveBeenCalled()
     expect(fixture.componentInstance.beforeRender).toHaveBeenCalled()
   }))
 })
