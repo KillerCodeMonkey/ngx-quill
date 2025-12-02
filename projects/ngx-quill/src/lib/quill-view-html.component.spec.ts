@@ -16,7 +16,7 @@ describe('Basic QuillViewHTMLComponent', () => {
     const element = fixture.nativeElement
 
     expect(element.querySelectorAll('.ql-editor').length).toBe(1)
-    expect(fixture.componentInstance.themeClass()).toBe('ql-snow')
+    expect(fixture.componentInstance.themeClass()).toBe('ql-snow ngx-quill-view-html')
     const viewElement = element.querySelector('.ql-container.ql-snow.ngx-quill-view-html > .ql-editor')
     expect(viewElement).toBeDefined()
   })

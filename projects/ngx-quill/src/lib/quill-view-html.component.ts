@@ -1,15 +1,13 @@
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
+import { DomSanitizer } from '@angular/platform-browser'
 import { QuillService } from './quill.service'
 
 import {
   Component,
   ViewEncapsulation,
+  computed,
   inject,
-  input,
-  signal
+  input
 } from '@angular/core'
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop'
-import { combineLatest } from 'rxjs'
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -31,27 +29,16 @@ export class QuillViewHTMLComponent {
   readonly theme = input<string | undefined>(undefined)
   readonly sanitize = input<boolean | undefined>(undefined)
 
-  readonly innerHTML = signal<SafeHtml>('')
-  readonly themeClass = signal('ql-snow')
+  readonly innerHTML = computed(() => {
+    const sanitize = this.sanitize()
+    const content = this.content()
+    return ([true, false].includes(sanitize) ? sanitize : (this.service.config.sanitize || false)) ? content : this.sanitizer.bypassSecurityTrustHtml(content)
+  })
+  readonly themeClass = computed(() => {
+    const base = this.service.config.theme ? this.service.config.theme : 'snow'
+    return `ql-${this.theme() || base} ngx-quill-view-html`
+  })
 
   private sanitizer = inject(DomSanitizer)
   private service = inject(QuillService)
-
-  constructor() {
-    toObservable(this.theme).pipe(takeUntilDestroyed()).subscribe((newTheme) => {
-      if (newTheme) {
-        const theme = newTheme || (this.service.config.theme ? this.service.config.theme : 'snow')
-        this.themeClass.set(`ql-${theme} ngx-quill-view-html`)
-      } else {
-        const theme = this.service.config.theme ? this.service.config.theme : 'snow'
-        this.themeClass.set(`ql-${theme} ngx-quill-view-html`)
-      }
-    })
-
-    combineLatest([toObservable(this.content), toObservable(this.sanitize)]).pipe(takeUntilDestroyed()).subscribe(([content, shouldSanitize]) => {
-      const sanitize = [true, false].includes(shouldSanitize) ? shouldSanitize : (this.service.config.sanitize || false)
-      const innerHTML = sanitize ? content : this.sanitizer.bypassSecurityTrustHtml(content)
-      this.innerHTML.set(innerHTML)
-    })
-  }
 }

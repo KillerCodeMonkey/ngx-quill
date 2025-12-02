@@ -12,10 +12,10 @@ import {
   SecurityContext,
   ViewEncapsulation,
   afterNextRender,
+  effect,
   inject,
   input
 } from '@angular/core'
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop'
 import { DomSanitizer } from '@angular/platform-browser'
 import { mergeMap } from 'rxjs/operators'
 
@@ -125,7 +125,8 @@ export class QuillViewComponent {
       this.destroyRef.onDestroy(() => quillSubscription.unsubscribe())
     })
 
-    toObservable(this.content).pipe(takeUntilDestroyed()).subscribe((content) => {
+    effect(() => {
+      const content = this.content()
       if (!this.quillEditor || !this.init) {
         return
       }

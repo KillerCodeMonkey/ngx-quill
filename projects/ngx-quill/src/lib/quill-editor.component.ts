@@ -10,6 +10,7 @@ import {
   Component,
   DestroyRef,
   Directive,
+  effect,
   ElementRef,
   EventEmitter,
   forwardRef,
@@ -22,7 +23,7 @@ import {
   signal,
   ViewEncapsulation
 } from '@angular/core'
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { debounceTime, fromEvent, Subscription } from 'rxjs'
 import { mergeMap } from 'rxjs/operators'
 
@@ -299,12 +300,15 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
       })
     })
 
-    toObservable(this.customToolbarPosition).pipe(takeUntilDestroyed()).subscribe((customToolbarPosition) => {
+    effect(() => {
+      const customToolbarPosition = this.customToolbarPosition()
       if (this.init && this.toolbarPosition() !== customToolbarPosition) {
         this.toolbarPosition.set(customToolbarPosition)
       }
     })
-    toObservable(this.readOnly).pipe(takeUntilDestroyed()).subscribe((readOnly) => {
+
+    effect(() => {
+      const readOnly = this.readOnly()
       if (this.init) {
         if (readOnly) {
           this.quillEditor?.disable()
@@ -313,8 +317,16 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
         }
       }
     })
-    toObservable(this.placeholder).pipe(takeUntilDestroyed()).subscribe((placeholder) => { if (this.init && this.quillEditor) this.quillEditor.root.dataset.placeholder = placeholder })
-    toObservable(this.styles).pipe(takeUntilDestroyed()).subscribe((styles) => {
+
+    effect(() => {
+      const placeholder = this.placeholder()
+      if (this.init && this.quillEditor) {
+         this.quillEditor.root.dataset.placeholder = placeholder
+      }
+    })
+
+    effect(() => {
+      const styles = this.styles()
       if (!this.init || !this.editorElem) {
         return
       }
@@ -332,8 +344,10 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
         })
       }
     })
-    toObservable(this.classes).pipe(takeUntilDestroyed()).subscribe((classes) => {
-      if (!this.init || !this.editorElem) {
+
+    effect(() => {
+      const classes = this.classes()
+      if (!this.init || !this.quillEditor) {
         return
       }
       const currentClasses = classes
@@ -347,7 +361,9 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
         this.addClasses(currentClasses)
       }
     })
-    toObservable(this.debounceTime).pipe(takeUntilDestroyed()).subscribe((debounceTime) => {
+
+    effect(() => {
+      const debounceTime = this.debounceTime()
       if (!this.init || !this.quillEditor) {
         return
       }
