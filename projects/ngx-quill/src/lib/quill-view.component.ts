@@ -39,14 +39,12 @@ import { QuillService } from './quill.service'
 `,
 })
 export class QuillViewComponent {
-  readonly format = input<'object' | 'html' | 'text' | 'json' | undefined>(
-    undefined
-  )
-  readonly theme = input<string | undefined>(undefined)
-  readonly modules = input<QuillModules | undefined>(undefined)
+  readonly format = input<'object' | 'html' | 'text' | 'json'>()
+  readonly theme = input<string>()
+  readonly modules = input<QuillModules>()
   readonly debug = input<'warn' | 'log' | 'error' | false>(false)
-  readonly formats = input<string[] | null | undefined>(undefined)
-  readonly sanitize = input<boolean | undefined>(undefined)
+  readonly formats = input<string[] | null>()
+  readonly sanitize = input<boolean>()
   readonly beforeRender = input<QuillBeforeRender>()
   readonly strict = input(true)
   readonly content = input<any>()
@@ -146,7 +144,7 @@ export class QuillViewComponent {
       quillEditor.setText(content)
     } else {
       if (format === 'html') {
-        const sanitize = [true, false].includes(this.sanitize()) ? this.sanitize() : (this.service.config.sanitize || false)
+        const sanitize = (typeof this.sanitize() === 'boolean') ? this.sanitize() : (this.service.config.sanitize || false)
         if (sanitize) {
           value = this.sanitizer.sanitize(SecurityContext.HTML, value)
         }

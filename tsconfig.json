@@ -14,6 +14,7 @@
     "importHelpers": true,
     "skipLibCheck": true,
     "target": "es2022",
+    "strict": true,
     "useDefineForClassFields": false,
     "lib": [
       "es2018",

@@ -28,13 +28,13 @@ import {
 })
 export class QuillViewHTMLComponent {
   readonly content = input('')
-  readonly theme = input<string | undefined>(undefined)
-  readonly sanitize = input<boolean | undefined>(undefined)
+  readonly theme = input<string>()
+  readonly sanitize = input<boolean>()
 
   readonly innerHTML = computed(() => {
     const sanitize = this.sanitize()
     const content = this.content()
-    return ([true, false].includes(sanitize) ? sanitize : (this.service.config.sanitize || false)) ? content : this.sanitizer.bypassSecurityTrustHtml(content)
+    return ((typeof sanitize === 'boolean') ? sanitize : (this.service.config.sanitize || false)) ? content : this.sanitizer.bypassSecurityTrustHtml(content)
   })
   readonly themeClass = computed(() => {
     const base = this.service.config.theme ? this.service.config.theme : 'snow'

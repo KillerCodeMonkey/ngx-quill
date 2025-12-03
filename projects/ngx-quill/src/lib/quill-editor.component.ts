@@ -7,6 +7,7 @@ import type DeltaType from 'quill-delta'
 
 import {
   afterNextRender,
+  booleanAttribute,
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
@@ -74,35 +75,31 @@ export type EditorChangeSelection = SelectionChange & { event: 'selection-change
 
 @Directive()
 export abstract class QuillEditorBase implements ControlValueAccessor, Validator {
-  readonly format = input<QuillFormat | undefined>(
-    undefined
-  )
-  readonly theme = input<string | undefined>(undefined)
-  readonly modules = input<QuillModules | undefined>(undefined)
+  readonly format = input<QuillFormat>()
+  readonly theme = input<string>()
+  readonly modules = input<QuillModules>()
   readonly debug = input<'warn' | 'log' | 'error' | false>(false)
-  readonly readOnly = input<boolean | undefined>(false)
-  readonly placeholder = input<string | undefined>(undefined)
-  readonly maxLength = input<number | undefined>(undefined)
-  readonly minLength = input<number | undefined>(undefined)
-  readonly required = input(false)
-  readonly formats = input<string[] | null | undefined>(undefined)
+  readonly readOnly = input(false, { transform: booleanAttribute })
+  readonly placeholder = input<string>()
+  readonly maxLength = input<number>()
+  readonly minLength = input<number>()
+  readonly required = input(false, { transform: booleanAttribute })
+  readonly formats = input<string[] | null>()
   readonly customToolbarPosition = input<'top' | 'bottom'>('top')
-  readonly sanitize = input<boolean | undefined>(undefined)
-  readonly beforeRender = input<QuillBeforeRender>(undefined)
+  readonly sanitize = input<boolean>()
+  readonly beforeRender = input<QuillBeforeRender>()
   readonly styles = input<any>(null)
-  readonly registry = input<QuillOptions['registry']>(
-    undefined
-  )
-  readonly bounds = input<HTMLElement | string | undefined>(undefined)
+  readonly registry = input<QuillOptions['registry']>()
+  readonly bounds = input<HTMLElement | string>()
   readonly customOptions = input<CustomOption[]>([])
   readonly customModules = input<CustomModule[]>([])
-  readonly trackChanges = input<'user' | 'all' | undefined>(undefined)
-  readonly classes = input<string | undefined>(undefined)
-  readonly trimOnValidation = input(false)
-  readonly linkPlaceholder = input<string | undefined>(undefined)
-  readonly compareValues = input(false)
-  readonly filterNull = input(false)
-  readonly debounceTime = input<number | undefined>(undefined)
+  readonly trackChanges = input<'user' | 'all'>()
+  readonly classes = input<string>()
+  readonly trimOnValidation = input(false, { transform: booleanAttribute })
+  readonly linkPlaceholder = input<string>()
+  readonly compareValues = input(false, { transform: booleanAttribute })
+  readonly filterNull = input(false, { transform: booleanAttribute })
+  readonly debounceTime = input<number>()
   readonly onlyFormatEventData = input<boolean | 'none'>(false)
   /*
   https://github.com/KillerCodeMonkey/ngx-quill/issues/1257 - fix null value set
@@ -135,9 +132,9 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
 
   readonly toolbarPosition = signal('top')
 
-  onModelChange: (modelValue?: any) => void
-  onModelTouched: () => void
-  onValidatorChanged: () => void
+  onModelChange: ((modelValue?: any) => void) | undefined
+  onModelTouched: (() => void) | undefined
+  onValidatorChanged: (() => void) | undefined
 
   private eventsSubscription: Subscription | null = null
   private quillSubscription: Subscription | null = null
@@ -195,9 +192,10 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
           })
         }
 
-        if (this.classes()) {
-          this.previousClasses = this.classes()
-          this.addClasses(this.classes())
+        const previousClasses = this.classes()
+        if (previousClasses) {
+          this.previousClasses =previousClasses
+          this.addClasses(previousClasses)
         }
 
         this.customOptions().forEach((customOption) => {
@@ -398,7 +396,7 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
   valueSetter = input((quillEditor: QuillType, value: any): any => {
     const format = getFormat(this.format(), this.service.config.format)
     if (format === 'html') {
-      const sanitize = [true, false].includes(this.sanitize()) ? this.sanitize() : (this.service.config.sanitize || false)
+      const sanitize = (typeof this.sanitize() === 'boolean') ? this.sanitize() : (this.service.config.sanitize || false)
       if (sanitize) {
         value = this.domSanitizer.sanitize(SecurityContext.HTML, value)
       }
@@ -446,7 +444,7 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
     })
 
     if (shouldTriggerOnModelTouched) {
-      this.onModelTouched()
+      this.onModelTouched!()
     }
   }
 
@@ -462,7 +460,7 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
     const data = this.eventCallbackFormats()
 
     if (shouldTriggerOnModelChange) {
-      this.onModelChange(
+      this.onModelChange!(
         // only call value getter again if not already done in eventCallbackFormats
         data.noFormat ? this.valueGetter()(this.quillEditor) : data[data.format]
       )
@@ -610,21 +608,23 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
     // trim text if wanted + handle special case that an empty editor contains a new line
     const textLength = this.trimOnValidation() ? text.trim().length : (text.length === 1 && text.trim().length === 0 ? 0 : text.length - 1)
     const deltaOperations = this.quillEditor.getContents().ops
-    const onlyEmptyOperation = !!deltaOperations && deltaOperations.length === 1 && ['\n', ''].includes(deltaOperations[0].insert?.toString())
+    const onlyEmptyOperation = !!deltaOperations && deltaOperations.length === 1 && ['\n', ''].includes(deltaOperations[0].insert?.toString() || '')
 
-    if (this.minLength() && textLength && textLength < this.minLength()) {
+    const minLength = this.minLength()
+    if (minLength && textLength && textLength < minLength) {
       err.minLengthError = {
         given: textLength,
-        minLength: this.minLength()
+        minLength
       }
 
       valid = false
     }
 
-    if (this.maxLength() && textLength > this.maxLength()) {
+    const maxLength = this.maxLength()
+    if (maxLength && textLength > maxLength) {
       err.maxLengthError = {
         given: textLength,
-        maxLength: this.maxLength()
+        maxLength
       }
 
       valid = false
@@ -660,9 +660,10 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
     let textChange$ = fromEvent(this.quillEditor, 'text-change')
     let editorChange$ = fromEvent(this.quillEditor, 'editor-change')
 
-    if (typeof this.debounceTime() === 'number') {
-      textChange$ = textChange$.pipe(debounceTime(this.debounceTime()))
-      editorChange$ = editorChange$.pipe(debounceTime(this.debounceTime()))
+    const _debounceTime = this.debounceTime()
+    if (typeof _debounceTime === 'number') {
+      textChange$ = textChange$.pipe(debounceTime(_debounceTime))
+      editorChange$ = editorChange$.pipe(debounceTime(_debounceTime))
     }
 
     this.eventsSubscription.add(

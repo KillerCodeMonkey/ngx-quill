@@ -26,7 +26,7 @@ describe('Basic QuillViewHTMLComponent', () => {
 describe('QuillViewHTMLComponent - content', () => {
   let fixture: ComponentFixture<QuillViewHTMLComponent>
   let content: WritableSignal<any>
-  const theme = signal('snow')
+  const theme = signal<string | undefined>('snow')
 
   beforeEach(async () => {
     content = signal('<p>Hallo</p>')
@@ -74,7 +74,7 @@ describe('QuillViewHTMLComponent - content', () => {
 describe('QuillViewHTMLComponent - sanitize', () => {
   let fixture: ComponentFixture<QuillViewHTMLComponent>
   let content: WritableSignal<any>
-  const sanitize = signal(false)
+  const sanitize = signal<boolean | undefined>(false)
 
   beforeEach(async () => {
     content = signal('<p>Hallo <img src="wroooong.jpg" onerror="window.alert(\'sanitize me\')"></p>')
