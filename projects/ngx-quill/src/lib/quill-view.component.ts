@@ -2,6 +2,7 @@ import { isPlatformServer } from '@angular/common'
 import type QuillType from 'quill'
 
 import {
+  ChangeDetectionStrategy,
   Component,
   DestroyRef,
   ElementRef,
@@ -25,6 +26,7 @@ import { getFormat } from './helpers'
 import { QuillService } from './quill.service'
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   selector: 'quill-view',
   styles: [`

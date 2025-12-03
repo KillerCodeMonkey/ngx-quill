@@ -8,8 +8,9 @@ vi.spyOn(window, 'alert').mockImplementation(() => { return })
 describe('Basic QuillViewHTMLComponent', () => {
   let fixture: ComponentFixture<QuillViewHTMLComponent>
 
-  beforeEach(() => {
+  beforeEach(async () => {
     fixture = TestBed.createComponent(QuillViewHTMLComponent)
+    await fixture.whenStable()
   })
 
   test('should render and set default snow theme class', async () => {
@@ -27,15 +28,15 @@ describe('QuillViewHTMLComponent - content', () => {
   let content: WritableSignal<any>
   const theme = signal('snow')
 
-  beforeEach(() => {
+  beforeEach(async () => {
     content = signal('<p>Hallo</p>')
     fixture = TestBed.createComponent(QuillViewHTMLComponent, {
       bindings: [inputBinding('content', content), inputBinding('theme', theme)]
     }) as ComponentFixture<QuillViewHTMLComponent>
+    await fixture.whenStable()
   })
 
   test('should be set html', async () => {
-    fixture.detectChanges()
     const element = fixture.nativeElement
 
     const viewElement = element.querySelector('.ql-container.ql-snow.ngx-quill-view-html > .ql-editor')
@@ -44,7 +45,7 @@ describe('QuillViewHTMLComponent - content', () => {
 
   test('should update html', async () => {
     content.set('<p>test</p>')
-    fixture.detectChanges()
+    await fixture.whenStable()
 
     const element = fixture.nativeElement
     const viewElement = element.querySelector('.ql-container.ql-snow.ngx-quill-view-html > .ql-editor')
@@ -53,7 +54,7 @@ describe('QuillViewHTMLComponent - content', () => {
 
   test('should set default theme when not set', async () => {
     theme.set(undefined)
-    fixture.detectChanges()
+    await fixture.whenStable()
 
     const element = fixture.nativeElement
     const viewElement = element.querySelector('.ql-container.ql-snow.ngx-quill-view-html > .ql-editor')
@@ -62,7 +63,7 @@ describe('QuillViewHTMLComponent - content', () => {
 
   test('should update theme', async () => {
     theme.set('bubble')
-    fixture.detectChanges()
+    await fixture.whenStable()
 
     const element = fixture.nativeElement
     const viewElement = element.querySelector('.ql-container.ql-bubble.ngx-quill-view-html > .ql-editor')
@@ -75,33 +76,32 @@ describe('QuillViewHTMLComponent - sanitize', () => {
   let content: WritableSignal<any>
   const sanitize = signal(false)
 
-  beforeEach(() => {
+  beforeEach(async () => {
     content = signal('<p>Hallo <img src="wroooong.jpg" onerror="window.alert(\'sanitize me\')"></p>')
     fixture = TestBed.createComponent(QuillViewHTMLComponent, {
       bindings: [inputBinding('content', content), inputBinding('sanitize', sanitize)]
     }) as ComponentFixture<QuillViewHTMLComponent>
+    await fixture.whenStable()
   })
 
   test('should NOT sanitize content when sanitize parameter is false', () => {
-    fixture.detectChanges()
-
     const element = fixture.nativeElement
     const viewElement = element.querySelector('.ql-container.ql-snow.ngx-quill-view-html > .ql-editor')
     expect(viewElement.innerHTML).toEqual('<p>Hallo <img src="wroooong.jpg" onerror="window.alert(\'sanitize me\')"></p>')
   })
 
-  test('should sanitize content when sanitize parameter is true', () => {
+  test('should sanitize content when sanitize parameter is true', async () => {
     sanitize.set(true)
-    fixture.detectChanges()
+    await fixture.whenStable()
 
     const element = fixture.nativeElement
     const viewElement = element.querySelector('.ql-container.ql-snow.ngx-quill-view-html > .ql-editor')
     expect(viewElement.innerHTML).toEqual('<p>Hallo <img src="wroooong.jpg"></p>')
   })
 
-  test('should use default sanatize when not set', () => {
+  test('should use default sanatize when not set', async () => {
     sanitize.set(undefined)
-    fixture.detectChanges()
+    await fixture.whenStable()
 
     const element = fixture.nativeElement
     const viewElement = element.querySelector('.ql-container.ql-snow.ngx-quill-view-html > .ql-editor')

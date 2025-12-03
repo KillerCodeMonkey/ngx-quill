@@ -40,6 +40,7 @@ describe('Basic QuillViewComponent', () => {
 
   beforeEach(async () => {
     fixture = TestBed.createComponent(QuillViewComponent)
+    await fixture.whenStable()
     await vi.waitUntil(() => !!fixture.componentInstance.quillEditor)
   })
 
@@ -70,6 +71,7 @@ describe('Formats', () => {
       fixture = TestBed.createComponent(QuillViewComponent, {
         bindings: [inputBinding('content', content), inputBinding('format', format), inputBinding('customModules', modules)]
       })
+      await fixture.whenStable()
       await vi.waitUntil(() => !!fixture.componentInstance.quillEditor)
     })
 
@@ -79,10 +81,10 @@ describe('Formats', () => {
       expect(JSON.stringify(component.quillEditor.getContents())).toEqual(JSON.stringify({ ops: [{ insert: 'Hello\n' }] }))
     })
 
-    test('should update object content', () => {
+    test('should update object content', async () => {
       const component = fixture.componentInstance
       content.set([{ insert: '1234' }])
-      fixture.detectChanges()
+      await fixture.whenStable()
 
       expect(JSON.stringify(component.quillEditor.getContents())).toEqual(JSON.stringify({ ops: [{ insert: '1234\n' }] }))
     })
@@ -98,6 +100,7 @@ describe('Formats', () => {
       fixture = TestBed.createComponent(QuillViewComponent, {
         bindings: [inputBinding('content', content), inputBinding('format', format)]
       })
+      await fixture.whenStable()
       await vi.waitUntil(() => !!fixture.componentInstance.quillEditor)
     })
 
@@ -111,7 +114,7 @@ describe('Formats', () => {
       const component = fixture.componentInstance
 
       content.set('<p>test</p>')
-      fixture.detectChanges()
+      await fixture.whenStable()
 
       expect(component.quillEditor.getText().trim()).toEqual('test')
     })
@@ -136,6 +139,7 @@ describe('Formats', () => {
       fixture = TestBed.createComponent(QuillViewComponent, {
         bindings: [inputBinding('content', content), inputBinding('format', format)]
       })
+      await fixture.whenStable()
       await vi.waitUntil(() => !!fixture.componentInstance.quillEditor)
     })
 
@@ -148,7 +152,7 @@ describe('Formats', () => {
     test('should update text', async () => {
       const component = fixture.componentInstance
       content.set('test')
-      fixture.autoDetectChanges()
+      await fixture.whenStable()
 
       expect(component.quillEditor.getText().trim()).toEqual('test')
     })
@@ -175,6 +179,7 @@ describe('Formats', () => {
       fixture = TestBed.createComponent(QuillViewComponent, {
         bindings: [inputBinding('content', content), inputBinding('format', format)]
       })
+      await fixture.whenStable()
       await vi.waitUntil(() => !!fixture.componentInstance.quillEditor)
     })
 
@@ -190,7 +195,7 @@ describe('Formats', () => {
       content.set(JSON.stringify([{
         insert: 'Hallo 123'
       }]))
-      fixture.autoDetectChanges()
+      await fixture.whenStable()
 
       expect(JSON.stringify(component.quillEditor.getContents())).toEqual(JSON.stringify({ ops: [{ insert: 'Hallo 123\n' }] }))
     })
@@ -219,9 +224,8 @@ describe('Advanced QuillViewComponent', () => {
   beforeEach(async () => {
     fixture = TestBed.createComponent(AdvancedComponent)
     vi.spyOn(fixture.componentInstance, 'handleEditorCreated')
-
+    await fixture.whenStable()
     await vi.waitUntil(() => !!fixture.componentInstance.quillEditor)
-    TestBed.tick()
   })
 
   test('should emit onEditorCreated with editor instance',  async () => {

@@ -48,6 +48,7 @@ export default mergeConfig(defineConfig({
     globals: true,
     pool: 'threads',
     css: false,
+    testTimeout: 5000,
     environment: 'jsdom',
     include: ['projects/ngx-quill/**/*.spec.ts'],
     setupFiles: ['projects/ngx-quill/test-setup.ts'],
