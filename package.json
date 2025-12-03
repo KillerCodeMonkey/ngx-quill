@@ -6,7 +6,7 @@
     "build": "ng build",
     "build:prod": "npm run build -- --configuration production && npm run cp:readme && npm run cp:license",
     "test": "vitest run --config ./projects/ngx-quill/vite.config.ts",
-    "lint": "eslint",
+    "lint": "eslint && npx tsc --noEmit",
     "e2e": "ng e2e",
     "cp:readme": "cp ./README.md ./dist/ngx-quill",
     "cp:license": "cp ./LICENSE.txt ./dist/ngx-quill"

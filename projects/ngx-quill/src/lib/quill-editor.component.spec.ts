@@ -68,9 +68,9 @@ class TestComponent {
     color?: string
     height?: string
   } | null>({ height: '30px' })
-  editor: Quill
+  editor: Quill | undefined
   debounceTime = signal(0)
-  format = signal('html')
+  format = signal<string | undefined>('html')
   changed: any
   changedEditor: any
   selected: any
