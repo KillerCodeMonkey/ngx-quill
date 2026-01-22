@@ -40,41 +40,41 @@
     "text editor"
   ],
   "dependencies": {
-    "@angular/animations": "^21.0.0",
-    "@angular/common": "^21.0.0",
-    "@angular/compiler": "^21.0.0",
-    "@angular/core": "^21.0.0",
-    "@angular/forms": "^21.0.0",
-    "@angular/platform-browser": "^21.0.0",
-    "@angular/router": "^21.0.0",
+    "@angular/animations": "^21.1.1",
+    "@angular/common": "^21.1.1",
+    "@angular/compiler": "^21.1.1",
+    "@angular/core": "^21.1.1",
+    "@angular/forms": "^21.1.1",
+    "@angular/platform-browser": "^21.1.1",
+    "@angular/router": "^21.1.1",
     "quill": "^2.0.3",
     "rxjs": "^7.8.2",
     "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "@analogjs/vite-plugin-angular": "^2.1.0",
-    "@analogjs/vitest-angular": "^2.1.0",
-    "@angular-devkit/build-angular": "^21.0.0",
-    "@angular/build": "^21.0.0",
-    "@angular/cli": "^21.0.0",
-    "@angular/compiler-cli": "^21.0.0",
-    "@angular/language-service": "^21.0.0",
-    "@angular/localize": "^21.0.0",
-    "@eslint/js": "^9.39.1",
+    "@analogjs/vite-plugin-angular": "^2.2.2",
+    "@analogjs/vitest-angular": "^2.2.2",
+    "@angular-devkit/build-angular": "^21.1.1",
+    "@angular/build": "^21.1.1",
+    "@angular/cli": "^21.1.1",
+    "@angular/compiler-cli": "^21.1.1",
+    "@angular/language-service": "^21.1.1",
+    "@angular/localize": "^21.1.1",
+    "@eslint/js": "^9.39.2",
     "@eslint/json": "^0.14.0",
-    "@stylistic/eslint-plugin": "^5.6.1",
+    "@stylistic/eslint-plugin": "^5.7.0",
     "@types/node": "~22.18.1",
-    "@vitest/browser": "^4.0.10",
-    "@vitest/browser-playwright": "^4.0.12",
-    "angular-eslint": "^20.6.0",
-    "bufferutil": "^4.0.9",
-    "eslint": "^9.39.1",
-    "globals": "^16.5.0",
-    "jsdom": "^27.2.0",
-    "ng-packagr": "^21.0.0",
-    "playwright": "^1.56.1",
+    "@vitest/browser": "^4.0.17",
+    "@vitest/browser-playwright": "^4.0.17",
+    "angular-eslint": "^21.1.0",
+    "bufferutil": "^4.1.0",
+    "eslint": "^9.39.2",
+    "globals": "^17.0.0",
+    "jsdom": "^27.4.0",
+    "ng-packagr": "^21.1.0",
+    "playwright": "^1.57.0",
     "typescript": "~5.9.3",
-    "vitest": "^4.0.10"
+    "vitest": "^4.0.17"
   },
   "contributors": [
     {
@@ -83,6 +83,6 @@
   ],
   "version": "0.0.0",
   "volta": {
-    "node": "22.19.0"
+    "node": "24.11.1"
   }
 }
