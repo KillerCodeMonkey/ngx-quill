@@ -1,4 +1,4 @@
-import { Component, inputBinding, signal, ViewChild, WritableSignal } from '@angular/core'
+import { Component, inputBinding, signal, viewChild, WritableSignal } from '@angular/core'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { beforeEach, describe, expect, test } from 'vitest'
 
@@ -210,7 +210,7 @@ describe('Advanced QuillViewComponent', () => {
   `
   })
   class AdvancedComponent {
-    @ViewChild(QuillViewComponent, { static: true }) view: QuillViewComponent | undefined
+    view = viewChild.required(QuillViewComponent)
     content = '<p>Hallo</p>'
     quillEditor: any
 
