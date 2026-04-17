@@ -1,10 +1,4 @@
-import { isPlatformServer } from '@angular/common'
-import { DomSanitizer } from '@angular/platform-browser'
-
-import type QuillType from 'quill'
-import type { QuillOptions } from 'quill'
-import type DeltaType from 'quill-delta'
-
+import { isPlatformServer, } from '@angular/common'
 import {
   afterNextRender,
   booleanAttribute,
@@ -15,9 +9,9 @@ import {
   effect,
   ElementRef,
   EventEmitter,
-  forwardRef,
   inject,
   input,
+  model,
   Output,
   PLATFORM_ID,
   Renderer2,
@@ -26,64 +20,49 @@ import {
   ViewEncapsulation
 } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
-import { debounceTime, fromEvent, Subscription } from 'rxjs'
-import { mergeMap } from 'rxjs/operators'
-
-import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator } from '@angular/forms'
-
+import { FormValueControl, ValidationResult } from '@angular/forms/signals'
+import { DomSanitizer } from '@angular/platform-browser'
 import { CustomModule, CustomOption, defaultModules, QuillBeforeRender, QuillFormat, QuillModules } from 'ngx-quill/config'
-
+import type QuillType from 'quill'
+import type { QuillOptions } from 'quill'
+import type DeltaType from 'quill-delta'
 import type History from 'quill/modules/history'
 import type Toolbar from 'quill/modules/toolbar'
-import { getFormat } from './helpers'
+import { debounceTime, mergeMap, Subscription } from 'rxjs'
+import { fromEvent } from 'rxjs/internal/observable/fromEvent'
+
+import { type Blur, type ContentChange, type EditorChangeContent, type EditorChangeSelection, type Focus, type Range, type SelectionChange } from './quill-editor.component'
 import { QuillService } from './quill.service'
 
-export interface Range {
-  index: number
-  length: number
+export enum ValidationKind {
+  quillMinLength = 'quillMinLength',
+  quillMaxLength = 'quillMaxLength',
+  quillRequired = 'quillRequired'
 }
-
-export interface ContentChange {
-  content: DeltaType
-  delta: DeltaType
-  editor: QuillType
-  html: string | null
-  oldDelta: DeltaType
-  source: string
-  text: string
+export const getFormat = (format?: QuillFormat, configFormat?: QuillFormat): QuillFormat => {
+  const passedFormat = format || configFormat
+  return passedFormat || 'html'
 }
-
-export interface SelectionChange {
-  editor: QuillType
-  oldRange: Range | null
-  range: Range | null
-  source: string
-}
-
-export interface Blur {
-  editor: QuillType
-  source: string
-}
-
-export interface Focus {
-  editor: QuillType
-  source: string
-}
-
-export type EditorChangeContent = ContentChange & { event: 'text-change' }
-export type EditorChangeSelection = SelectionChange & { event: 'selection-change' }
 
 @Directive()
-export abstract class QuillEditorBase implements ControlValueAccessor, Validator {
+export abstract class QuillEditorFieldBase implements FormValueControl<string | DeltaType | null> {
+
+  // Required
+  readonly value = model<string | DeltaType | null>(null)
+
+  // Writable interaction state - control updates these
+  readonly touched = model<boolean>(false)
+
+  // Read-only state - form system manages these
+  readonly disabled = input(false, { transform: booleanAttribute })
+  readonly readonly = input(false, { transform: booleanAttribute })
+
+  // Custom component inputs
   readonly format = input<QuillFormat>()
   readonly theme = input<string>()
   readonly modules = input<QuillModules>()
   readonly debug = input<'warn' | 'log' | 'error' | false>(false)
-  readonly readOnly = input(false, { transform: booleanAttribute })
   readonly placeholder = input<string>()
-  readonly maxLength = input<number>()
-  readonly minLength = input<number>()
-  readonly required = input(false, { transform: booleanAttribute })
   readonly formats = input<string[] | null>()
   readonly customToolbarPosition = input<'top' | 'bottom'>('top')
   readonly sanitize = input<boolean>()
@@ -116,6 +95,27 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
   */
   readonly defaultEmptyValue = input<any>(null)
 
+  /* ---------------- DEPENDENCIES ---------------- */
+
+  protected quillService = inject(QuillService)
+  private elementRef = inject(ElementRef)
+  private domSanitizer = inject(DomSanitizer)
+  private platformId = inject<string>(PLATFORM_ID)
+  private renderer = inject(Renderer2)
+  private service = inject(QuillService)
+  private destroyRef = inject(DestroyRef)
+
+  protected quill!: QuillType
+  private previousStyles: any
+  private previousClasses: any
+  private internalChange = false
+
+  private eventsSubscription: Subscription | null = null
+  private quillSubscription: Subscription | null = null
+
+  readonly quillEditor = signal<QuillType | null>(null)
+  editorElem!: HTMLElement
+
   @Output() onEditorCreated = new EventEmitter<QuillType>()
   @Output() onEditorChanged = new EventEmitter<EditorChangeContent | EditorChangeSelection>()
   @Output() onContentChanged = new EventEmitter<ContentChange>()
@@ -125,32 +125,7 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
   @Output() onNativeFocus = new EventEmitter<Focus>()
   @Output() onNativeBlur = new EventEmitter<Blur>()
 
-  quillEditor!: QuillType
-  editorElem!: HTMLElement
-  content: any
-  disabled = false // used to store initial value before ViewInit
-
   readonly toolbarPosition = signal('top')
-
-  onModelChange: ((modelValue?: any) => void) | undefined
-  onModelTouched: (() => void) | undefined
-  onValidatorChanged: (() => void) | undefined
-
-  private eventsSubscription: Subscription | null = null
-  private quillSubscription: Subscription | null = null
-
-  private elementRef = inject(ElementRef)
-
-  private domSanitizer = inject(DomSanitizer)
-  private platformId = inject<string>(PLATFORM_ID)
-  private renderer = inject(Renderer2)
-  private service = inject(QuillService)
-  private destroyRef = inject(DestroyRef)
-
-  private previousStyles: any
-  private previousClasses: any
-
-  init = false
 
   constructor() {
     afterNextRender(() => {
@@ -215,8 +190,8 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
           debug = this.service.config.debug
         }
 
-        let readOnly = this.readOnly()
-        if (!readOnly && this.readOnly() !== false) {
+        let readOnly = this.readonly()
+        if (!readOnly && readOnly !== false) {
           readOnly = this.service.config.readOnly !== undefined ? this.service.config.readOnly : false
         }
 
@@ -225,7 +200,7 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
           formats = this.service.config.formats ? [...this.service.config.formats] : (this.service.config.formats === null ? null : undefined)
         }
 
-        this.quillEditor = new Quill(this.editorElem, {
+        const editor = new Quill(this.editorElem, {
           bounds,
           debug,
           formats,
@@ -238,95 +213,101 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
 
         if (this.onNativeBlur.observed) {
           // https://github.com/quilljs/quill/issues/2186#issuecomment-533401328
-          fromEvent(this.quillEditor.scroll.domNode, 'blur').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.onNativeBlur.next({
-            editor: this.quillEditor,
+          fromEvent(editor.scroll.domNode, 'blur').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.onNativeBlur.next({
+            editor,
             source: 'dom'
           }))
           // https://github.com/quilljs/quill/issues/2186#issuecomment-803257538
-          const toolbar = this.quillEditor.getModule('toolbar') as Toolbar
+          const toolbar = editor.getModule('toolbar') as Toolbar
           if (toolbar.container) {
             fromEvent(toolbar.container, 'mousedown').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(e => e.preventDefault())
           }
         }
 
         if (this.onNativeFocus.observed) {
-          fromEvent(this.quillEditor.scroll.domNode, 'focus').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.onNativeFocus.next({
-            editor: this.quillEditor,
+          fromEvent(editor.scroll.domNode, 'focus').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.onNativeFocus.next({
+            editor,
             source: 'dom'
           }))
         }
 
         // Set optional link placeholder, Quill has no native API for it so using workaround
         if (this.linkPlaceholder()) {
-          const tooltip = (this.quillEditor as any)?.theme?.tooltip
+          const tooltip = (editor as any)?.theme?.tooltip
           const input = tooltip?.root?.querySelector('input[data-link]')
           if (input?.dataset) {
             input.dataset.link = this.linkPlaceholder()
           }
         }
+        const value = this.value()
 
-        if (this.content) {
+        if (value) {
+          this.internalChange = true
           const format = getFormat(this.format(), this.service.config.format)
 
           if (format === 'text') {
-            this.quillEditor.setText(this.content, 'silent')
+            editor.setText(value as string, 'silent')
           } else {
             const valueSetter = this.valueSetter()
-            const newValue = valueSetter(this.quillEditor, this.content)
-            this.quillEditor.setContents(newValue, 'silent')
+            const newValue = valueSetter(editor, value)
+            editor.setContents(newValue, 'silent')
           }
 
-          const history = this.quillEditor.getModule('history') as History
+          const history = editor.getModule('history') as History
           history.clear()
+
+          // trigger initial form validation
+          this.value.set(value)
         }
 
-        // initialize disabled status based on this.disabled as default value
-        this.setDisabledState()
-
-        this.addQuillEventListeners()
+        // should trigger effects when editor set, setting init disabled, readonly + adds event listeners
+        this.quillEditor.set(editor)
 
         // listening to the `onEditorCreated` event inside the template, for instance `<quill-view (onEditorCreated)="...">`.
-        if (!this.onEditorCreated.observed && !this.onValidatorChanged) {
-          this.init = true
-          return
+        if (this.onEditorCreated.observed) {
+          this.onEditorCreated.emit(editor)
         }
-
-        if (this.onValidatorChanged) {
-          this.onValidatorChanged()
-        }
-        this.onEditorCreated.emit(this.quillEditor)
-        this.init = true
       })
     })
 
     effect(() => {
+      const editor = this.quillEditor()
       const customToolbarPosition = this.customToolbarPosition()
-      if (this.init && this.toolbarPosition() !== customToolbarPosition) {
+      if (editor && this.toolbarPosition() !== customToolbarPosition) {
         this.toolbarPosition.set(customToolbarPosition)
       }
     })
 
     effect(() => {
-      const readOnly = this.readOnly()
-      if (this.init) {
-        if (readOnly) {
-          this.quillEditor?.disable()
-        } else {
-          this.quillEditor?.enable(true)
-        }
+      const readonly = this.readonly()
+      const editor = this.quillEditor()
+      if (!editor) {
+        return
+      }
+      if (readonly) {
+        editor.disable()
+      } else {
+        editor.enable(true)
       }
     })
 
     effect(() => {
-      const placeholder = this.placeholder()
-      if (this.init && this.quillEditor) {
-         this.quillEditor.root.dataset.placeholder = placeholder
+      let placeholder = this.placeholder()
+      const editor = this.quillEditor()
+      if (!editor) {
+        return
       }
+      placeholder = placeholder !== undefined ? placeholder : this.service.config.placeholder
+      if (placeholder === undefined) {
+        placeholder = 'Insert text here ...'
+      }
+      editor.root.dataset['placeholder'] = placeholder
     })
 
     effect(() => {
       const styles = this.styles()
-      if (!this.init || !this.editorElem) {
+      const editor = this.quillEditor()
+      if (!this.editorElem || !editor) {
         return
       }
       const currentStyling = styles
@@ -346,7 +327,8 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
 
     effect(() => {
       const classes = this.classes()
-      if (!this.init || !this.quillEditor) {
+      const editor = this.quillEditor()
+      if (!editor) {
         return
       }
       const currentClasses = classes
@@ -363,12 +345,33 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
 
     effect(() => {
       const debounceTime = this.debounceTime()
-      if (!this.init || !this.quillEditor) {
+      const editor = this.quillEditor()
+      if (!editor) {
         return
       }
-      if (debounceTime) {
-        this.addQuillEventListeners()
+      this.addQuillEventListeners(debounceTime)
+    })
+
+    effect(() => {
+      const disabled = this.disabled()
+      const editor = this.quillEditor()
+      if (!editor) {
+        return
       }
+      this.setDisabledState(disabled)
+    })
+
+    effect(() => {
+      const value = this.value()
+      const editor = this.quillEditor()
+      if (!editor) {
+        return
+      }
+      if (this.internalChange) {
+        this.internalChange = false
+        return
+      }
+      this.writeValue(value)
     })
 
     this.destroyRef.onDestroy(() => {
@@ -393,28 +396,34 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
 
   valueGetter = input(this.getter.bind(this))
 
-  valueSetter = input((quillEditor: QuillType, value: any): any => {
+  valueSetter = input((quillEditor: QuillType, value: string | DeltaType | null): any => {
     const format = getFormat(this.format(), this.service.config.format)
     if (format === 'html') {
       const sanitize = (typeof this.sanitize() === 'boolean') ? this.sanitize() : (this.service.config.sanitize || false)
       if (sanitize) {
         value = this.domSanitizer.sanitize(SecurityContext.HTML, value)
       }
-      return quillEditor.clipboard.convert({ html: value })
-    } else if (format === 'json') {
+      return quillEditor.clipboard.convert({ html: value as string })
+    }
+
+    if (format === 'json') {
       try {
-        return JSON.parse(value)
+        return JSON.parse(value as string) as DeltaType
       } catch {
-        return [{ insert: value }]
+        return [{ insert: value } as unknown as DeltaType]
       }
     }
 
-    return value
+    return value as DeltaType
   })
 
   selectionChangeHandler = (range: Range | null, oldRange: Range | null, source: string) => {
     const trackChanges = this.trackChanges() || this.service.config.trackChanges
-    const shouldTriggerOnModelTouched = !range && !!this.onModelTouched && (source === 'user' || trackChanges && trackChanges === 'all')
+    const shouldTriggerOnModelTouched = !range && (source === 'user' || trackChanges && trackChanges === 'all')
+    const editor = this.quillEditor()
+    if (!editor) {
+      return
+    }
 
     // only emit changes when there's any listener
     if (!this.onBlur.observed &&
@@ -426,31 +435,35 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
 
     if (range === null) {
       this.onBlur.emit({
-        editor: this.quillEditor,
+        editor,
         source
       })
     } else if (oldRange === null) {
       this.onFocus.emit({
-        editor: this.quillEditor,
+        editor,
         source
       })
     }
 
     this.onSelectionChanged.emit({
-      editor: this.quillEditor,
+      editor,
       oldRange,
       range,
       source
     })
 
     if (shouldTriggerOnModelTouched) {
-      this.onModelTouched!()
+      this.touched.set(true)
     }
   }
 
   textChangeHandler = (delta: DeltaType, oldDelta: DeltaType, source: string): void => {
     const trackChanges = this.trackChanges() || this.service.config.trackChanges
-    const shouldTriggerOnModelChange = (source === 'user' || trackChanges && trackChanges === 'all') && !!this.onModelChange
+    const shouldTriggerOnModelChange = (source === 'user' || trackChanges && trackChanges === 'all')
+    const editor = this.quillEditor()
+    if (!editor) {
+      return
+    }
 
     // only emit changes when there's any listener
     if (!this.onContentChanged.observed && !shouldTriggerOnModelChange) {
@@ -460,27 +473,35 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
     const data = this.eventCallbackFormats()
 
     if (shouldTriggerOnModelChange) {
-      this.onModelChange!(
+      // do not trigger value set again
+      this.internalChange = true
+      this.value.set(
         // only call value getter again if not already done in eventCallbackFormats
-        data.noFormat ? this.valueGetter()(this.quillEditor) : data[data.format]
+        data.noFormat ? this.valueGetter()(editor) : data[data.format]
       )
     }
 
-    this.onContentChanged.emit({
-      content: data.object,
-      delta,
-      editor: this.quillEditor,
-      html: data.html,
-      oldDelta,
-      source,
-      text: data.text
-    })
+    if (this.onContentChanged.observed) {
+      this.onContentChanged.emit({
+        content: data.object,
+        delta,
+        editor,
+        html: data.html,
+        oldDelta,
+        source,
+        text: data.text
+      })
+    }
   }
 
   editorChangeHandler = (
     event: 'text-change' | 'selection-change',
     current: any | Range | null, old: any | Range | null, source: string
   ): void => {
+    const editor = this.quillEditor()
+    if (!editor) {
+      return
+    }
     // only emit changes when there's any listener
     if (!this.onEditorChanged.observed) {
       return
@@ -493,7 +514,7 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
       this.onEditorChanged.emit({
         content: data.object,
         delta: current,
-        editor: this.quillEditor,
+        editor,
         event,
         html: data.html,
         oldDelta: old,
@@ -502,7 +523,7 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
       })
     } else {
       this.onEditorChanged.emit({
-        editor: this.quillEditor,
+        editor,
         event,
         oldRange: old,
         range: current,
@@ -512,143 +533,140 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
   }
 
   addClasses(classList: string): void {
-    QuillEditorBase.normalizeClassNames(classList).forEach((c: string) => {
+    QuillEditorFieldBase.normalizeClassNames(classList).forEach((c: string) => {
       this.renderer.addClass(this.editorElem, c)
     })
   }
 
   removeClasses(classList: string): void {
-    QuillEditorBase.normalizeClassNames(classList).forEach((c: string) => {
+    QuillEditorFieldBase.normalizeClassNames(classList).forEach((c: string) => {
       this.renderer.removeClass(this.editorElem, c)
     })
   }
 
-  writeValue(currentValue: any) {
+  writeValue(currentValue: string | DeltaType | null) {
+    const editor = this.quillEditor()
     // optional fix for https://github.com/angular/angular/issues/14988
     if (this.filterNull() && currentValue === null) {
       return
     }
-
-    this.content = currentValue
-
-    if (!this.quillEditor) {
+    if (!editor) {
       return
     }
 
     const format = getFormat(this.format(), this.service.config.format)
     const valueSetter = this.valueSetter()
-    const newValue = valueSetter(this.quillEditor, currentValue)
+    const newValue = valueSetter(editor, currentValue)
 
     if (this.compareValues()) {
-      const currentEditorValue = this.quillEditor.getContents()
-      if (JSON.stringify(currentEditorValue) === JSON.stringify(newValue)) {
+      const currentEditorValue = editor.getContents()
+
+      if (!currentEditorValue.diff(newValue).changeLength()) {
         return
       }
     }
 
     if (currentValue) {
       if (format === 'text') {
-        this.quillEditor.setText(currentValue)
+        editor.setText(currentValue as string)
       } else {
-        this.quillEditor.setContents(newValue)
+        editor.setContents(newValue)
       }
       return
     }
-    this.quillEditor.setText('')
 
+    editor.setText('')
   }
 
-  setDisabledState(isDisabled: boolean = this.disabled): void {
-    // store initial value to set appropriate disabled status after ViewInit
-    this.disabled = isDisabled
-    if (this.quillEditor) {
-      if (isDisabled) {
-        this.quillEditor.disable()
-        this.renderer.setAttribute(this.elementRef.nativeElement, 'disabled', 'disabled')
-      } else {
-        if (!this.readOnly()) {
-          this.quillEditor.enable()
-        }
-        this.renderer.removeAttribute(this.elementRef.nativeElement, 'disabled')
+  setDisabledState(isDisabled: boolean): void {
+    const editor = this.quillEditor()
+    if (!editor) {
+      return
+    }
+
+    if (isDisabled) {
+      editor.disable()
+      this.renderer.setAttribute(this.elementRef.nativeElement, 'disabled', 'disabled')
+    } else {
+      if (!this.readonly()) {
+        editor.enable()
       }
+      this.renderer.removeAttribute(this.elementRef.nativeElement, 'disabled')
     }
   }
 
-  registerOnChange(fn: (modelValue: any) => void): void {
-    this.onModelChange = fn
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this.onModelTouched = fn
-  }
-
-  registerOnValidatorChange(fn: () => void) {
-    this.onValidatorChanged = fn
-  }
-
-  validate() {
-    if (!this.quillEditor) {
+  validate({
+    required = false,
+    minLength,
+    maxLength
+  }: {
+    required?: boolean
+    minLength?: number
+    maxLength?: number
+  }): ValidationResult<{
+    kind: ValidationKind
+    message?: string
+  }> | null {
+    const editor = this.quillEditor()
+    if (!editor || (!required && !minLength && !maxLength)) {
       return null
     }
 
-    const err: {
-      minLengthError?: {
-        given: number
-        minLength: number
-      }
-      maxLengthError?: {
-        given: number
-        maxLength: number
-      }
-      requiredError?: { empty: boolean }
-    } = {}
-    let valid = true
-
-    const text = this.quillEditor.getText()
+    const text = editor.getText()
     // trim text if wanted + handle special case that an empty editor contains a new line
     const textLength = this.trimOnValidation() ? text.trim().length : (text.length === 1 && text.trim().length === 0 ? 0 : text.length - 1)
-    const deltaOperations = this.quillEditor.getContents().ops
+    const deltaOperations = editor.getContents().ops
     const onlyEmptyOperation = !!deltaOperations && deltaOperations.length === 1 && ['\n', ''].includes(deltaOperations[0].insert?.toString() || '')
+    const errors:{
+      kind: ValidationKind
+      message?: string
+    }[]  = []
 
-    const minLength = this.minLength()
     if (minLength && textLength && textLength < minLength) {
-      err.minLengthError = {
-        given: textLength,
-        minLength
-      }
-
-      valid = false
+      errors.push({
+        kind: ValidationKind.quillMinLength,
+        message: `text length: ${textLength}, min length: ${minLength}`
+      })
     }
 
-    const maxLength = this.maxLength()
     if (maxLength && textLength > maxLength) {
-      err.maxLengthError = {
-        given: textLength,
-        maxLength
-      }
-
-      valid = false
+      errors.push({
+        kind: ValidationKind.quillMaxLength,
+        message: `text length: ${textLength}, min length: ${maxLength}`
+      })
     }
 
-    if (this.required() && !textLength && onlyEmptyOperation) {
-      err.requiredError = {
-        empty: true
-      }
-
-      valid = false
+    if (required && !textLength && onlyEmptyOperation) {
+      errors.push({
+        kind: ValidationKind.quillRequired,
+        message: `text length: ${textLength}`,
+      })
     }
-
-    return valid ? null : err
+    console.log(errors)
+    return errors.length ? errors :  null
   }
 
-  private addQuillEventListeners(): void {
+  focus() {
+    const editor = this.quillEditor()
+    if (!editor) {
+      return
+    }
+
+    editor.focus()
+  }
+
+  private addQuillEventListeners(dbt?: number | null): void {
     this.dispose()
+    const editor = this.quillEditor()
+    if (!editor) {
+      return
+    }
 
     this.eventsSubscription = new Subscription()
 
     this.eventsSubscription.add(
       // mark model as touched if editor lost focus
-      fromEvent(this.quillEditor, 'selection-change').subscribe(
+      fromEvent(editor, 'selection-change').subscribe(
         ([range, oldRange, source]) => {
           this.selectionChangeHandler(range as any, oldRange as any, source)
         }
@@ -657,13 +675,12 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
 
     // The `fromEvent` supports passing JQuery-style event targets, the editor has `on` and `off` methods which
     // will be invoked upon subscription and teardown.
-    let textChange$ = fromEvent(this.quillEditor, 'text-change')
-    let editorChange$ = fromEvent(this.quillEditor, 'editor-change')
+    let textChange$ = fromEvent(editor, 'text-change')
+    let editorChange$ = fromEvent(editor, 'editor-change')
 
-    const _debounceTime = this.debounceTime()
-    if (typeof _debounceTime === 'number') {
-      textChange$ = textChange$.pipe(debounceTime(_debounceTime))
-      editorChange$ = editorChange$.pipe(debounceTime(_debounceTime))
+    if (typeof dbt === 'number') {
+      textChange$ = textChange$.pipe(debounceTime(dbt))
+      editorChange$ = editorChange$.pipe(debounceTime(dbt))
     }
 
     this.eventsSubscription.add(
@@ -723,9 +740,10 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
     let html: string | null = null
     let object: DeltaType | null = null
     let json: string | null = null
+    const editor = this.quillEditor()
 
     // do nothing if no formatted value needed
-    if (noFormat) {
+    if (noFormat || !editor) {
       return {
         format,
         onlyFormat,
@@ -738,7 +756,7 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
     }
 
     // use getter input to grab value
-    const value = this.valueGetter()(this.quillEditor)
+    const value = this.valueGetter()(editor)
 
     if (format === 'text') {
       text = value
@@ -771,30 +789,18 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
       onlyFormat,
       noFormat,
       // use internal getter to retrieve correct other values - this.valueGetter can be overwritten
-      text: format === 'text' ? text : this.getter(this.quillEditor, 'text'),
-      json: format === 'json' ? json : this.getter(this.quillEditor, 'json'),
-      html: format === 'html' ? html : this.getter(this.quillEditor, 'html'),
-      object: format === 'object' ? object : this.getter(this.quillEditor, 'object')
+      text: format === 'text' ? text : this.getter(editor, 'text'),
+      json: format === 'json' ? json : this.getter(editor, 'json'),
+      html: format === 'html' ? html : this.getter(editor, 'html'),
+      object: format === 'object' ? object : this.getter(editor, 'object')
     }
   }
 }
 
 @Component({
   encapsulation: ViewEncapsulation.Emulated,
-  providers: [
-    {
-      multi: true,
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => QuillEditorComponent)
-    },
-    {
-      multi: true,
-      provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => QuillEditorComponent)
-    }
-  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'quill-editor',
+  selector: 'quill-editor-field',
   template: `
     @if (toolbarPosition() !== 'top') {
         <div quill-editor-element></div>
@@ -816,4 +822,5 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
     `
   ]
 })
-export class QuillEditorComponent extends QuillEditorBase { }
+export class QuillEditorFieldComponent extends QuillEditorFieldBase { }
+
