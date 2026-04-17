@@ -65,6 +65,7 @@ PayPal: [PayPal.Me/bengtler](http://paypal.me/bengtler)
   - show the differences between sanitizing and not sanitizing your content if your content format is html
   - usage of different content formats
   - template-driven and reactive forms
+  - signal forms with custom formField
   - code + syntax highlighting
   - formulas
   - image resizing
@@ -415,6 +416,36 @@ or
   editor: editorInstance, // Quill
   source: source // ('dom')
 }
+```
+
+## QuillEditorFieldComponent (experimental)
+
+### Config
+
+- basic usage as quill-editor-component
+- BUT:
+  - used with `[formField]`
+  - validation needs to be added manually via angular `form()`
+  - min/maxLength and required validation happens with `quillEditor.validate({ required?: boolean; maxLength?: number; minLength? })`
+  - disabled/readonly state should be set via angular `disabled()` and `readonly()` helpers in form definition
+
+```HTML
+<quill-editor-field [formField]="form.editor" />
+```
+
+```TS
+readonly quillfield = viewChild<QuillEditorFieldComponent>('quillField')
+
+editorField = signal({ editor: '' })
+form = form(this.editorField, p => {
+  // Add a synchronous required validator to 'editorField'.
+  validate(p.editor, () => {
+    return this.quillfield()?.validate({
+      required: true,
+      minLength: 5
+    }) || null
+  })
+})
 ```
 
 ## QuillViewComponent, QuillViewHTMLComponent & How to present the editor content
