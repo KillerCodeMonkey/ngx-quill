@@ -642,7 +642,7 @@ export abstract class QuillEditorFieldBase implements FormValueControl<string | 
         message: `text length: ${textLength}`,
       })
     }
-    console.log(errors)
+
     return errors.length ? errors :  null
   }
 
