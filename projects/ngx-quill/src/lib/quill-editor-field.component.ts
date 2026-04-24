@@ -270,9 +270,8 @@ export abstract class QuillEditorFieldBase implements FormValueControl<string | 
     })
 
     effect(() => {
-      const editor = this.quillEditor()
       const customToolbarPosition = this.customToolbarPosition()
-      if (editor && this.toolbarPosition() !== customToolbarPosition) {
+      if (this.toolbarPosition() !== customToolbarPosition) {
         this.toolbarPosition.set(customToolbarPosition)
       }
     })

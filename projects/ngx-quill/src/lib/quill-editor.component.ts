@@ -301,7 +301,7 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
 
     effect(() => {
       const customToolbarPosition = this.customToolbarPosition()
-      if (this.init && this.toolbarPosition() !== customToolbarPosition) {
+      if (this.toolbarPosition() !== customToolbarPosition) {
         this.toolbarPosition.set(customToolbarPosition)
       }
     })
