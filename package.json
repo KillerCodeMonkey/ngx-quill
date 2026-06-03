@@ -23,7 +23,7 @@
     "url": "https://github.com/KillerCodeMonkey/ngx-quill"
   },
   "engines": {
-    "node": "^18.19.1 || ^20.11.1 || >=22.0.0"
+    "node": "^22.22.3 || ^24.15.0 || ^26.0.0"
   },
   "keywords": [
     "editor",
@@ -40,39 +40,43 @@
     "text editor"
   ],
   "dependencies": {
-    "@angular/common": "^21.1.9",
-    "@angular/compiler": "^21.1.9",
-    "@angular/core": "^21.1.9",
-    "@angular/forms": "^21.2.9",
-    "@angular/platform-browser": "^21.1.9",
-    "@angular/router": "^21.2.9",
+    "@angular/common": "^22.0.0",
+    "@angular/compiler": "^22.0.0",
+    "@angular/core": "^22.0.0",
+    "@angular/forms": "^22.0.0",
+    "@angular/platform-browser": "^22.0.0",
+    "@angular/router": "^22.0.0",
     "quill": "^2.0.3",
     "rxjs": "^7.8.2",
     "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "@analogjs/vite-plugin-angular": "^2.4.9",
-    "@analogjs/vitest-angular": "^2.4.9",
-    "@angular-devkit/build-angular": "^21.2.7",
-    "@angular/build": "^21.1.7",
-    "@angular/cli": "^21.2.7",
-    "@angular/compiler-cli": "^21.1.9",
-    "@angular/language-service": "^21.2.9",
-    "@angular/localize": "^21.2.9",
+    "@analogjs/vite-plugin-angular": "^2.6.0",
+    "@analogjs/vitest-angular": "^2.6.0",
+    "@angular/build": "^22.0.0",
+    "@angular/cli": "^22.0.0",
+    "@angular/compiler-cli": "^22.0.0",
+    "@angular/language-service": "^22.0.0",
+    "@angular/localize": "^22.0.0",
     "@eslint/js": "^10.0.1",
-    "@eslint/json": "^1.2.0",
+    "@eslint/json": "^2.0.0",
     "@stylistic/eslint-plugin": "^5.10.0",
-    "@types/node": "~24.0.0",
-    "@vitest/browser": "^4.1.4",
-    "@vitest/browser-playwright": "^4.1.4",
-    "angular-eslint": "^21.3.1",
+    "@types/node": "~25.0.0",
+    "@vitest/browser": "^4.1.8",
+    "@vitest/browser-playwright": "^4.1.8",
+    "angular-eslint": "^21.4.0",
     "bufferutil": "^4.1.0",
-    "eslint": "^10.2.1",
-    "globals": "^17.5.0",
-    "ng-packagr": "^21.2.3",
-    "playwright": "^1.59.1",
-    "typescript": "~5.9.3",
-    "vitest": "^4.1.4"
+    "eslint": "^10.4.1",
+    "globals": "^17.6.0",
+    "ng-packagr": "^22.0.0",
+    "playwright": "^1.60.0",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.8"
+  },
+  "overrides": {
+    "angular-eslint": {
+      "@angular/cli": "$@angular/cli"
+    }
   },
   "contributors": [
     {
@@ -81,6 +85,6 @@
   ],
   "version": "0.0.0",
   "volta": {
-    "node": "24.11.1"
+    "node": "24.16.0"
   }
 }

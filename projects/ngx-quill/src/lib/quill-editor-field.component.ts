@@ -2,7 +2,6 @@ import { isPlatformServer, } from '@angular/common'
 import {
   afterNextRender,
   booleanAttribute,
-  ChangeDetectionStrategy,
   Component,
   DestroyRef,
   Directive,
@@ -797,7 +796,6 @@ export abstract class QuillEditorFieldBase implements FormValueControl<string | 
 
 @Component({
   encapsulation: ViewEncapsulation.Emulated,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'quill-editor-field',
   template: `
     @if (toolbarPosition() !== 'top') {

@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, MockInstance } from 'vitest'
 
 import { QuillEditorComponent } from './quill-editor.component'
 
-import { inject as aInject, ChangeDetectionStrategy, Component, Renderer2, signal, viewChild } from '@angular/core'
+import { inject as aInject, Component, Renderer2, signal, viewChild } from '@angular/core'
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import Quill from 'quill'
 import { defer } from 'rxjs'
@@ -21,7 +21,6 @@ class CustomModule {
 }
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [QuillModule, FormsModule],
   selector: 'quill-test',
   template: `
@@ -98,7 +97,6 @@ class TestComponent {
 }
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, QuillModule],
   selector: 'quill-toolbar-test',
   template: `
@@ -151,7 +149,6 @@ class TestToolbarComponent {
 }
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [QuillModule, ReactiveFormsModule],
   selector: 'quill-reactive-test',
   template: `
@@ -165,7 +162,6 @@ class ReactiveFormTestComponent {
 }
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [QuillModule],
   selector: 'quill-module-test',
   template: `
@@ -178,7 +174,6 @@ class CustomModuleTestComponent {
 }
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [QuillModule],
   selector: 'quill-async-module-test',
   template: `
@@ -196,7 +191,6 @@ class CustomAsynchronousModuleTestComponent {
 }
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [QuillModule, FormsModule],
   selector: 'quill-link-placeholder-test',
   template: `
@@ -256,7 +250,6 @@ describe('Basic QuillEditorComponent', () => {
 describe('Formats', () => {
   describe('object', () => {
     @Component({
-      changeDetection: ChangeDetectionStrategy.OnPush,
       imports: [QuillModule, FormsModule],
       template: `
     <quill-editor [ngModel]="title()" (ngModelChange)="title.set($event)" format="object" (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
@@ -317,7 +310,6 @@ describe('Formats', () => {
 
   describe('html', () => {
     @Component({
-changeDetection: ChangeDetectionStrategy.OnPush,
       imports: [QuillModule, FormsModule],
       template: `
     <quill-editor [ngModel]="title()" (ngModelChange)="title.set($event)" format="html" (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
@@ -333,7 +325,6 @@ changeDetection: ChangeDetectionStrategy.OnPush,
     }
 
     @Component({
-      changeDetection: ChangeDetectionStrategy.OnPush,
       imports: [QuillModule, FormsModule],
       template: `
     <quill-editor [ngModel]="title()" (ngModelChange)="title.set($event)" [sanitize]="true" format="html" (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
@@ -405,7 +396,6 @@ unordered`)
 
   describe('text', () => {
     @Component({
-      changeDetection: ChangeDetectionStrategy.OnPush,
       imports: [QuillModule, FormsModule],
       template: `
     <quill-editor [ngModel]="title()" (ngModelChange)="title.set($event)" format="text" (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
@@ -472,7 +462,6 @@ unordered`)
 
   describe('json', () => {
     @Component({
-      changeDetection: ChangeDetectionStrategy.OnPush,
       imports: [QuillModule, FormsModule],
       selector: 'json-valid',
       template: `
@@ -491,7 +480,6 @@ unordered`)
     }
 
     @Component({
-      changeDetection: ChangeDetectionStrategy.OnPush,
       imports: [QuillModule, FormsModule],
       selector: 'quill-json-invalid',
       template: `
@@ -576,7 +564,6 @@ unordered`)
 
 describe('Dynamic styles', () => {
   @Component({
-    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [QuillModule, FormsModule],
     template: `
   <quill-editor
@@ -634,7 +621,6 @@ describe('Dynamic styles', () => {
 
 describe('Dynamic classes', () => {
   @Component({
-    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [QuillModule, FormsModule],
     template: `
   <quill-editor
@@ -1560,7 +1546,6 @@ describe('QuillEditor - customModules (asynchronous)', () => {
 
 describe('QuillEditor - defaultEmptyValue', () => {
   @Component({
-    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [QuillModule],
     template: `
       <quill-editor defaultEmptyValue=""></quill-editor>
@@ -1595,7 +1580,6 @@ describe('QuillEditor - defaultEmptyValue', () => {
 
 describe('QuillEditor - beforeRender', () => {
   @Component({
-    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [QuillModule],
     template: `
       <quill-editor [beforeRender]="beforeRender"></quill-editor>

@@ -8,7 +8,6 @@ import type DeltaType from 'quill-delta'
 import {
   afterNextRender,
   booleanAttribute,
-  ChangeDetectionStrategy,
   Component,
   DestroyRef,
   Directive,
@@ -793,7 +792,6 @@ export abstract class QuillEditorBase implements ControlValueAccessor, Validator
       useExisting: forwardRef(() => QuillEditorComponent)
     }
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'quill-editor',
   template: `
     @if (toolbarPosition() !== 'top') {
