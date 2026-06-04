@@ -13,7 +13,7 @@
     "url": "https://github.com/KillerCodeMonkey/ngx-quill"
   },
   "engines": {
-    "node": "^18.19.1 || ^20.11.1 || >=22.0.0"
+    "node": "^22.22.3 || ^24.15.0 || ^26.0.0"
   },
   "keywords": [
     "editor",
@@ -31,7 +31,7 @@
   ],
   "sideEffects": false,
   "peerDependencies": {
-    "@angular/core": "^21.0.0",
+    "@angular/core": "^22.0.0",
     "quill": "^2.0.0",
     "rxjs": "^7.0.0"
   },
