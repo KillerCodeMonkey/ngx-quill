@@ -1,13 +1,14 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "types": ["vitest/globals"],
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": "./",
+    "types": [
+      "vitest/globals"
+    ],
+    "esModuleInterop": true,
+    "rootDir": ".",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
-    "downlevelIteration": true,
     "experimentalDecorators": true,
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -21,12 +22,16 @@
       "dom"
     ],
     "paths": {
-      "ngx-quill/config": ["projects/ngx-quill/config/src/public_api.ts"],
-      "ngx-quill": ["projects/ngx-quill/src/public_api.ts"]
+      "ngx-quill/config": [
+        "./projects/ngx-quill/config/src/public_api.ts"
+      ],
+      "ngx-quill": [
+        "./projects/ngx-quill/src/public_api.ts"
+      ]
     }
   },
   "angularCompilerOptions": {
-    "fullTemplateTypeCheck": true,
+    "strictTemplates": true,
     "strictInjectionParameters": true
   }
 }
