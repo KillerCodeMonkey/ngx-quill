@@ -1452,8 +1452,8 @@ describe('QuillEditor - base config', () => {
 
     await fixture.whenStable()
 
-    expect(registerSpy).toHaveBeenCalledWith('modules/custom', CustomModule, true)
     expect(importSpy).toHaveBeenCalledWith('attributors/style/size')
+    expect(registerSpy).toHaveBeenCalledWith('modules/custom', CustomModule, true)
   })
 
   test('renders editor with config',  async () => {
