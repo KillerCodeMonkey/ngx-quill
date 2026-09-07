@@ -65,7 +65,7 @@
     "@types/node": "~24.0.0",
     "@vitest/browser": "^4.1.11",
     "@vitest/browser-playwright": "^4.1.11",
-    "angular-eslint": "^22.2.0",
+    "angular-eslint": "^22.3.0",
     "bufferutil": "^4.1.0",
     "eslint": "^10.10.0",
     "globals": "^17.12.0",
