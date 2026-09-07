@@ -5,6 +5,7 @@ import { QuillEditorComponent } from './quill-editor.component'
 
 import { inject as aInject, Component, Renderer2, signal, viewChild } from '@angular/core'
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms'
+import type { QuillFormat } from 'ngx-quill/config'
 import Quill from 'quill'
 import { defer } from 'rxjs'
 import { QuillModule } from './quill.module'
@@ -25,10 +26,10 @@ class CustomModule {
   selector: 'quill-test',
   template: `
 <quill-editor
-  (onBlur)="blured = true"
-  (onFocus)="focused = true"
-  (onNativeBlur)="bluredNative = true"
-  (onNativeFocus)="focusedNative = true"
+  (onBlur)="blured.set(true)"
+  (onFocus)="focused.set(true)"
+  (onNativeBlur)="bluredNative.set(true)"
+  (onNativeFocus)="focusedNative.set(true)"
   [ngModel]="title()"
   (ngModelChange)="title.set($event)"
   [customOptions]="[{import: 'attributors/style/size', whitelist: ['14']}]"
@@ -69,7 +70,7 @@ class TestComponent {
   } | null>({ height: '30px' })
   editor: Quill | undefined
   debounceTime = signal(0)
-  format = signal<string | undefined>('html')
+  format = signal<QuillFormat | undefined>('html')
   changed: any
   changedEditor: any
   selected: any
@@ -142,7 +143,7 @@ class TestToolbarComponent {
   isReadOnly = signal(false)
   minLength = signal(0)
   maxLength = signal(0)
-  toolbarPosition = signal('top')
+  toolbarPosition = signal<'top' | 'bottom'>('top')
 
   handleEditorCreated() {return}
   handleChange() {return}
@@ -483,7 +484,7 @@ unordered`)
       imports: [QuillModule, FormsModule],
       selector: 'quill-json-invalid',
       template: `
-    <quill-editor [ngModel]="title()" (ngModalChange)="title.set($event)" format="json" (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
+    <quill-editor [ngModel]="title()" (ngModalChange)="title.set($any($event))" format="json" (onEditorCreated)="handleEditorCreated($event)"></quill-editor>
     `
     })
     class JSONInvalidComponent {
@@ -1197,7 +1198,7 @@ describe('Advanced QuillEditorComponent', () => {
     editorFixture.componentInstance.quillEditor.blur()
     await fixture.whenStable()
 
-    await vi.waitUntil(() => !!fixture.componentInstance.selected)
+    await vi.waitUntil(() => !!fixture.componentInstance.selected || !!fixture.componentInstance.changedEditor)
     await fixture.whenStable()
 
     expect(fixture.componentInstance.handleSelection).toHaveBeenCalledWith(fixture.componentInstance.selected)
@@ -1210,7 +1211,7 @@ describe('Advanced QuillEditorComponent', () => {
     editorFixture.componentInstance.quillEditor.focus()
     await fixture.whenStable()
 
-    expect(fixture.componentInstance.focused).toBe(true)
+    expect(fixture.componentInstance.focused()).toBe(true)
   })
 
   test('should emit onNativeFocus when scroll container receives focus', async () => {
@@ -1221,7 +1222,7 @@ describe('Advanced QuillEditorComponent', () => {
     editorFixture.componentInstance.quillEditor.scroll.domNode.focus()
     await fixture.whenStable()
 
-    expect(fixture.componentInstance.focusedNative).toBe(true)
+    expect(fixture.componentInstance.focusedNative()).toBe(true)
   })
 
   test('should emit onBlur when blured', async () => {
@@ -1231,7 +1232,7 @@ describe('Advanced QuillEditorComponent', () => {
     editorFixture.componentInstance.quillEditor.blur()
     await fixture.whenStable()
 
-    expect(fixture.componentInstance.blured).toBe(true)
+    expect(fixture.componentInstance.blured()).toBe(true)
   })
 
   test('should emit onNativeBlur when scroll container receives blur', async () => {
@@ -1241,7 +1242,7 @@ describe('Advanced QuillEditorComponent', () => {
     editorFixture.componentInstance.quillEditor.scroll.domNode.blur()
     await fixture.whenStable()
 
-    expect(fixture.componentInstance.bluredNative).toBe(true)
+    expect(fixture.componentInstance.bluredNative()).toBe(true)
   })
 
   test('should validate minlength', async () => {
