@@ -41,7 +41,7 @@ describe('Basic QuillViewComponent', () => {
   beforeEach(async () => {
     fixture = TestBed.createComponent(QuillViewComponent)
     await fixture.whenStable()
-    await vi.waitUntil(() => !!fixture.componentInstance.quillEditor)
+    await expect.poll(() => !!fixture.componentInstance.quillEditor).toBe(true)
   })
 
   test('should render and set default snow theme class', async () => {
@@ -72,7 +72,7 @@ describe('Formats', () => {
         bindings: [inputBinding('content', content), inputBinding('format', format), inputBinding('customModules', modules)]
       })
       await fixture.whenStable()
-      await vi.waitUntil(() => !!fixture.componentInstance.quillEditor)
+      await expect.poll(() => !!fixture.componentInstance.quillEditor).toBe(true)
     })
 
     test('should be set object', () => {
@@ -101,7 +101,7 @@ describe('Formats', () => {
         bindings: [inputBinding('content', content), inputBinding('format', format)]
       })
       await fixture.whenStable()
-      await vi.waitUntil(() => !!fixture.componentInstance.quillEditor)
+      await expect.poll(() => !!fixture.componentInstance.quillEditor).toBe(true)
     })
 
     test('should be set html', async () => {
@@ -140,7 +140,7 @@ describe('Formats', () => {
         bindings: [inputBinding('content', content), inputBinding('format', format)]
       })
       await fixture.whenStable()
-      await vi.waitUntil(() => !!fixture.componentInstance.quillEditor)
+      await expect.poll(() => !!fixture.componentInstance.quillEditor).toBe(true)
     })
 
     test('should be set text', async () => {
@@ -180,7 +180,7 @@ describe('Formats', () => {
         bindings: [inputBinding('content', content), inputBinding('format', format)]
       })
       await fixture.whenStable()
-      await vi.waitUntil(() => !!fixture.componentInstance.quillEditor)
+      await expect.poll(() => !!fixture.componentInstance.quillEditor).toBe(true)
     })
 
     test('should set json string', async () => {
@@ -225,7 +225,7 @@ describe('Advanced QuillViewComponent', () => {
     fixture = TestBed.createComponent(AdvancedComponent)
     vi.spyOn(fixture.componentInstance, 'handleEditorCreated')
     await fixture.whenStable()
-    await vi.waitUntil(() => !!fixture.componentInstance.quillEditor)
+    await expect.poll(() => !!fixture.componentInstance.quillEditor).toBe(true)
   })
 
   test('should emit onEditorCreated with editor instance',  async () => {

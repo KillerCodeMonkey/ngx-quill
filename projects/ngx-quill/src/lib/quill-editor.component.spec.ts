@@ -218,7 +218,7 @@ describe('Basic QuillEditorComponent', () => {
   beforeEach(inject([QuillService], async () => {
     fixture = TestBed.createComponent(QuillEditorComponent)
 
-    await vi.waitUntil(() => !!fixture.componentInstance.quillEditor)
+    await expect.poll(() => !!fixture.componentInstance.quillEditor).toBe(true)
   }))
 
   test('ngOnDestroy - removes listeners', async () => {
@@ -280,7 +280,7 @@ describe('Formats', () => {
     beforeEach(async () => {
       fixture = TestBed.createComponent(ObjectComponent)
 
-      await vi.waitUntil(() => !!fixture.componentInstance.editor)
+      await expect.poll(() => !!fixture.componentInstance.editor).toBe(true)
       await fixture.whenStable()
     })
 
@@ -354,7 +354,7 @@ describe('Formats', () => {
       fixture = TestBed.createComponent(HTMLComponent)
       component = fixture.componentInstance
 
-      await vi.waitUntil(() => !!fixture.componentInstance.editor)
+      await expect.poll(() => !!fixture.componentInstance.editor).toBe(true)
 
       await fixture.whenStable()
     })
@@ -424,7 +424,7 @@ unordered`)
     beforeEach(inject([QuillService], async () => {
       fixture = TestBed.createComponent(TextComponent)
 
-      await vi.waitUntil(() => !!fixture.componentInstance.editor)
+      await expect.poll(() => !!fixture.componentInstance.editor).toBe(true)
 
       await fixture.whenStable()
     }))
@@ -512,7 +512,7 @@ unordered`)
       fixture = TestBed.createComponent(JSONComponent)
       component = fixture.componentInstance
 
-      await vi.waitUntil(() => !!fixture.componentInstance.editor)
+      await expect.poll(() => !!fixture.componentInstance.editor).toBe(true)
 
       await fixture.whenStable()
     })
@@ -543,7 +543,7 @@ unordered`)
       const infixture = TestBed.createComponent(JSONInvalidComponent) as ComponentFixture<JSONInvalidComponent>
       const incomponent = infixture.componentInstance
 
-      await vi.waitUntil(() => !!incomponent.editor)
+      await expect.poll(() => !!incomponent.editor).toBe(true)
 
       await infixture.whenStable()
 
@@ -599,7 +599,7 @@ describe('Dynamic styles', () => {
   beforeEach(async () => {
     fixture = TestBed.createComponent(StylingComponent)
 
-    await vi.waitUntil(() => !!fixture.componentInstance.editor)
+    await expect.poll(() => !!fixture.componentInstance.editor).toBe(true)
 
     await fixture.whenStable()
   })
@@ -655,7 +655,7 @@ describe('Dynamic classes', () => {
   beforeEach(async () => {
     fixture = TestBed.createComponent(ClassesComponent)
 
-    await vi.waitUntil(() => !!fixture.componentInstance.editor)
+    await expect.poll(() => !!fixture.componentInstance.editor).toBe(true)
 
     await fixture.whenStable()
   })
@@ -672,7 +672,7 @@ describe('Dynamic classes', () => {
     await fixture.whenStable()
 
     component.classes.set('test-class2 test-class3')
-    await vi.waitUntil(() => !component.editor.container.classList.contains('test-class1'))
+    await expect.poll(() => component.editor.container.classList.contains('test-class1')).not.toBe(true)
     await fixture.whenStable()
 
     expect(component.editor.container.classList.contains('test-class1')).toBe(false)
@@ -710,7 +710,7 @@ describe('Reactive forms integration', () => {
     fixture = TestBed.createComponent(ReactiveFormTestComponent)
     await fixture.whenStable()
 
-    await vi.waitUntil(() => !!fixture.componentInstance.editorComponent().quillEditor)
+    await expect.poll(() => !!fixture.componentInstance.editorComponent().quillEditor).toBe(true)
   })
 
   test('should be disabled', async () => {
@@ -802,8 +802,9 @@ describe('Advanced QuillEditorComponent', () => {
     vi.spyOn(fixture.componentInstance, 'handleEditorCreated')
     await fixture.whenStable()
 
-    await vi.waitUntil(() => !!fixture.componentInstance.editor)
+    await expect.poll(() => !!fixture.componentInstance.editor).toBe(true)
 
+    await fixture.whenStable()
     await fixture.whenStable()
   })
 
@@ -905,7 +906,7 @@ describe('Advanced QuillEditorComponent', () => {
     editorFixture.componentInstance.quillEditor.setText('1234', 'user')
     await fixture.whenStable()
 
-    await vi.waitUntil(() => !!fixture.componentInstance.changed)
+    await expect.poll(() => !!fixture.componentInstance.changed).toBe(true)
 
     expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
     expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
@@ -958,7 +959,7 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.componentInstance.editorComponent().quillEditor.setText('1234', 'user')
     await fixture.whenStable()
 
-    await vi.waitUntil(() => spy.mock.calls.length === 1)
+    await expect.poll(() => spy.mock.calls.length).toBe(1)
 
     expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
     expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
@@ -975,7 +976,7 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.componentInstance.editorComponent().quillEditor.setText('1234', 'user')
     await fixture.whenStable()
 
-    await vi.waitUntil(() => spy.mock.calls.length === 2)
+    await expect.poll(() => spy.mock.calls.length).toBe(2)
 
     expect(fixture.componentInstance.changed).toEqual(expect.objectContaining({
       content: null,
@@ -990,7 +991,7 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.componentInstance.editorComponent().quillEditor.setText('1234', 'user')
     await fixture.whenStable()
 
-    await vi.waitUntil(() => spy.mock.calls.length === 3)
+    await expect.poll(() => spy.mock.calls.length).toBe(3)
 
     expect(fixture.componentInstance.changed).toEqual(expect.objectContaining({
       content: {
@@ -1011,7 +1012,7 @@ describe('Advanced QuillEditorComponent', () => {
     fixture.componentInstance.editorComponent().quillEditor.setText('1234', 'user')
     await fixture.whenStable()
 
-    await vi.waitUntil(() => spy.mock.calls.length === 4)
+    await expect.poll(() => spy.mock.calls.length).toBe(4)
 
     expect(fixture.componentInstance.changed).toEqual(expect.objectContaining({
       content: {
@@ -1041,7 +1042,7 @@ describe('Advanced QuillEditorComponent', () => {
     editorFixture.componentInstance.quillEditor.setText('1234', 'user')
     await fixture.whenStable()
 
-    await vi.waitUntil(() => !!spy.mock.calls.length)
+    await expect.poll(() => spy.mock.calls.length).toBe(1)
 
     expect(fixture.componentInstance.handleChange).toHaveBeenCalledWith(fixture.componentInstance.changed)
     expect(fixture.componentInstance.handleEditorChange).toHaveBeenCalledWith(fixture.componentInstance.changedEditor)
@@ -1057,7 +1058,7 @@ describe('Advanced QuillEditorComponent', () => {
 
     editorFixture.componentInstance.quillEditor.setText('1234', 'user')
     await fixture.whenStable()
-    await vi.waitUntil(() => spy.mock.calls.length === 2)
+    await expect.poll(() => spy.mock.calls.length).toBe(2)
 
     expect(fixture.componentInstance.changed).toEqual(expect.objectContaining({
       content: null,
@@ -1071,7 +1072,7 @@ describe('Advanced QuillEditorComponent', () => {
 
     editorFixture.componentInstance.quillEditor.setText('1234', 'user')
     await fixture.whenStable()
-    await vi.waitUntil(() => spy.mock.calls.length === 3)
+    await expect.poll(() => spy.mock.calls.length).toBe(3)
 
     expect(fixture.componentInstance.changed).toEqual(expect.objectContaining({
       content: null,
@@ -1085,7 +1086,7 @@ describe('Advanced QuillEditorComponent', () => {
 
     editorFixture.componentInstance.quillEditor.setText('1234', 'user')
     await fixture.whenStable()
-    await vi.waitUntil(() => spy.mock.calls.length === 4)
+    await expect.poll(() => spy.mock.calls.length).toBe(4)
 
     expect(fixture.componentInstance.changed).toEqual(expect.objectContaining({
       content: null,
@@ -1198,7 +1199,7 @@ describe('Advanced QuillEditorComponent', () => {
     editorFixture.componentInstance.quillEditor.blur()
     await fixture.whenStable()
 
-    await vi.waitUntil(() => !!fixture.componentInstance.selected || !!fixture.componentInstance.changedEditor)
+    await expect.poll(() => !!fixture.componentInstance.selected || !!fixture.componentInstance.changedEditor).toBe(true)
     await fixture.whenStable()
 
     expect(fixture.componentInstance.handleSelection).toHaveBeenCalledWith(fixture.componentInstance.selected)
@@ -1448,7 +1449,10 @@ describe('QuillEditor - base config', () => {
   beforeEach( async () => {
     fixture = TestBed.createComponent(TestComponent)
     fixture.componentInstance.format.set(undefined)
-    await vi.waitUntil(() => !!fixture.componentInstance.editor)
+    await expect.poll(() => !!fixture.componentInstance.editor, {
+      timeout: 5000,
+      interval: 100,
+    }).toBe(true)
 
     await fixture.whenStable()
 
@@ -1470,8 +1474,10 @@ describe('QuillEditor - base config', () => {
       }
     }] as any, 'api')
     await fixture.whenStable()
-
-    await vi.waitUntil(() => fixture.componentInstance.title() !== 'Hallo')
+    await expect.poll(() => fixture.componentInstance.title(), {
+      interval: 100,
+      timeout: 5000
+    }).not.toEqual('Hallo')
 
     expect(JSON.stringify(fixture.componentInstance.title()))
       .toEqual(JSON.stringify({ ops: [{ attributes: { bold: true },
@@ -1508,7 +1514,10 @@ describe('QuillEditor - customModules', () => {
     const spy = vi.spyOn(Quill, 'register')
 
     fixture = TestBed.createComponent(CustomModuleTestComponent)
-    await vi.waitUntil(() => fixture.componentInstance.editorComponent().init)
+    await expect.poll(() => fixture.componentInstance.editorComponent().init, {
+      interval: 100,
+      timeout: 5000
+    }).toBe(true)
     await fixture.whenStable()
 
     expect(spy).toHaveBeenCalled()
@@ -1535,7 +1544,7 @@ describe('QuillEditor - customModules (asynchronous)', () => {
 
     fixture = TestBed.createComponent(CustomAsynchronousModuleTestComponent)
     await fixture.whenStable()
-    await vi.waitUntil(() => fixture.componentInstance.editorComponent().init)
+    await expect.poll(() => fixture.componentInstance.editorComponent().init).toBe(true)
 
     expect(spy).toHaveBeenCalled()
   })
@@ -1569,7 +1578,7 @@ describe('QuillEditor - defaultEmptyValue', () => {
   beforeEach(inject([QuillService], async () => {
     fixture = TestBed.createComponent(DefaultEmptyValueTestComponent)
 
-    await vi.waitUntil(() => !!fixture.componentInstance.editorComponent())
+    await expect.poll(() => !!fixture.componentInstance.editorComponent()).toBe(true)
 
     await fixture.whenStable()
   }))
@@ -1614,7 +1623,7 @@ describe('QuillEditor - beforeRender', () => {
     fixture = TestBed.createComponent(BeforeRenderTestComponent)
     await fixture.whenStable()
 
-    await vi.waitUntil(() => !!spy.mock.calls.length)
+    await expect.poll(() => spy.mock.calls.length).toBe(1)
 
     await fixture.whenStable()
 
@@ -1627,7 +1636,7 @@ describe('QuillEditor - beforeRender', () => {
     const spy2 = vi.spyOn(fixture.componentInstance, 'beforeRender')
     await fixture.whenStable()
 
-    await vi.waitUntil(() => !!spy2.mock.calls.length)
+    await expect.poll(() => !!spy2.mock.calls.length).toBe(true)
 
     await fixture.whenStable()
 
