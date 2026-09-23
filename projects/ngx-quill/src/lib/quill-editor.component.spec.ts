@@ -1523,7 +1523,12 @@ describe('QuillEditor - customModules', () => {
     await TestBed.configureTestingModule({
       declarations: [],
       imports: [FormsModule, QuillModule],
-      providers: QuillModule.forRoot().providers
+      providers: [...(QuillModule.forRoot().providers || []),
+        {
+          provide: QuillService,
+          useClass: TestQuillService
+        },
+      ]
     }).compileComponents()
   })
 
@@ -1552,7 +1557,12 @@ describe('QuillEditor - customModules (asynchronous)', () => {
     await TestBed.configureTestingModule({
       declarations: [],
       imports: [FormsModule, QuillModule],
-      providers: QuillModule.forRoot().providers
+      providers: [...(QuillModule.forRoot().providers || []),
+        {
+          provide: QuillService,
+          useClass: TestQuillService
+        },
+      ]
     }).compileComponents()
   })
 
@@ -1588,12 +1598,7 @@ describe('QuillEditor - defaultEmptyValue', () => {
     await TestBed.configureTestingModule({
       declarations: [],
       imports: [QuillModule],
-      providers: [...(QuillModule.forRoot().providers || []),
-        {
-          provide: QuillService,
-          useClass: TestQuillService
-        },
-      ]
+      providers: QuillModule.forRoot().providers
     }).compileComponents()
   })
 
@@ -1633,12 +1638,7 @@ describe('QuillEditor - beforeRender', () => {
     await TestBed.configureTestingModule({
       declarations: [],
       imports: [QuillModule],
-      providers: [...(QuillModule.forRoot(config).providers || []),
-        {
-          provide: QuillService,
-          useClass: TestQuillService
-        },
-      ]
+      providers: QuillModule.forRoot(config).providers
     }).compileComponents()
   })
 
