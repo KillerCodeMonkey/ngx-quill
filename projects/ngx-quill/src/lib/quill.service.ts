@@ -15,7 +15,7 @@ import {
 export class QuillService {
   readonly config = inject(QUILL_CONFIG_TOKEN) || { modules:defaultModules } as QuillConfig
 
-  private Quill!: any
+  protected Quill!: any
 
   private quill$: Observable<any> = defer(async () => {
     if (!this.Quill) {

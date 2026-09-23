@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, MockInstance } from 'vitest'
 
 import { QuillEditorComponent } from './quill-editor.component'
 
-import { inject as aInject, Component, Renderer2, signal, viewChild } from '@angular/core'
+import { inject as aInject, Component, Injectable, Renderer2, signal, viewChild } from '@angular/core'
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import type { QuillFormat } from 'ngx-quill/config'
 import Quill from 'quill'
@@ -19,6 +19,11 @@ class CustomModule {
     this.quill = quill
     this.options = options
   }
+}
+
+@Injectable({ providedIn: 'root' })
+class TestQuillService extends QuillService {
+  protected Quill = Quill
 }
 
 @Component({
@@ -211,7 +216,12 @@ describe('Basic QuillEditorComponent', () => {
       imports: [
 
       ],
-      providers: QuillModule.forRoot().providers
+      providers: [...(QuillModule.forRoot().providers || []),
+        {
+          provide: QuillService,
+          useClass: TestQuillService
+        },
+      ]
     }).compileComponents()
   })
 
@@ -791,7 +801,12 @@ describe('Advanced QuillEditorComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [],
       imports: [FormsModule, QuillModule],
-      providers: QuillModule.forRoot().providers
+      providers: [...(QuillModule.forRoot().providers || []),
+        {
+          provide: QuillService,
+          useClass: TestQuillService
+        },
+      ]
     }).compileComponents()
   })
 
@@ -804,7 +819,6 @@ describe('Advanced QuillEditorComponent', () => {
 
     await expect.poll(() => !!fixture.componentInstance.editor).toBe(true)
 
-    await fixture.whenStable()
     await fixture.whenStable()
   })
 
@@ -1410,16 +1424,14 @@ describe('QuillEditor - base config', () => {
   let importSpy: MockInstance
   let registerSpy: MockInstance
 
-  beforeAll(() => {
+  beforeEach(async () => {
     importSpy = vi.spyOn(Quill, 'import')
     registerSpy = vi.spyOn(Quill, 'register')
-  })
 
-  beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [],
       imports: [FormsModule, QuillModule],
-      providers: QuillModule.forRoot({
+      providers: [...(QuillModule.forRoot({
         customModules: [{
           path: 'modules/custom',
           implementation: CustomModule
@@ -1442,7 +1454,12 @@ describe('QuillEditor - base config', () => {
         readOnly: true,
         theme: 'snow',
         trackChanges: 'all'
-      }).providers
+      }).providers || []),
+        {
+          provide: QuillService,
+          useClass: TestQuillService
+        },
+      ]
     }).compileComponents()
   })
 
