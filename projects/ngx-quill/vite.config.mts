@@ -7,8 +7,8 @@ import { mergeConfig, defineConfig as testConfig } from 'vitest/config'
 export default mergeConfig(defineConfig({
   resolve: {
     alias: {
-      "ngx-quill/config": path.resolve(__dirname, "config/src/public_api.ts"),
-      "ngx-quill": path.resolve(__dirname, "src/public_api.ts")
+      "ngx-quill/config": path.resolve(import.meta.dirname, "config/src/public_api.ts"),
+      "ngx-quill": path.resolve(import.meta.dirname, "src/public_api.ts")
     },
   },
   plugins: [
@@ -51,6 +51,6 @@ export default mergeConfig(defineConfig({
     testTimeout: 5000,
     include: ['projects/ngx-quill/**/*.spec.ts'],
     setupFiles: ['projects/ngx-quill/test-setup.ts'],
-    deps: { optimizer: { web: { enabled: true } } }
+    deps: { optimizer: { client: { enabled: true } } }
   }
 }))
